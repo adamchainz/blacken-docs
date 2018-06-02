@@ -1,0 +1,12 @@
+-   id: blacken-markdown
+    name: blacken markdown
+    description: Run `black` on python code blocks in documentation files
+    entry: blacken-docs
+    language: python
+    types: [markdown]
+-   id: blacken-rst
+    name: blacken rst
+    description: Run `black` on python code blocks in documentation files
+    entry: blacken-docs
+    language: python
+    types: [rst]
