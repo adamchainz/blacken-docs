@@ -21,6 +21,24 @@ options:
 - `-l` / `--line-length`
 - `--py36`
 
+`blacken-docs` will format code in the following block types:
+
+(markdown)
+```markdown
+    ```python
+    def hello():
+        print("hello world")
+    ```
+```
+
+(rst)
+```rst
+    .. code-block:: python
+
+        def hello():
+            print("hello world")
+```
+
 ## usage with pre-commit
 
 This works especially well when integrated with [`pre-commit`][pre-commit].
