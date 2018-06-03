@@ -41,7 +41,9 @@ options:
 
 ## usage with pre-commit
 
-This works especially well when integrated with [`pre-commit`][pre-commit].
+See [pre-commit](https://pre-commit.com) for instructions
+
+Sample `.pre-commit-config.yaml`:
 
 
 ```yaml
