@@ -66,7 +66,7 @@ def format_str(src: str, **black_opts: Any) -> str:
 
 
 def format_file(filename: str, **black_opts: Any) -> int:
-    with open(filename) as f:
+    with open(filename, encoding='UTF-8') as f:
         contents = f.read()
     try:
         new_contents = format_str(contents, **black_opts)
@@ -77,7 +77,7 @@ def format_file(filename: str, **black_opts: Any) -> int:
         return 1
     if contents != new_contents:
         print(f'{filename}: Rewriting...')
-        with open(filename, 'w') as f:
+        with open(filename, 'w', encoding='UTF-8') as f:
             f.write(new_contents)
         return 1
     else:
