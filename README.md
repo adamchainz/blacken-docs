@@ -12,7 +12,14 @@ Run `black` on python code blocks in documentation files.
 
 ## usage
 
-TODO
+`blacken-docs` provides a single executable (`blacken-docs`) which will modify
+`.rst` / `.md` files in place.
+
+It currently supports the following [`black`](https://github.com/ambv/black)
+options:
+
+- `-l` / `--line-length`
+- `--py36`
 
 ## usage with pre-commit
 
@@ -23,14 +30,9 @@ This works especially well when integrated with [`pre-commit`][pre-commit].
 -   repo: https://github.com/asottile/blacken-docs
     rev: v0.0.0
     hooks:
-    -   id: blacken-markdown
-    -   id: blacken-rst
+    -   id: blacken-docs
+        additional_dependencies: [black==...]
 ```
 
-### supported [`black`](https://github.com/ambv/black) options
-
-Currently the following black options are supported:
-
-- `--line-length`
-- `--py36`
-- `-S` / `--skip-string-normalization`
+Since `black` is currently a moving target, it is suggested to pin `black`
+to a specific version using `additional_dependencies`.
