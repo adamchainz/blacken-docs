@@ -28,7 +28,7 @@ This works especially well when integrated with [`pre-commit`][pre-commit].
 
 ```yaml
 -   repo: https://github.com/asottile/blacken-docs
-    rev: v0.0.0
+    rev: v0.1.0
     hooks:
     -   id: blacken-docs
         additional_dependencies: [black==...]
