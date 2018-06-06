@@ -4,7 +4,7 @@ setup(
     name='blacken_docs',
     description='Run `black` on python code blocks in documentation files',
     url='https://github.com/asottile/blacken-docs',
-    version='0.1.1',
+    version='0.2.0',
     author='Anthony Sottile',
     author_email='asottile@umich.edu',
     classifiers=[
