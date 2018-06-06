@@ -193,6 +193,21 @@ def test_integration_py36(tmpdir):
     )
 
 
+def test_integration_skip_string_normalization(tmpdir):
+    f = tmpdir.join('f.md')
+    f.write(
+        '```python\n'
+        "f('hi')\n"
+        '```\n',
+    )
+    assert not blacken_docs.main((str(f), '--skip-string-normalization'))
+    assert f.read() == (
+        '```python\n'
+        "f('hi')\n"
+        '```\n'
+    )
+
+
 def test_integration_syntax_error(tmpdir, capsys):
     f = tmpdir.join('f.md')
     f.write(
