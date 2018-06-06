@@ -20,6 +20,7 @@ options:
 
 - `-l` / `--line-length`
 - `--py36`
+- `-S` / `--skip-string-normalization`
 
 `blacken-docs` will format code in the following block types:
 

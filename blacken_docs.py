@@ -90,10 +90,9 @@ def main(argv: Optional[Tuple[str]] = None) -> int:
         '-l', '--line-length', type=int, default=black.DEFAULT_LINE_LENGTH,
     )
     parser.add_argument('--py36-plus', action='store_true')
-    # TODO:
-    # parser.add_argument(
-    #     '-S', '--skip-string-normalization', action='store_true',
-    # )
+    parser.add_argument(
+        '-S', '--skip-string-normalization', action='store_true',
+    )
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
 
@@ -103,9 +102,8 @@ def main(argv: Optional[Tuple[str]] = None) -> int:
     }
     if args.py36_plus:
         black_opts['mode'] |= black.FileMode.PYTHON36
-    # TODO:
-    # if args.skip_string_normalization:
-    #     black_opts['mode'] |= black.FileMode.SKIP_STRING_NORMALIZATION
+    if args.skip_string_normalization:
+        black_opts['mode'] |= black.FileMode.NO_STRING_NORMALIZATION
 
     retv = 0
     for filename in args.filenames:

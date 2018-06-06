@@ -14,7 +14,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
-    install_requires=['black'],
+    install_requires=['black>=18.6b0'],
     py_modules=['blacken_docs'],
     entry_points={'console_scripts': ['blacken-docs=blacken_docs:main']},
 )
