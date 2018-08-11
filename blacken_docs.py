@@ -6,7 +6,7 @@ from typing import Any
 from typing import Generator
 from typing import Match
 from typing import Optional
-from typing import Tuple
+from typing import Sequence
 
 import black
 
@@ -84,7 +84,7 @@ def format_file(filename: str, **black_opts: Any) -> int:
         return 0
 
 
-def main(argv: Optional[Tuple[str]] = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-l', '--line-length', type=int, default=black.DEFAULT_LINE_LENGTH,
