@@ -3,5 +3,5 @@
     description: Run `black` on python code blocks in documentation files
     entry: blacken-docs
     language: python
-    language_version: python3.6
+    language_version: python3
     files: '\.(rst|md|markdown)'
