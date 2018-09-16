@@ -10,7 +10,7 @@ OPTS = {
 
 
 def test_format_src_trivial():
-    assert blacken_docs.format_str('', **OPTS) == ''
+    assert blacken_docs.format_str('', **OPTS)[0] == ''
 
 
 def test_format_src_markdown_simple():
@@ -19,7 +19,7 @@ def test_format_src_markdown_simple():
         'f(1,2,3)\n'
         '```\n'
     )
-    after = blacken_docs.format_str(before, **OPTS)
+    after = blacken_docs.format_str(before, **OPTS)[0]
     assert after == (
         '```python\n'
         'f(1, 2, 3)\n'
@@ -35,7 +35,7 @@ def test_format_src_indented_markdown():
         '  ```\n'
         '- also this\n'
     )
-    after = blacken_docs.format_str(before, **OPTS)
+    after = blacken_docs.format_str(before, **OPTS)[0]
     assert after == (
         '- do this pls:\n'
         '  ```python\n'
@@ -55,7 +55,7 @@ def test_format_src_rst():
         '\n'
         'world\n'
     )
-    after = blacken_docs.format_str(before, **OPTS)
+    after = blacken_docs.format_str(before, **OPTS)[0]
     assert after == (
         'hello\n'
         '\n'
@@ -80,7 +80,7 @@ def test_format_src_rst_indented():
         '\n'
         '    world\n'
     )
-    after = blacken_docs.format_str(before, **OPTS)
+    after = blacken_docs.format_str(before, **OPTS)[0]
     assert after == (
         '.. versionadded:: 3.1\n'
         '\n'
@@ -104,7 +104,7 @@ def test_format_src_rst_with_highlight_directives():
         '    def foo():\n'
         '        bar(1,2,3)\n'
     )
-    after = blacken_docs.format_str(before, **OPTS)
+    after = blacken_docs.format_str(before, **OPTS)[0]
     assert after == (
         '.. code-block:: python\n'
         '    :lineno-start: 10\n'
@@ -219,6 +219,30 @@ def test_integration_syntax_error(tmpdir, capsys):
     out, _ = capsys.readouterr()
     assert out.startswith(f'{f}:1: code block parse error')
     assert f.read() == (
+        '```python\n'
+        'f(\n'
+        '```\n'
+    )
+
+
+def test_integration_ignored_syntax_error(tmpdir, capsys):
+    f = tmpdir.join('f.md')
+    f.write(
+        '```python\n'
+        'f( )\n'
+        '```\n'
+        '\n'
+        '```python\n'
+        'f(\n'
+        '```\n',
+    )
+    assert blacken_docs.main((str(f), '--skip-errors'))
+    out, _ = capsys.readouterr()
+    assert f.read() == (
+        '```python\n'
+        'f()\n'
+        '```\n'
+        '\n'
         '```python\n'
         'f(\n'
         '```\n'
