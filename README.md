@@ -22,6 +22,10 @@ options:
 - `--py36`
 - `-S` / `--skip-string-normalization`
 
+Following additional parameters can be used:
+
+- `-E` / `--skip-errors`
+
 `blacken-docs` will format code in the following block types:
 
 (markdown)

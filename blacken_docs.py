@@ -2,11 +2,15 @@ import argparse
 import contextlib
 import re
 import textwrap
+from types import SimpleNamespace
 from typing import Any
+from typing import Dict
 from typing import Generator
+from typing import List
 from typing import Match
 from typing import Optional
 from typing import Sequence
+from typing import Tuple
 
 import black
 
@@ -14,7 +18,7 @@ import black
 MD_RE = re.compile(
     r'(?P<before>^(?P<indent> *)```python\n)'
     r'(?P<code>.*?)'
-    r'(?P<after>^(?P=indent)```$)',
+    r'(?P<after>^(?P=indent)```\s*$)',
     re.DOTALL | re.MULTILINE,
 )
 RST_RE = re.compile(
@@ -34,13 +38,17 @@ class CodeBlockError(ValueError):
     pass
 
 
-def format_str(src: str, **black_opts: Any) -> str:
+def format_str(
+    src: str, **black_opts: Any,
+) -> Tuple[str, Sequence[CodeBlockError]]:
+    errors: List[CodeBlockError] = []
+
     @contextlib.contextmanager
     def _reraise(match: Match[str]) -> Generator[None, None, None]:
         try:
             yield
         except Exception as e:
-            raise CodeBlockError(match.start(), e)
+            errors.append(CodeBlockError(match.start(), e))
 
     def _md_match(match: Match[str]) -> str:
         code = textwrap.dedent(match['code'])
@@ -62,18 +70,20 @@ def format_str(src: str, **black_opts: Any) -> str:
 
     src = MD_RE.sub(_md_match, src)
     src = RST_RE.sub(_rst_match, src)
-    return src
+    return src, errors
 
 
-def format_file(filename: str, **black_opts: Any) -> int:
+def format_file(
+    filename: str, extra_opts: Any, black_opts: Dict[str, Any],
+) -> int:
     with open(filename, encoding='UTF-8') as f:
         contents = f.read()
-    try:
-        new_contents = format_str(contents, **black_opts)
-    except CodeBlockError as exc:
-        offset, orig_exc = exc.args
+    new_contents, errors = format_str(contents, **black_opts)
+    for error in errors:
+        offset, orig_exc = error.args
         lineno = contents[:offset].count('\n') + 1
         print(f'{filename}:{lineno}: code block parse error {orig_exc}')
+    if len(errors) > 0 and not extra_opts.skip_errors:
         return 1
     if contents != new_contents:
         print(f'{filename}: Rewriting...')
@@ -93,6 +103,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         '-S', '--skip-string-normalization', action='store_true',
     )
+    parser.add_argument("-E", "--skip-errors", action="store_true")
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
 
@@ -100,6 +111,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         'line_length': args.line_length,
         'mode': black.FileMode.AUTO_DETECT,
     }
+    extra_opts = SimpleNamespace(**{
+        'skip_errors': args.skip_errors,
+    })
     if args.py36_plus:
         black_opts['mode'] |= black.FileMode.PYTHON36
     if args.skip_string_normalization:
@@ -107,7 +121,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     retv = 0
     for filename in args.filenames:
-        retv |= format_file(filename, **black_opts)
+        retv |= format_file(filename, extra_opts, black_opts)
     return retv
 
 
