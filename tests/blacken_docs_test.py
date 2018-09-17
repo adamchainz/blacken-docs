@@ -34,7 +34,7 @@ def test_format_src_markdown_trailing_whitespace():
         'f(1,2,3)\n'
         '```    \n'
     )
-    after = blacken_docs.format_str(before, **OPTS)
+    after, _ = blacken_docs.format_str(before, **OPTS)
     assert after == (
         '```python\n'
         'f(1, 2, 3)\n'

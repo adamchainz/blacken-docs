@@ -7,6 +7,7 @@ repos:
     -   id: autopep8-wrapper
     -   id: check-docstring-first
     -   id: check-yaml
+    -   id: double-quote-string-fixer
     -   id: debug-statements
     -   id: name-tests-test
     -   id: requirements-txt-fixer
