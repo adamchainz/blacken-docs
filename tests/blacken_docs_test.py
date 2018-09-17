@@ -27,6 +27,20 @@ def test_format_src_markdown_simple():
     )
 
 
+def test_format_src_markdown_trailing_whitespace():
+    before = (
+        '```python\n'
+        'f(1,2,3)\n'
+        '```    \n'
+    )
+    after = blacken_docs.format_str(before, **OPTS)
+    assert after == (
+        '```python\n'
+        'f(1, 2, 3)\n'
+        '```    \n'
+    )
+
+
 def test_format_src_indented_markdown():
     before = (
         '- do this pls:\n'
