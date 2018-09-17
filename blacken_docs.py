@@ -6,6 +6,7 @@ from typing import Any
 from typing import Generator
 from typing import List
 from typing import Match
+from typing import NamedTuple
 from typing import Optional
 from typing import Sequence
 from typing import Tuple
@@ -32,14 +33,14 @@ INDENT_RE = re.compile('^ +(?=[^ ])', re.MULTILINE)
 TRAILING_NL_RE = re.compile(r'\n+\Z', re.MULTILINE)
 
 
-class CodeBlockError(ValueError):
-    pass
+class CodeBlockError(NamedTuple):
+    offset: int
+    exc: Exception
 
 
 def format_str(
-    src: str, **black_opts: Any,
+        src: str, **black_opts: Any,
 ) -> Tuple[str, Sequence[CodeBlockError]]:
-
     errors: List[CodeBlockError] = []
 
     @contextlib.contextmanager
@@ -72,16 +73,13 @@ def format_str(
     return src, errors
 
 
-def format_file(
-    filename: str, black_opts: Any, *, skip_errors: bool = False,
-) -> int:
+def format_file(filename: str, black_opts: Any, *, skip_errors: bool) -> int:
     with open(filename, encoding='UTF-8') as f:
         contents = f.read()
     new_contents, errors = format_str(contents, **black_opts)
     for error in errors:
-        offset, orig_exc = error.args
-        lineno = contents[:offset].count('\n') + 1
-        print(f'{filename}:{lineno}: code block parse error {orig_exc}')
+        lineno = contents[:error.offset].count('\n') + 1
+        print(f'{filename}:{lineno}: code block parse error {error.exc}')
     if errors and not skip_errors:
         return 1
     if contents != new_contents:
@@ -102,7 +100,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         '-S', '--skip-string-normalization', action='store_true',
     )
-    parser.add_argument("-E", "--skip-errors", action="store_true")
+    parser.add_argument('-E', '--skip-errors', action='store_true')
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
 
@@ -117,9 +115,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     retv = 0
     for filename in args.filenames:
-        retv |= format_file(
-            filename, black_opts, skip_errors=args.skip_errors,
-        )
+        retv |= format_file(filename, black_opts, skip_errors=args.skip_errors)
     return retv
 
 
