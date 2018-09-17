@@ -4,9 +4,11 @@ import re
 import textwrap
 from typing import Any
 from typing import Generator
+from typing import List
 from typing import Match
 from typing import Optional
 from typing import Sequence
+from typing import Tuple
 
 import black
 
@@ -34,17 +36,22 @@ class CodeBlockError(ValueError):
     pass
 
 
-def format_str(src: str, **black_opts: Any) -> str:
+def format_str(
+    src: str, **black_opts: Any,
+) -> Tuple[str, Sequence[CodeBlockError]]:
+
+    errors: List[CodeBlockError] = []
+
     @contextlib.contextmanager
-    def _reraise(match: Match[str]) -> Generator[None, None, None]:
+    def _collect_error(match: Match[str]) -> Generator[None, None, None]:
         try:
             yield
         except Exception as e:
-            raise CodeBlockError(match.start(), e)
+            errors.append(CodeBlockError(match.start(), e))
 
     def _md_match(match: Match[str]) -> str:
         code = textwrap.dedent(match['code'])
-        with _reraise(match):
+        with _collect_error(match):
             code = black.format_str(code, **black_opts)
         code = textwrap.indent(code, match['indent'])
         return f'{match["before"]}{code}{match["after"]}'
@@ -55,25 +62,27 @@ def format_str(src: str, **black_opts: Any) -> str:
         assert trailing_ws_match
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match['code'])
-        with _reraise(match):
+        with _collect_error(match):
             code = black.format_str(code, **black_opts)
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
     src = MD_RE.sub(_md_match, src)
     src = RST_RE.sub(_rst_match, src)
-    return src
+    return src, errors
 
 
-def format_file(filename: str, **black_opts: Any) -> int:
+def format_file(
+    filename: str, black_opts: Any, *, skip_errors: bool = False,
+) -> int:
     with open(filename, encoding='UTF-8') as f:
         contents = f.read()
-    try:
-        new_contents = format_str(contents, **black_opts)
-    except CodeBlockError as exc:
-        offset, orig_exc = exc.args
+    new_contents, errors = format_str(contents, **black_opts)
+    for error in errors:
+        offset, orig_exc = error.args
         lineno = contents[:offset].count('\n') + 1
         print(f'{filename}:{lineno}: code block parse error {orig_exc}')
+    if errors and not skip_errors:
         return 1
     if contents != new_contents:
         print(f'{filename}: Rewriting...')
@@ -93,6 +102,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         '-S', '--skip-string-normalization', action='store_true',
     )
+    parser.add_argument("-E", "--skip-errors", action="store_true")
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
 
@@ -107,7 +117,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     retv = 0
     for filename in args.filenames:
-        retv |= format_file(filename, **black_opts)
+        retv |= format_file(
+            filename, black_opts, skip_errors=args.skip_errors,
+        )
     return retv
 
 
