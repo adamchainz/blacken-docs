@@ -14,7 +14,7 @@ import black
 MD_RE = re.compile(
     r'(?P<before>^(?P<indent> *)```python\n)'
     r'(?P<code>.*?)'
-    r'(?P<after>^(?P=indent)```$)',
+    r'(?P<after>^(?P=indent)```\s*$)',
     re.DOTALL | re.MULTILINE,
 )
 RST_RE = re.compile(
