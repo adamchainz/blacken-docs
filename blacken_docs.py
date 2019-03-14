@@ -2,6 +2,7 @@ import argparse
 import contextlib
 import re
 import textwrap
+from distutils.version import LooseVersion
 from typing import Any
 from typing import Generator
 from typing import List
@@ -12,6 +13,7 @@ from typing import Sequence
 from typing import Tuple
 
 import black
+import importlib_metadata
 
 
 MD_RE = re.compile(
@@ -91,6 +93,10 @@ def format_file(filename: str, black_opts: Any, *, skip_errors: bool) -> int:
         return 0
 
 
+def _black_version() -> LooseVersion:
+    return LooseVersion(importlib_metadata.version('black'))
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -104,14 +110,26 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
 
-    black_opts = {
-        'line_length': args.line_length,
-        'mode': black.FileMode.AUTO_DETECT,
-    }
-    if args.py36_plus:
-        black_opts['mode'] |= black.FileMode.PYTHON36
-    if args.skip_string_normalization:
-        black_opts['mode'] |= black.FileMode.NO_STRING_NORMALIZATION
+    if _black_version() < LooseVersion('19.3b0'):
+        black_opts = {
+            'line_length': args.line_length,
+            'mode': black.FileMode.AUTO_DETECT,
+        }
+
+        if args.py36_plus:
+            black_opts['mode'] |= black.FileMode.PYTHON36
+        if args.skip_string_normalization:
+            black_opts['mode'] |= black.FileMode.NO_STRING_NORMALIZATION
+    else:
+        target_versions = black.PY36_VERSIONS if args.py36_plus else set()
+
+        black_opts = {
+            'mode': black.FileMode(
+                target_versions=target_versions,
+                line_length=args.line_length,
+                string_normalization=not args.skip_string_normalization,
+            ),
+        }
 
     retv = 0
     for filename in args.filenames:
