@@ -1,12 +1,19 @@
+from distutils.version import LooseVersion
+
 import black
 
 import blacken_docs
 
 
-OPTS = {
-    'line_length': black.DEFAULT_LINE_LENGTH,
-    'mode': black.FileMode.AUTO_DETECT,
-}
+if blacken_docs._black_version() < LooseVersion('19.3b0'):
+    OPTS = {
+        'line_length': black.DEFAULT_LINE_LENGTH,
+        'mode': black.FileMode.AUTO_DETECT,
+    }
+else:
+    OPTS = {
+        'mode': black.FileMode(line_length=black.DEFAULT_LINE_LENGTH),
+    }
 
 
 def test_format_src_trivial():
