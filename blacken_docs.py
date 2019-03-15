@@ -2,8 +2,6 @@ import argparse
 import contextlib
 import re
 import textwrap
-from distutils.version import LooseVersion
-from typing import Any
 from typing import Generator
 from typing import List
 from typing import Match
@@ -13,7 +11,6 @@ from typing import Sequence
 from typing import Tuple
 
 import black
-import importlib_metadata
 
 
 MD_RE = re.compile(
@@ -41,7 +38,7 @@ class CodeBlockError(NamedTuple):
 
 
 def format_str(
-        src: str, **black_opts: Any,
+        src: str, black_mode: black.FileMode,
 ) -> Tuple[str, Sequence[CodeBlockError]]:
     errors: List[CodeBlockError] = []
 
@@ -55,7 +52,7 @@ def format_str(
     def _md_match(match: Match[str]) -> str:
         code = textwrap.dedent(match['code'])
         with _collect_error(match):
-            code = black.format_str(code, **black_opts)
+            code = black.format_str(code, mode=black_mode)
         code = textwrap.indent(code, match['indent'])
         return f'{match["before"]}{code}{match["after"]}'
 
@@ -66,7 +63,7 @@ def format_str(
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match['code'])
         with _collect_error(match):
-            code = black.format_str(code, **black_opts)
+            code = black.format_str(code, mode=black_mode)
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
@@ -75,10 +72,12 @@ def format_str(
     return src, errors
 
 
-def format_file(filename: str, black_opts: Any, *, skip_errors: bool) -> int:
+def format_file(
+        filename: str, black_mode: black.FileMode, skip_errors: bool,
+) -> int:
     with open(filename, encoding='UTF-8') as f:
         contents = f.read()
-    new_contents, errors = format_str(contents, **black_opts)
+    new_contents, errors = format_str(contents, black_mode)
     for error in errors:
         lineno = contents[:error.offset].count('\n') + 1
         print(f'{filename}:{lineno}: code block parse error {error.exc}')
@@ -93,16 +92,20 @@ def format_file(filename: str, black_opts: Any, *, skip_errors: bool) -> int:
         return 0
 
 
-def _black_version() -> LooseVersion:
-    return LooseVersion(importlib_metadata.version('black'))
-
-
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-l', '--line-length', type=int, default=black.DEFAULT_LINE_LENGTH,
     )
-    parser.add_argument('--py36-plus', action='store_true')
+    parser.add_argument(
+        '-t',
+        '--target-version',
+        type=lambda v: black.TargetVersion[v.upper()],
+        nargs='+',
+        default=set(),
+        help=f'choices: {[v.name.lower() for v in black.TargetVersion]}',
+        dest='target_versions',
+    )
     parser.add_argument(
         '-S', '--skip-string-normalization', action='store_true',
     )
@@ -110,30 +113,15 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
 
-    if _black_version() < LooseVersion('19.3b0'):
-        black_opts = {
-            'line_length': args.line_length,
-            'mode': black.FileMode.AUTO_DETECT,
-        }
-
-        if args.py36_plus:
-            black_opts['mode'] |= black.FileMode.PYTHON36
-        if args.skip_string_normalization:
-            black_opts['mode'] |= black.FileMode.NO_STRING_NORMALIZATION
-    else:
-        target_versions = black.PY36_VERSIONS if args.py36_plus else set()
-
-        black_opts = {
-            'mode': black.FileMode(
-                target_versions=target_versions,
-                line_length=args.line_length,
-                string_normalization=not args.skip_string_normalization,
-            ),
-        }
+    black_mode = black.FileMode(
+        target_versions=args.target_versions,
+        line_length=args.line_length,
+        string_normalization=not args.skip_string_normalization,
+    )
 
     retv = 0
     for filename in args.filenames:
-        retv |= format_file(filename, black_opts, skip_errors=args.skip_errors)
+        retv |= format_file(filename, black_mode, skip_errors=args.skip_errors)
     return retv
 
 
