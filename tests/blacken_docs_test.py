@@ -3,14 +3,11 @@ import black
 import blacken_docs
 
 
-OPTS = {
-    'line_length': black.DEFAULT_LINE_LENGTH,
-    'mode': black.FileMode.AUTO_DETECT,
-}
+BLACK_MODE = black.FileMode(line_length=black.DEFAULT_LINE_LENGTH)
 
 
 def test_format_src_trivial():
-    after, _ = blacken_docs.format_str('', **OPTS)
+    after, _ = blacken_docs.format_str('', BLACK_MODE)
     assert after == ''
 
 
@@ -20,7 +17,7 @@ def test_format_src_markdown_simple():
         'f(1,2,3)\n'
         '```\n'
     )
-    after, _ = blacken_docs.format_str(before, **OPTS)
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         '```python\n'
         'f(1, 2, 3)\n'
@@ -34,7 +31,7 @@ def test_format_src_markdown_trailing_whitespace():
         'f(1,2,3)\n'
         '```    \n'
     )
-    after, _ = blacken_docs.format_str(before, **OPTS)
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         '```python\n'
         'f(1, 2, 3)\n'
@@ -50,7 +47,7 @@ def test_format_src_indented_markdown():
         '  ```\n'
         '- also this\n'
     )
-    after, _ = blacken_docs.format_str(before, **OPTS)
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         '- do this pls:\n'
         '  ```python\n'
@@ -70,7 +67,7 @@ def test_format_src_rst():
         '\n'
         'world\n'
     )
-    after, _ = blacken_docs.format_str(before, **OPTS)
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         'hello\n'
         '\n'
@@ -95,7 +92,7 @@ def test_format_src_rst_indented():
         '\n'
         '    world\n'
     )
-    after, _ = blacken_docs.format_str(before, **OPTS)
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         '.. versionadded:: 3.1\n'
         '\n'
@@ -119,7 +116,7 @@ def test_format_src_rst_with_highlight_directives():
         '    def foo():\n'
         '        bar(1,2,3)\n'
     )
-    after, _ = blacken_docs.format_str(before, **OPTS)
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         '.. code-block:: python\n'
         '    :lineno-start: 10\n'
@@ -195,7 +192,7 @@ def test_integration_py36(tmpdir):
         '```\n',
     )
     assert not blacken_docs.main((str(f),))
-    assert blacken_docs.main((str(f), '--py36'))
+    assert blacken_docs.main((str(f), '--target-version=py36'))
     assert f.read() == (
         '```python\n'
         'def very_very_long_function_name(\n'

@@ -19,7 +19,7 @@ It currently supports the following [`black`](https://github.com/ambv/black)
 options:
 
 - `-l` / `--line-length`
-- `--py36`
+- `-t` / `--target-version`
 - `-S` / `--skip-string-normalization`
 
 Following additional parameters can be used:
