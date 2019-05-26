@@ -100,9 +100,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         '-t',
         '--target-version',
+        action='append',
         type=lambda v: black.TargetVersion[v.upper()],
-        nargs='+',
-        default=set(),
+        default=[],
         help=f'choices: {[v.name.lower() for v in black.TargetVersion]}',
         dest='target_versions',
     )

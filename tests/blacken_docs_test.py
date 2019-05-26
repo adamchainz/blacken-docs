@@ -205,6 +205,50 @@ def test_integration_py36(tmpdir):
     )
 
 
+def test_integration_filename_last(tmpdir):
+    f = tmpdir.join('f.md')
+    f.write(
+        '```python\n'
+        'def very_very_long_function_name(\n'
+        '    very_very_very_very_very_very,\n'
+        '    very_very_very_very_very_very,\n'
+        '    *long_long_long_long_long_long\n'
+        '):\n'
+        '    pass\n'
+        '```\n',
+    )
+    assert not blacken_docs.main((str(f),))
+    assert blacken_docs.main(('--target-version', 'py36', str(f)))
+    assert f.read() == (
+        '```python\n'
+        'def very_very_long_function_name(\n'
+        '    very_very_very_very_very_very,\n'
+        '    very_very_very_very_very_very,\n'
+        '    *long_long_long_long_long_long,\n'
+        '):\n'
+        '    pass\n'
+        '```\n'
+    )
+
+
+def test_integration_multiple_target_version(tmpdir):
+    f = tmpdir.join('f.md')
+    f.write(
+        '```python\n'
+        'def very_very_long_function_name(\n'
+        '    very_very_very_very_very_very,\n'
+        '    very_very_very_very_very_very,\n'
+        '    *long_long_long_long_long_long\n'
+        '):\n'
+        '    pass\n'
+        '```\n',
+    )
+    assert not blacken_docs.main((str(f),))
+    assert not blacken_docs.main(
+        ('--target-version', 'py27', '--target-version', 'py36', str(f)),
+    )
+
+
 def test_integration_skip_string_normalization(tmpdir):
     f = tmpdir.join('f.md')
     f.write(
