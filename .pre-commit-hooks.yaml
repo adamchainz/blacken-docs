@@ -4,4 +4,4 @@
     entry: blacken-docs
     language: python
     language_version: python3
-    files: '\.(rst|md|markdown)'
+    files: '\.(rst|md|markdown)$'
