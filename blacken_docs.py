@@ -21,7 +21,7 @@ MD_RE = re.compile(
 )
 RST_RE = re.compile(
     r'(?P<before>'
-    r'^(?P<indent> *)\.\. (code-block|sourcecode):: python\n'
+    r'^(?P<indent> *)\.\. (code-block|sourcecode|ipython):: python\n'
     r'((?P=indent) +:.*\n)*'
     r'\n*'
     r')'
