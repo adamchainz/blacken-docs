@@ -19,13 +19,14 @@ MD_RE = re.compile(
     r'(?P<after>^(?P=indent)```\s*$)',
     re.DOTALL | re.MULTILINE,
 )
+PY_LANGS = '(python|py|sage|python3|py3|numpy)'
 RST_RE = re.compile(
-    r'(?P<before>'
-    r'^(?P<indent> *)\.\. (code|code-block|sourcecode|ipython):: python\n'
-    r'((?P=indent) +:.*\n)*'
-    r'\n*'
-    r')'
-    r'(?P<code>(^((?P=indent) +.*)?\n)+)',
+    rf'(?P<before>'
+    rf'^(?P<indent> *)\.\. (code|code-block|sourcecode|ipython):: {PY_LANGS}\n'
+    rf'((?P=indent) +:.*\n)*'
+    rf'\n*'
+    rf')'
+    rf'(?P<code>(^((?P=indent) +.*)?\n)+)',
     re.MULTILINE,
 )
 INDENT_RE = re.compile('^ +(?=[^ ])', re.MULTILINE)
