@@ -15,7 +15,7 @@ Run `black` on python code blocks in documentation files.
 `blacken-docs` provides a single executable (`blacken-docs`) which will modify
 `.rst` / `.md` files in place.
 
-It currently supports the following [`black`](https://github.com/ambv/black)
+It currently supports the following [`black`](https://github.com/psf/black)
 options:
 
 - `-l` / `--line-length`
