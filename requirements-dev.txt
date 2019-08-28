@@ -1,4 +1,3 @@
 coverage
-flake8
 pre-commit
 pytest
