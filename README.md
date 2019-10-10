@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/asottile/blacken-docs.svg?branch=master)](https://travis-ci.org/asottile/blacken-docs)
-[![Coverage Status](https://coveralls.io/repos/github/asottile/blacken-docs/badge.svg?branch=master)](https://coveralls.io/github/asottile/blacken-docs?branch=master)
+[![Build Status](https://dev.azure.com/asottile/asottile/_apis/build/status/asottile.blacken-docs?branchName=master)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=36&branchName=master)
+[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/asottile/asottile/36/master.svg)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=36&branchName=master)
 
 blacken-docs
 ============
