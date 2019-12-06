@@ -13,7 +13,7 @@ Run `black` on python code blocks in documentation files.
 ## usage
 
 `blacken-docs` provides a single executable (`blacken-docs`) which will modify
-`.rst` / `.md` files in place.
+`.rst` / `.md` / `.tex` files in place.
 
 It currently supports the following [`black`](https://github.com/psf/black)
 options:
@@ -42,6 +42,14 @@ Following additional parameters can be used:
 
         def hello():
             print("hello world")
+```
+
+(latex)
+```latex
+\begin{minted}{python}
+def hello():
+    print("hello world")
+\end{minted}
 ```
 
 ## usage with pre-commit

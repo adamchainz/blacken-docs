@@ -57,6 +57,48 @@ def test_format_src_indented_markdown():
     )
 
 
+def test_format_src_latex_minted():
+    # Nicer style to put the \begin and \end on new lines,
+    # but not actually required for the begin line
+    before = (
+        'hello\n'
+        '\\begin{minted}{python}\n'
+        'f(1,2,3)\n'
+        '\\end{minted}\n'
+        'world!'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\\begin{minted}{python}\n'
+        'f(1, 2, 3)\n'
+        '\\end{minted}\n'
+        'world!'
+    )
+
+
+def test_format_src_latex_minted_indented():
+    # Personaly I would have minted python code all flush left,
+    # with only the Python code's own four space indentation:
+    before = (
+        'hello\n'
+        '  \\begin{minted}{python}\n'
+        '    if True:\n'
+        '      f(1,2,3)\n'
+        '  \\end{minted}\n'
+        'world!'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '  \\begin{minted}{python}\n'
+        '  if True:\n'
+        '      f(1, 2, 3)\n'
+        '  \\end{minted}\n'
+        'world!'
+    )
+
+
 def test_format_src_rst():
     before = (
         'hello\n'

@@ -29,6 +29,12 @@ RST_RE = re.compile(
     rf'(?P<code>(^((?P=indent) +.*)?\n)+)',
     re.MULTILINE,
 )
+LATEX_RE = re.compile(
+    r'(?P<before>^(?P<indent> *)\\begin{minted}{python}\n)'
+    r'(?P<code>.*?)'
+    r'(?P<after>^(?P=indent)\\end{minted}\s*$)',
+    re.DOTALL | re.MULTILINE,
+)
 INDENT_RE = re.compile('^ +(?=[^ ])', re.MULTILINE)
 TRAILING_NL_RE = re.compile(r'\n+\Z', re.MULTILINE)
 
@@ -68,8 +74,16 @@ def format_str(
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
+    def _latex_match(match: Match[str]) -> str:
+        code = textwrap.dedent(match['code'])
+        with _collect_error(match):
+            code = black.format_str(code, mode=black_mode)
+        code = textwrap.indent(code, match['indent'])
+        return f'{match["before"]}{code}{match["after"]}'
+
     src = MD_RE.sub(_md_match, src)
     src = RST_RE.sub(_rst_match, src)
+    src = LATEX_RE.sub(_latex_match, src)
     return src, errors
 
 
