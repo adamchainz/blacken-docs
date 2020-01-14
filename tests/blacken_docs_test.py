@@ -391,3 +391,34 @@ def test_format_src_rst_jupyter_sphinx_with_directive():
         '\n'
         'world\n'
     )
+
+
+def test_works_on_python_docstrings():
+    before = '''\
+def f():
+    """hello world
+
+    .. code-block:: python
+
+        f(1,2,3)
+
+    ```python
+    f(1,2,3)
+    ```
+    """
+'''
+    expected = '''\
+def f():
+    """hello world
+
+    .. code-block:: python
+
+        f(1, 2, 3)
+
+    ```python
+    f(1, 2, 3)
+    ```
+    """
+'''
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == expected
