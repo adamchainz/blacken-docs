@@ -52,6 +52,21 @@ def hello():
 \end{minted}
 ```
 
+(markdown/rst in python docstrings)
+```python
+def f():
+    """docstring here
+
+    .. code-block:: python
+
+        print("hello world")
+
+    ```python
+    print("hello world")
+    ```
+    """
+```
+
 ## usage with pre-commit
 
 See [pre-commit](https://pre-commit.com) for instructions
