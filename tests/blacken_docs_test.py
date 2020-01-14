@@ -345,3 +345,49 @@ def test_integration_ignored_syntax_error(tmpdir, capsys):
         'f(\n'
         '```\n'
     )
+
+
+def test_format_src_rst_jupyter_sphinx():
+    before = (
+        'hello\n'
+        '\n'
+        '.. jupyter-execute::\n'
+        '\n'
+        '    f(1,2,3)\n'
+        '\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '.. jupyter-execute::\n'
+        '\n'
+        '    f(1, 2, 3)\n'
+        '\n'
+        'world\n'
+    )
+
+
+def test_format_src_rst_jupyter_sphinx_with_directive():
+    before = (
+        'hello\n'
+        '\n'
+        '.. jupyter-execute::\n'
+        '    :hide-code:\n'
+        '\n'
+        '    f(1,2,3)\n'
+        '\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '.. jupyter-execute::\n'
+        '    :hide-code:\n'
+        '\n'
+        '    f(1, 2, 3)\n'
+        '\n'
+        'world\n'
+    )
