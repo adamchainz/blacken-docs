@@ -20,9 +20,10 @@ MD_RE = re.compile(
     re.DOTALL | re.MULTILINE,
 )
 PY_LANGS = '(python|py|sage|python3|py3|numpy)'
+BLOCK_TYPES = '(code|code-block|sourcecode|ipython)'
 RST_RE = re.compile(
     rf'(?P<before>'
-    rf'^(?P<indent> *)\.\. (code|code-block|sourcecode|ipython):: {PY_LANGS}\n'
+    rf'^(?P<indent> *)\.\. (jupyter-execute::|{BLOCK_TYPES}:: {PY_LANGS})\n'
     rf'((?P=indent) +:.*\n)*'
     rf'\n*'
     rf')'
