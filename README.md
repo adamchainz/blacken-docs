@@ -21,6 +21,7 @@ options:
 - `-l` / `--line-length`
 - `-t` / `--target-version`
 - `-S` / `--skip-string-normalization`
+- `--check`
 
 Following additional parameters can be used:
 
