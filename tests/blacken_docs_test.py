@@ -202,6 +202,40 @@ def test_integration_modifies(tmpdir, capsys):
     )
 
 
+def test_integration_check_ok(tmpdir, capsys):
+    f = tmpdir.join('f.md')
+    f.write(
+        '```python\n'
+        'f(1, 2, 3)\n'
+        '```\n',
+    )
+    assert not blacken_docs.main((str(f), '--check'))
+    out, _ = capsys.readouterr()
+    assert out == ''
+    assert f.read() == (
+        '```python\n'
+        'f(1, 2, 3)\n'
+        '```\n'
+    )
+
+
+def test_integration_check_would_reformat(tmpdir, capsys):
+    f = tmpdir.join('f.md')
+    f.write(
+        '```python\n'
+        'f(1,2,3)\n'
+        '```\n',
+    )
+    assert blacken_docs.main((str(f), '--check'))
+    out, _ = capsys.readouterr()
+    assert out == f'would reformat {f}\n'
+    assert f.read() == (
+        '```python\n'
+        'f(1,2,3)\n'
+        '```\n'
+    )
+
+
 def test_integration_line_length(tmpdir):
     f = tmpdir.join('f.md')
     f.write(

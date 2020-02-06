@@ -89,7 +89,7 @@ def format_str(
 
 
 def format_file(
-        filename: str, black_mode: black.FileMode, skip_errors: bool,
+        filename: str, black_mode: black.FileMode, skip_errors: bool, check: bool
 ) -> int:
     with open(filename, encoding='UTF-8') as f:
         contents = f.read()
@@ -100,9 +100,12 @@ def format_file(
     if errors and not skip_errors:
         return 1
     if contents != new_contents:
-        print(f'{filename}: Rewriting...')
-        with open(filename, 'w', encoding='UTF-8') as f:
-            f.write(new_contents)
+        if check:
+            print(f'would reformat {filename}')
+        else:
+            print(f'{filename}: Rewriting...')
+            with open(filename, 'w', encoding='UTF-8') as f:
+                f.write(new_contents)
         return 1
     else:
         return 0
@@ -125,6 +128,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         '-S', '--skip-string-normalization', action='store_true',
     )
+    parser.add_argument('-c', '--check', action='store_true')
     parser.add_argument('-E', '--skip-errors', action='store_true')
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
@@ -137,7 +141,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     retv = 0
     for filename in args.filenames:
-        retv |= format_file(filename, black_mode, skip_errors=args.skip_errors)
+        retv |= format_file(filename, black_mode, skip_errors=args.skip_errors, check=args.check)
+
     return retv
 
 
