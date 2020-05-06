@@ -36,11 +36,11 @@ LATEX_RE = re.compile(
     r'(?P<after>^(?P=indent)\\end{minted}\s*$)',
     re.DOTALL | re.MULTILINE,
 )
-PYTHONTEX = '(pyblock|pycode|pyconsole|pyverbatim)'
-PYTHONTEX_RE = re.compile(
-    rf'(?P<before>^(?P<indent> *)\\begin{{{PYTHONTEX}}}\n)'
-    r'(?P<code>.*?)'
-    rf'(?P<after>^(?P=indent)\\end{{{PYTHONTEX}}}\s*$)',
+PYTHONS = r'(\{minted\}|\{minted\}\{python\}|\{(pyblock|pycode|pyconsole|pyverbatim)\})'
+LATEX_RE = re.compile(
+    rf'(?P<before>^(?P<indent> *)\\begin{PYTHONS}\n)'
+    rf'(?P<code>.*?)'
+    rf'(?P<after>^(?P=indent)\\end{PYTHONS}\s*$)',
     re.DOTALL | re.MULTILINE,
 )
 INDENT_RE = re.compile('^ +(?=[^ ])', re.MULTILINE)
@@ -92,7 +92,6 @@ def format_str(
     src = MD_RE.sub(_md_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = LATEX_RE.sub(_latex_match, src)
-    src = PYTHONTEX_RE.sub(_latex_match, src)
     return src, errors
 
 
