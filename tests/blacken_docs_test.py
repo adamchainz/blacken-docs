@@ -99,6 +99,24 @@ def test_format_src_latex_minted_indented():
     )
 
 
+def test_src_pythontex(tmpdir):
+    before = (
+        'hello\n'
+        '\\begin{pyblock}\n'
+        'f(1,2,3)\n'
+        '\\end{pyblock}\n'
+        'world!'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\\begin{pyblock}\n'
+        'f(1, 2, 3)\n'
+        '\\end{pyblock}\n'
+        'world!'
+    )
+
+
 def test_format_src_rst():
     before = (
         'hello\n'

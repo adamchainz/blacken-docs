@@ -36,6 +36,13 @@ LATEX_RE = re.compile(
     r'(?P<after>^(?P=indent)\\end{minted}\s*$)',
     re.DOTALL | re.MULTILINE,
 )
+PYTHONTEX_LANG = r'(?P<lang>pyblock|pycode|pyconsole|pyverbatim)'
+PYTHONTEX_RE = re.compile(
+    rf'(?P<before>^(?P<indent> *)\\begin{{{PYTHONTEX_LANG}}}\n)'
+    rf'(?P<code>.*?)'
+    rf'(?P<after>^(?P=indent)\\end{{(?P=lang)}}\s*$)',
+    re.DOTALL | re.MULTILINE,
+)
 INDENT_RE = re.compile('^ +(?=[^ ])', re.MULTILINE)
 TRAILING_NL_RE = re.compile(r'\n+\Z', re.MULTILINE)
 
@@ -85,6 +92,7 @@ def format_str(
     src = MD_RE.sub(_md_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = LATEX_RE.sub(_latex_match, src)
+    src = PYTHONTEX_RE.sub(_latex_match, src)
     return src, errors
 
 
