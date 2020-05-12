@@ -52,6 +52,14 @@ def hello():
 \end{minted}
 ```
 
+(latex with pythontex)
+```latex
+\begin{pycode}
+def hello():
+    print("hello world")
+\end{pycode}
+```
+
 (markdown/rst in python docstrings)
 ```python
 def f():
