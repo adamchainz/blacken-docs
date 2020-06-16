@@ -19,6 +19,12 @@ MD_RE = re.compile(
     r'(?P<after>^(?P=indent)```\s*$)',
     re.DOTALL | re.MULTILINE,
 )
+PWEAVE_RE = re.compile(
+    r'(?P<before>^(?P<indent> *)<<.*>>=\n)'
+    r'(?P<code>.*?)'
+    r'(?P<after>^(?P=indent)@\s*$)',
+    re.DOTALL | re.MULTILINE,
+)
 PY_LANGS = '(python|py|sage|python3|py3|numpy)'
 BLOCK_TYPES = '(code|code-block|sourcecode|ipython)'
 RST_RE = re.compile(
@@ -53,7 +59,7 @@ class CodeBlockError(NamedTuple):
 
 
 def format_str(
-        src: str, black_mode: black.FileMode,
+    src: str, black_mode: black.FileMode,
 ) -> Tuple[str, Sequence[CodeBlockError]]:
     errors: List[CodeBlockError] = []
 
@@ -93,17 +99,16 @@ def format_str(
     src = RST_RE.sub(_rst_match, src)
     src = LATEX_RE.sub(_latex_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)
+    src = PWEAVE_RE.sub(_latex_match, src)
     return src, errors
 
 
-def format_file(
-        filename: str, black_mode: black.FileMode, skip_errors: bool,
-) -> int:
+def format_file(filename: str, black_mode: black.FileMode, skip_errors: bool,) -> int:
     with open(filename, encoding='UTF-8') as f:
         contents = f.read()
     new_contents, errors = format_str(contents, black_mode)
     for error in errors:
-        lineno = contents[:error.offset].count('\n') + 1
+        lineno = contents[: error.offset].count('\n') + 1
         print(f'{filename}:{lineno}: code block parse error {error.exc}')
     if errors and not skip_errors:
         return 1
