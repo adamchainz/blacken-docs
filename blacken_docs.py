@@ -45,9 +45,9 @@ PYTHONTEX_RE = re.compile(
 )
 INDENT_RE = re.compile('^ +(?=[^ ])', re.MULTILINE)
 TRAILING_NL_RE = re.compile(r'\n+\Z', re.MULTILINE)
-JUPYTER_MAGICS_RE = re.compile(r"(^\s*)(%)", re.M)
-_PLACEHOLDER = r"# JUPYTER_MAGICS_PLACEHOLDER"
-UNDO_JUPYTER_MAGICS_RE = re.compile(rf"(^\s*)({_PLACEHOLDER})", re.M)
+JUPYTER_MAGICS_RE = re.compile(r'(^\s*)(%)', re.M)
+_PLACEHOLDER = r'# JUPYTER_MAGICS_PLACEHOLDER'
+UNDO_JUPYTER_MAGICS_RE = re.compile(rf'(^\s*)({_PLACEHOLDER})', re.M)
 
 
 class CodeBlockError(NamedTuple):
@@ -92,12 +92,12 @@ def format_str(
         code = textwrap.indent(code, match['indent'])
         return f'{match["before"]}{code}{match["after"]}'
 
-    src = JUPYTER_MAGICS_RE.sub(f"\g<1>{_PLACEHOLDER}%", src)
+    src = JUPYTER_MAGICS_RE.sub(fr'\g<1>{_PLACEHOLDER}%', src)
     src = MD_RE.sub(_md_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = LATEX_RE.sub(_latex_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)
-    src = UNDO_JUPYTER_MAGICS_RE.sub(r"\g<1>", src)
+    src = UNDO_JUPYTER_MAGICS_RE.sub(r'\g<1>', src)
     return src, errors
 
 

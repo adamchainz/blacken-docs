@@ -53,23 +53,41 @@ def test_format_src_markdown_trailing_whitespace():
     )
 
 
-def test_format_src_indented_markdown_with_jupyter_magic():
+def test_format_src_indented_markdown():
     before = (
-        "- do this pls:\n"
-        "  ```python\n"
-        "  %%opts\n"
-        "  f(1,2,3)\n"
-        "  ```\n"
-        "- also this\n"
+        '- do this pls:\n'
+        '  ```python\n'
+        '  f(1,2,3)\n'
+        '  ```\n'
+        '- also this\n'
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
-        "- do this pls:\n"
-        "  ```python\n"
-        "  %%opts\n"
-        "  f(1, 2, 3)\n"
-        "  ```\n"
-        "- also this\n"
+        '- do this pls:\n'
+        '  ```python\n'
+        '  f(1, 2, 3)\n'
+        '  ```\n'
+        '- also this\n'
+    )
+
+
+def test_format_src_indented_markdown_with_jupyter_magic():
+    before = (
+        '- do this pls:\n'
+        '  ```python\n'
+        '  %%opts\n'
+        '  f(1,2,3)\n'
+        '  ```\n'
+        '- also this\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '- do this pls:\n'
+        '  ```python\n'
+        '  %%opts\n'
+        '  f(1, 2, 3)\n'
+        '  ```\n'
+        '- also this\n'
     )
 
 
