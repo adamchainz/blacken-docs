@@ -454,3 +454,208 @@ def f():
 '''
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == expected
+
+
+def test_format_src_rst_pycon():
+    before = (
+        'hello\n'
+        '\n'
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> f(1,2,3)\n'
+        '    output\n'
+        '\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> f(1, 2, 3)\n'
+        '    output\n'
+        '\n'
+        'world\n'
+    )
+
+
+def test_format_src_rst_pycon_with_contiuation():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> d = {\n'
+        '    ...   "a": 1,\n'
+        '    ...   "b": 2,\n'
+        '    ...   "c": 3,}\n'
+        '\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> d = {\n'
+        '    ...     "a": 1,\n'
+        '    ...     "b": 2,\n'
+        '    ...     "c": 3,\n'
+        '    ... }\n'
+        '\n'
+    )
+
+
+def test_format_src_rst_pycon_adds_contiuation():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> d = {"a": 1,"b": 2,"c": 3,}\n'
+        '\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> d = {\n'
+        '    ...     "a": 1,\n'
+        '    ...     "b": 2,\n'
+        '    ...     "c": 3,\n'
+        '    ... }\n'
+        '\n'
+    )
+
+
+def test_format_src_rst_pycon_preserves_trailing_whitespace():
+    before = (
+        'hello\n'
+        '\n'
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> d = {"a": 1, "b": 2, "c": 3}\n'
+        '\n'
+        '\n'
+        '\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_src_rst_pycon_indented():
+    before = (
+        '.. versionadded:: 3.1\n'
+        '\n'
+        '    hello\n'
+        '\n'
+        '    .. code-block:: pycon\n'
+        '\n'
+        '        >>> def hi():\n'
+        '        ...     f(1,2,3)\n'
+        '        ...\n'
+        '\n'
+        '    world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. versionadded:: 3.1\n'
+        '\n'
+        '    hello\n'
+        '\n'
+        '    .. code-block:: pycon\n'
+        '\n'
+        '        >>> def hi():\n'
+        '        ...     f(1, 2, 3)\n'
+        '        ...\n'
+        '\n'
+        '    world\n'
+
+    )
+
+
+def test_format_src_rst_pycon_code_block_is_final_line1():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> if True:\n'
+        '    ...   pass\n'
+        '    ...\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> if True:\n'
+        '    ...     pass\n'
+        '    ...\n'
+    )
+
+
+def test_format_src_rst_pycon_code_block_is_final_line2():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> if True:\n'
+        '    ...   pass\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> if True:\n'
+        '    ...     pass\n'
+        '    ...\n'
+    )
+
+
+def test_format_src_rst_pycon_nested_def1():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> if True:\n'
+        '    ...     def f(): pass\n'
+        '    ...\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> if True:\n'
+        '    ...     def f():\n'
+        '    ...         pass\n'
+        '    ...\n'
+    )
+
+
+def test_format_src_rst_pycon_nested_def2():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> if True:\n'
+        '    ...     def f(): pass\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> if True:\n'
+        '    ...     def f():\n'
+        '    ...         pass\n'
+        '    ...\n'
+    )
+
+
+def test_format_src_rst_pycon_empty_line():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> l = [\n'
+        '    ...\n'
+        '    ...     1,\n'
+        '    ... ]\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> l = [\n'
+        '    ...     1,\n'
+        '    ... ]\n'
+    )
