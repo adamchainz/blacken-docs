@@ -45,6 +45,15 @@ Following additional parameters can be used:
             print("hello world")
 ```
 
+(rst `pycon`)
+```rst
+    .. code-block:: pycon
+
+        >>> def hello():
+        ...     print("hello world")
+        ...
+```
+
 (latex)
 ```latex
 \begin{minted}{python}

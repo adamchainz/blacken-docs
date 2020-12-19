@@ -30,6 +30,20 @@ RST_RE = re.compile(
     rf'(?P<code>(^((?P=indent) +.*)?\n)+)',
     re.MULTILINE,
 )
+RST_PYCON_RE = re.compile(
+    r'(?P<before>'
+    r'(?P<indent> *)\.\. (code|code-block):: pycon\n'
+    r'((?P=indent) +:.*\n)*'
+    r'\n*'
+    r')'
+    r'(?P<code>(^((?P=indent) +.*)?\n)+)',
+    re.MULTILINE,
+)
+PYCON_PREFIX = '>>> '
+PYCON_CONTINUATION_PREFIX = '...'
+PYCON_CONTINUATION_RE = re.compile(
+    rf'^{re.escape(PYCON_CONTINUATION_PREFIX)}( |$)',
+)
 LATEX_RE = re.compile(
     r'(?P<before>^(?P<indent> *)\\begin{minted}{python}\n)'
     r'(?P<code>.*?)'
@@ -82,6 +96,52 @@ def format_str(
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
+    def _rst_pycon_match(match: Match[str]) -> str:
+        code = ''
+        fragment = None
+
+        def finish_fragment() -> None:
+            nonlocal code
+            nonlocal fragment
+
+            if fragment is not None:
+                with _collect_error(match):
+                    fragment = black.format_str(fragment, mode=black_mode)
+                fragment_lines = fragment.splitlines()
+                code += f'{PYCON_PREFIX}{fragment_lines[0]}\n'
+                for line in fragment_lines[1:]:
+                    # Skip blank lines to handle Black adding a blank above
+                    # functions within blocks. A blank line would end the REPL
+                    # continuation prompt.
+                    #
+                    # >>> if True:
+                    # ...     def f():
+                    # ...         pass
+                    # ...
+                    if line:
+                        code += f'{PYCON_CONTINUATION_PREFIX} {line}\n'
+                if fragment_lines[-1].startswith(' '):
+                    code += f'{PYCON_CONTINUATION_PREFIX}\n'
+                fragment = None
+
+        for line in match['code'].splitlines():
+            line = line.lstrip()
+            continuation_match = PYCON_CONTINUATION_RE.match(line)
+            if continuation_match:
+                assert fragment is not None
+                fragment += line[continuation_match.end():] + '\n'
+            else:
+                finish_fragment()
+                if line.startswith(PYCON_PREFIX):
+                    fragment = line[len(PYCON_PREFIX):] + '\n'
+                else:
+                    code += line + '\n'
+        finish_fragment()
+
+        min_indent = min(INDENT_RE.findall(match['code']))
+        code = textwrap.indent(code, min_indent)
+        return f'{match["before"]}{code}'
+
     def _latex_match(match: Match[str]) -> str:
         code = textwrap.dedent(match['code'])
         with _collect_error(match):
@@ -91,6 +151,7 @@ def format_str(
 
     src = MD_RE.sub(_md_match, src)
     src = RST_RE.sub(_rst_match, src)
+    src = RST_PYCON_RE.sub(_rst_pycon_match, src)
     src = LATEX_RE.sub(_latex_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)
     return src, errors
