@@ -42,7 +42,7 @@ RST_PYCON_RE = re.compile(
 PYCON_PREFIX = '>>> '
 PYCON_CONTINUATION_PREFIX = '...'
 PYCON_CONTINUATION_RE = re.compile(
-    rf'^{re.escape(PYCON_CONTINUATION_PREFIX)}( |$)'
+    rf'^{re.escape(PYCON_CONTINUATION_PREFIX)}( |$)',
 )
 LATEX_RE = re.compile(
     r'(?P<before>^(?P<indent> *)\\begin{minted}{python}\n)'
