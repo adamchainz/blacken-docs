@@ -1,6 +1,7 @@
 import argparse
 import contextlib
 import re
+import sys
 import textwrap
 from typing import Generator
 from typing import List
@@ -211,4 +212,4 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 
 if __name__ == '__main__':
-    exit(main())
+    sys.exit(main())
