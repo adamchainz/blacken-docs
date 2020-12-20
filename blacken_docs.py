@@ -125,7 +125,7 @@ def format_str(
                 fragment = None
 
         for line in match['code'].splitlines():
-            line = line.lstrip()
+            orig_line, line = line, line.lstrip()
             continuation_match = PYCON_CONTINUATION_RE.match(line)
             if continuation_match:
                 assert fragment is not None
@@ -133,9 +133,10 @@ def format_str(
             else:
                 finish_fragment()
                 if line.startswith(PYCON_PREFIX):
+                    indentation = len(orig_line) - len(line)
                     fragment = line[len(PYCON_PREFIX):] + '\n'
                 else:
-                    code += line + '\n'
+                    code += orig_line[indentation:] + '\n'
         finish_fragment()
 
         min_indent = min(INDENT_RE.findall(match['code']))
