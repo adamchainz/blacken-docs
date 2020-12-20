@@ -659,3 +659,16 @@ def test_format_src_rst_pycon_empty_line():
         '    ...     1,\n'
         '    ... ]\n'
     )
+
+
+def test_format_src_rst_pycon_preserves_output_indentation():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> 1 / 0\n'
+        '    Traceback (most recent call last):\n'
+        '      File "<stdin>", line 1, in <module>\n'
+        '    ZeroDivisionError: division by zero\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
