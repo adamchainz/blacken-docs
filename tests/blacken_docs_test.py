@@ -672,3 +672,16 @@ def test_format_src_rst_pycon_preserves_output_indentation():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
+
+
+def test_format_src_rst_pycon_elided_traceback():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> 1 / 0\n'
+        '    Traceback (most recent call last):\n'
+        '      ...\n'
+        '    ZeroDivisionError: division by zero\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before

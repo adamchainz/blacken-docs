@@ -127,8 +127,7 @@ def format_str(
         for line in match['code'].splitlines():
             orig_line, line = line, line.lstrip()
             continuation_match = PYCON_CONTINUATION_RE.match(line)
-            if continuation_match:
-                assert fragment is not None
+            if continuation_match and fragment is not None:
                 fragment += line[continuation_match.end():] + '\n'
             else:
                 finish_fragment()
