@@ -685,3 +685,13 @@ def test_format_src_rst_pycon_elided_traceback():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
+
+
+def test_format_src_rst_pycon_no_prompt():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    pass\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
