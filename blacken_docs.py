@@ -36,7 +36,7 @@ RST_PYCON_RE = re.compile(
     r'((?P=indent) +:.*\n)*'
     r'\n*'
     r')'
-    r'(?P<code>(^((?P=indent) +.*)?\n)+)',
+    r'(?P<code>(^((?P=indent) +.*)?(\n|$))+)',
     re.MULTILINE,
 )
 PYCON_PREFIX = '>>> '

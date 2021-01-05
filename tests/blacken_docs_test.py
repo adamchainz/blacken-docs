@@ -695,3 +695,17 @@ def test_format_src_rst_pycon_no_prompt():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
+
+
+def test_format_src_rst_pycon_no_trailing_newline():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> pass'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    >>> pass\n'
+    )
