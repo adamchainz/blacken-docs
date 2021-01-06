@@ -709,3 +709,19 @@ def test_format_src_rst_pycon_no_trailing_newline():
         '\n'
         '    >>> pass\n'
     )
+
+
+def test_format_src_rst_pycon_comment_before_promopt():
+    before = (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    # Comment about next line\n'
+        '    >>> pass\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. code-block:: pycon\n'
+        '\n'
+        '    # Comment about next line\n'
+        '    >>> pass\n'
+    )
