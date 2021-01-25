@@ -94,7 +94,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
 -   repo: https://github.com/asottile/blacken-docs
-    rev: v1.9.1
+    rev: v1.9.2
     hooks:
     -   id: blacken-docs
         additional_dependencies: [black==...]
