@@ -36,7 +36,7 @@ RST_PYCON_RE = re.compile(
     r'((?P=indent) +:.*\n)*'
     r'\n*'
     r')'
-    r'(?P<code>(^((?P=indent) +.*)?\n)+)',
+    r'(?P<code>(^((?P=indent) +.*)?(\n|$))+)',
     re.MULTILINE,
 )
 PYCON_PREFIX = '>>> '
@@ -124,15 +124,17 @@ def format_str(
                     code += f'{PYCON_CONTINUATION_PREFIX}\n'
                 fragment = None
 
+        indentation = None
         for line in match['code'].splitlines():
             orig_line, line = line, line.lstrip()
+            if indentation is None and line:
+                indentation = len(orig_line) - len(line)
             continuation_match = PYCON_CONTINUATION_RE.match(line)
             if continuation_match and fragment is not None:
                 fragment += line[continuation_match.end():] + '\n'
             else:
                 finish_fragment()
                 if line.startswith(PYCON_PREFIX):
-                    indentation = len(orig_line) - len(line)
                     fragment = line[len(PYCON_PREFIX):] + '\n'
                 else:
                     code += orig_line[indentation:] + '\n'
