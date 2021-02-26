@@ -19,6 +19,12 @@ MD_RE = re.compile(
     r'(?P<after>^(?P=indent)```\s*$)',
     re.DOTALL | re.MULTILINE,
 )
+MD_PYCON_RE = re.compile(
+    r'(?P<before>^(?P<indent> *)```\s*pycon\n)'
+    r'(?P<code>.*?)'
+    r'(?P<after>^(?P=indent)```.*$)',
+    re.DOTALL | re.MULTILINE,
+)
 PY_LANGS = '(python|py|sage|python3|py3|numpy)'
 BLOCK_TYPES = '(code|code-block|sourcecode|ipython)'
 RST_RE = re.compile(
@@ -96,7 +102,7 @@ def format_str(
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
-    def _rst_pycon_match(match: Match[str]) -> str:
+    def _pycon_match(match: Match[str]) -> str:
         code = ''
         fragment = None
 
@@ -139,7 +145,15 @@ def format_str(
                 else:
                     code += orig_line[indentation:] + '\n'
         finish_fragment()
+        return code
 
+    def _md_pycon_match(match: Match[str]) -> str:
+        code = _pycon_match(match)
+        code = textwrap.indent(code, match['indent'])
+        return f'{match["before"]}{code}{match["after"]}'
+
+    def _rst_pycon_match(match: Match[str]) -> str:
+        code = _pycon_match(match)
         min_indent = min(INDENT_RE.findall(match['code']))
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code}'
@@ -152,6 +166,7 @@ def format_str(
         return f'{match["before"]}{code}{match["after"]}'
 
     src = MD_RE.sub(_md_match, src)
+    src = MD_PYCON_RE.sub(_md_pycon_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = RST_PYCON_RE.sub(_rst_pycon_match, src)
     src = LATEX_RE.sub(_latex_match, src)
