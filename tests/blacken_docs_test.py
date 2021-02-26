@@ -153,6 +153,51 @@ def test_format_src_rst():
     )
 
 
+def test_format_src_rst_sphinx_doctest():
+    before = (
+        '.. testsetup:: group1\n'
+        '\n'
+        '   import parrot  \n'
+        '   mock = SomeMock( )\n'
+        '\n'
+        '.. testcleanup:: group1\n'
+        '\n'
+        '   mock.stop( )\n'
+        '\n'
+        '.. doctest:: group1\n'
+        '\n'
+        '   >>> parrot.voom( 3000 )\n'
+        '   This parrot wouldn\'t voom if you put 3000 volts through it!\n'
+        '\n'
+        '.. testcode::\n'
+        '\n'
+        '   parrot.voom( 3000 )\n'
+        '\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '.. testsetup:: group1\n'
+        '\n'
+        '   import parrot\n'
+        '\n'
+        '   mock = SomeMock()\n'
+        '\n'
+        '.. testcleanup:: group1\n'
+        '\n'
+        '   mock.stop()\n'
+        '\n'
+        '.. doctest:: group1\n'
+        '\n'
+        '   >>> parrot.voom(3000)\n'
+        '   This parrot wouldn\'t voom if you put 3000 volts through it!\n'
+        '\n'
+        '.. testcode::\n'
+        '\n'
+        '   parrot.voom(3000)\n'
+        '\n'
+    )
+
+
 def test_format_src_rst_indented():
     before = (
         '.. versionadded:: 3.1\n'
