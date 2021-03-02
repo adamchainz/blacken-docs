@@ -725,3 +725,27 @@ def test_format_src_rst_pycon_comment_before_promopt():
         '    # Comment about next line\n'
         '    >>> pass\n'
     )
+
+
+def test_format_src_markdown_pycon():
+    before = (
+        'hello\n'
+        '\n'
+        '```pycon\n'
+        '\n'
+        '    >>> f(1,2,3)\n'
+        '    output\n'
+        '```\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '```pycon\n'
+        '\n'
+        '>>> f(1, 2, 3)\n'
+        'output\n'
+        '```\n'
+        'world\n'
+    )
