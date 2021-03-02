@@ -27,9 +27,14 @@ MD_PYCON_RE = re.compile(
 )
 PY_LANGS = '(python|py|sage|python3|py3|numpy)'
 BLOCK_TYPES = '(code|code-block|sourcecode|ipython)'
+DOCTEST_TYPES = '(testsetup|testcleanup|testcode)'
 RST_RE = re.compile(
     rf'(?P<before>'
-    rf'^(?P<indent> *)\.\. (jupyter-execute::|{BLOCK_TYPES}:: {PY_LANGS})\n'
+    rf'^(?P<indent> *)\.\. ('
+    rf'jupyter-execute::|'
+    rf'{BLOCK_TYPES}:: {PY_LANGS}|'
+    rf'{DOCTEST_TYPES}::.*'
+    rf')\n'
     rf'((?P=indent) +:.*\n)*'
     rf'\n*'
     rf')'
@@ -38,7 +43,7 @@ RST_RE = re.compile(
 )
 RST_PYCON_RE = re.compile(
     r'(?P<before>'
-    r'(?P<indent> *)\.\. (code|code-block):: pycon\n'
+    r'(?P<indent> *)\.\. ((code|code-block):: pycon|doctest::.*)\n'
     r'((?P=indent) +:.*\n)*'
     r'\n*'
     r')'
