@@ -37,6 +37,17 @@ Following additional parameters can be used:
     ```
 ```
 
+(markdown `pycon`)
+```markdown
+    ```pycon
+
+    >>> def hello():
+    ...     print("hello world")
+    ...
+
+    ```
+```
+
 (rst)
 ```rst
     .. code-block:: python
