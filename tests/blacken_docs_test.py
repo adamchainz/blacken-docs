@@ -72,8 +72,6 @@ def test_format_src_indented_markdown():
 
 
 def test_format_src_latex_minted():
-    # Nicer style to put the \begin and \end on new lines,
-    # but not actually required for the begin line
     before = (
         'hello\n'
         '\\begin{minted}{python}\n'
@@ -110,6 +108,48 @@ def test_format_src_latex_minted_indented():
         '      f(1, 2, 3)\n'
         '  \\end{minted}\n'
         'world!'
+    )
+
+
+def test_format_src_latex_minted_pycon():
+    before = (
+        'Preceeding text\n'
+        '\\begin{minted}{pycon}\n'
+        ">>> print( 'Hello World' )\n"
+        'Hello World\n'
+        '\\end{minted}\n'
+        'Following text.'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'Preceeding text\n'
+        '\\begin{minted}{pycon}\n'
+        '>>> print("Hello World")\n'
+        'Hello World\n'
+        '\\end{minted}\n'
+        'Following text.'
+    )
+
+
+def test_format_src_latex_minted_pycon_indented():
+    # Nicer style to put the \begin and \end on new lines,
+    # but not actually required for the begin line
+    before = (
+        'Preceeding text\n'
+        '  \\begin{minted}{pycon}\n'
+        "    >>> print( 'Hello World' )\n"
+        '    Hello World\n'
+        '  \\end{minted}\n'
+        'Following text.'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'Preceeding text\n'
+        '  \\begin{minted}{pycon}\n'
+        '  >>> print("Hello World")\n'
+        '  Hello World\n'
+        '  \\end{minted}\n'
+        'Following text.'
     )
 
 

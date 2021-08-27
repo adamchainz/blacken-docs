@@ -73,6 +73,15 @@ def hello():
 \end{minted}
 ```
 
+(latex `pycon`)
+```latex
+\begin{minted}{pycon}
+>>> def hello():
+...     print("hello world")
+...
+\end{minted}
+```
+
 (latex with pythontex)
 ```latex
 \begin{pycode}
