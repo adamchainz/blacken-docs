@@ -61,6 +61,12 @@ LATEX_RE = re.compile(
     r'(?P<after>^(?P=indent)\\end{minted}\s*$)',
     re.DOTALL | re.MULTILINE,
 )
+LATEX_PYCON_RE = re.compile(
+    r'(?P<before>^(?P<indent> *)\\begin{minted}{pycon}\n)'
+    r'(?P<code>.*?)'
+    r'(?P<after>^(?P=indent)\\end{minted}\s*$)',
+    re.DOTALL | re.MULTILINE,
+)
 PYTHONTEX_LANG = r'(?P<lang>pyblock|pycode|pyconsole|pyverbatim)'
 PYTHONTEX_RE = re.compile(
     rf'(?P<before>^(?P<indent> *)\\begin{{{PYTHONTEX_LANG}}}\n)'
@@ -170,11 +176,17 @@ def format_str(
         code = textwrap.indent(code, match['indent'])
         return f'{match["before"]}{code}{match["after"]}'
 
+    def _latex_pycon_match(match: Match[str]) -> str:
+        code = _pycon_match(match)
+        code = textwrap.indent(code, match['indent'])
+        return f'{match["before"]}{code}{match["after"]}'
+
     src = MD_RE.sub(_md_match, src)
     src = MD_PYCON_RE.sub(_md_pycon_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = RST_PYCON_RE.sub(_rst_pycon_match, src)
     src = LATEX_RE.sub(_latex_match, src)
+    src = LATEX_PYCON_RE.sub(_latex_pycon_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)
     return src, errors
 
