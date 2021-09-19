@@ -32,6 +32,7 @@ RST_RE = re.compile(
     rf'(?P<before>'
     rf'^(?P<indent> *)\.\. ('
     rf'jupyter-execute::|'
+    rf'invisible-code-block::? {PY_LANGS}|'
     rf'{BLOCK_TYPES}:: {PY_LANGS}|'
     rf'{DOCTEST_TYPES}::.*'
     rf')\n'
