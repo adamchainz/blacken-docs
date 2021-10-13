@@ -35,6 +35,11 @@ Following additional parameters can be used:
     def hello():
         print("hello world")
     ```
+
+    ~~~python
+    def hello():
+        print("hello world")
+    ~~~
 ```
 
 (markdown `pycon`)

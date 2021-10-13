@@ -25,6 +25,20 @@ def test_format_src_markdown_simple():
     )
 
 
+def test_format_src_markdown_simple_tilde():
+    before = (
+        '~~~python\n'
+        'f(1,2,3)\n'
+        '~~~\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '~~~python\n'
+        'f(1, 2, 3)\n'
+        '~~~\n'
+    )
+
+
 def test_format_src_markdown_leading_whitespace():
     before = (
         '```   python\n'
@@ -36,6 +50,19 @@ def test_format_src_markdown_leading_whitespace():
         '```   python\n'
         'f(1, 2, 3)\n'
         '```\n'
+    )
+
+def test_format_src_markdown_leading_whitespace_tilde():
+    before = (
+        '~~~   python\n'
+        'f(1,2,3)\n'
+        '~~~\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        '~~~   python\n'
+        'f(1, 2, 3)\n'
+        '~~~\n'
     )
 
 
