@@ -52,6 +52,7 @@ def test_format_src_markdown_leading_whitespace():
         '```\n'
     )
 
+
 def test_format_src_markdown_leading_whitespace_tilde():
     before = (
         '~~~   python\n'
