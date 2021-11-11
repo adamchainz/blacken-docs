@@ -286,6 +286,21 @@ def test_format_src_rst_with_highlight_directives():
     )
 
 
+def test_format_src_rst_python_inside_non_python_code_block():
+    before = (
+        'blacken-docs does changes like:\n'
+        '\n'
+        '.. code-block:: diff\n'
+        '\n'
+        '     .. code-block:: python\n'
+        '\n'
+        "    -    'Hello World'\n"
+        '    +    "Hello World"\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
 def test_integration_ok(tmpdir, capsys):
     f = tmpdir.join('f.md')
     f.write(
