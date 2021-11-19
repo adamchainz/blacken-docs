@@ -25,14 +25,14 @@ MD_PYCON_RE = re.compile(
     r'(?P<after>^(?P=indent)```.*$)',
     re.DOTALL | re.MULTILINE,
 )
-PY_LANGS = '(python|py|sage|python3|py3|numpy)'
+RST_PY_LANGS = frozenset(('python', 'py', 'sage', 'python3', 'py3', 'numpy'))
 BLOCK_TYPES = '(code|code-block|sourcecode|ipython)'
 DOCTEST_TYPES = '(testsetup|testcleanup|testcode)'
 RST_RE = re.compile(
     rf'(?P<before>'
     rf'^(?P<indent> *)\.\. ('
     rf'jupyter-execute::|'
-    rf'{BLOCK_TYPES}:: {PY_LANGS}|'
+    rf'{BLOCK_TYPES}:: (?P<lang>\w+)|'
     rf'{DOCTEST_TYPES}::.*'
     rf')\n'
     rf'((?P=indent) +:.*\n)*'
@@ -103,6 +103,9 @@ def format_str(
         return f'{match["before"]}{code}{match["after"]}'
 
     def _rst_match(match: Match[str]) -> str:
+        lang = match['lang']
+        if lang is not None and lang not in RST_PY_LANGS:
+            return match[0]
         min_indent = min(INDENT_RE.findall(match['code']))
         trailing_ws_match = TRAILING_NL_RE.search(match['code'])
         assert trailing_ws_match
