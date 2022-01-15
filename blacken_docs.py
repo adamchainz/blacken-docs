@@ -1,14 +1,13 @@
+from __future__ import annotations
+
 import argparse
 import contextlib
 import re
 import textwrap
 from typing import Generator
-from typing import List
 from typing import Match
 from typing import NamedTuple
-from typing import Optional
 from typing import Sequence
-from typing import Tuple
 
 import black
 
@@ -85,8 +84,8 @@ class CodeBlockError(NamedTuple):
 
 def format_str(
         src: str, black_mode: black.FileMode,
-) -> Tuple[str, Sequence[CodeBlockError]]:
-    errors: List[CodeBlockError] = []
+) -> tuple[str, Sequence[CodeBlockError]]:
+    errors: list[CodeBlockError] = []
 
     @contextlib.contextmanager
     def _collect_error(match: Match[str]) -> Generator[None, None, None]:
@@ -214,7 +213,7 @@ def format_file(
         return 0
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-l', '--line-length', type=int, default=black.DEFAULT_LINE_LENGTH,
