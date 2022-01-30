@@ -421,7 +421,7 @@ def test_integration_multiple_target_version(tmpdir):
     )
     assert not blacken_docs.main((str(f),))
     assert not blacken_docs.main(
-        ('--target-version', 'py27', '--target-version', 'py36', str(f)),
+        ('--target-version', 'py35', '--target-version', 'py36', str(f)),
     )
 
 
