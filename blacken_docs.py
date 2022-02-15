@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import os
 import re
 import textwrap
 from typing import Generator
@@ -83,7 +84,8 @@ class CodeBlockError(NamedTuple):
 
 
 def format_str(
-        src: str, black_mode: black.FileMode,
+    src: str,
+    black_mode: black.FileMode,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
 
@@ -194,29 +196,51 @@ def format_str(
 
 
 def format_file(
-        filename: str, black_mode: black.FileMode, skip_errors: bool,
+    filename: str,
+    black_mode: black.FileMode,
+    recursive: bool,
+    skip_errors: bool,
 ) -> int:
-    with open(filename, encoding='UTF-8') as f:
-        contents = f.read()
-    new_contents, errors = format_str(contents, black_mode)
-    for error in errors:
-        lineno = contents[:error.offset].count('\n') + 1
-        print(f'{filename}:{lineno}: code block parse error {error.exc}')
-    if errors and not skip_errors:
-        return 1
-    if contents != new_contents:
-        print(f'{filename}: Rewriting...')
-        with open(filename, 'w', encoding='UTF-8') as f:
-            f.write(new_contents)
-        return 1
+
+    if os.path.isdir(filename):
+        if recursive:
+            retv = 0
+            for sub_filename in os.listdir(filename):
+                retv |= format_file(
+                    os.path.join(filename, sub_filename),
+                    black_mode,
+                    skip_errors,
+                    recursive,
+                )
+            return retv
+        else:
+            return 0
+
     else:
-        return 0
+        with open(filename, encoding='UTF-8') as f:
+            contents = f.read()
+        new_contents, errors = format_str(contents, black_mode)
+        for error in errors:
+            lineno = contents[: error.offset].count('\n') + 1
+            print(f'{filename}:{lineno}: code block parse error {error.exc}')
+        if errors and not skip_errors:
+            return 1
+        if contents != new_contents:
+            print(f'{filename}: Rewriting...')
+            with open(filename, 'w', encoding='UTF-8') as f:
+                f.write(new_contents)
+            return 1
+        else:
+            return 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-l', '--line-length', type=int, default=black.DEFAULT_LINE_LENGTH,
+        '-l',
+        '--line-length',
+        type=int,
+        default=black.DEFAULT_LINE_LENGTH,
     )
     parser.add_argument(
         '-t',
@@ -228,10 +252,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         dest='target_versions',
     )
     parser.add_argument(
-        '-S', '--skip-string-normalization', action='store_true',
+        '-S',
+        '--skip-string-normalization',
+        action='store_true',
     )
     parser.add_argument('-E', '--skip-errors', action='store_true')
     parser.add_argument('filenames', nargs='*')
+    parser.add_argument('-r', action='store_true')
     args = parser.parse_args(argv)
 
     black_mode = black.FileMode(
@@ -241,8 +268,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     retv = 0
+
     for filename in args.filenames:
-        retv |= format_file(filename, black_mode, skip_errors=args.skip_errors)
+        retv |= format_file(
+            filename, black_mode, args.r, skip_errors=args.skip_errors,
+        )
     return retv
 
 
