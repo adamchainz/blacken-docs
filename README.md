@@ -26,6 +26,7 @@ options:
 Following additional parameters can be used:
 
  - `-E` / `--skip-errors`
+ - `-r`
 
 `blacken-docs` will format code in the following block types:
 
