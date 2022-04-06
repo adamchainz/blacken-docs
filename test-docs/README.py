@@ -14,6 +14,7 @@ This command does the following:
 - `blacken_docs.py` runs the script and passes the file name.
 - The file is formatted and saved to the same directory.
 """
+from __future__ import annotations
 
 
 def f():
@@ -27,7 +28,7 @@ def f():
     print( f"hello world")
     ```
     """
-    print(f"hello world")
+    print(f'hello world')
 
 
 f()
