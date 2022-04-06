@@ -2,8 +2,7 @@
 [![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/asottile/asottile/36/main.svg)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=36&branchName=main)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asottile/blacken-docs/main.svg)](https://results.pre-commit.ci/latest/github/asottile/blacken-docs/main)
 
-blacken-docs
-============
+# blacken-docs
 
 Run `black` on python code blocks in documentation files.
 
@@ -14,7 +13,13 @@ Run `black` on python code blocks in documentation files.
 ## usage
 
 `blacken-docs` provides a single executable (`blacken-docs`) which will modify
-`.rst` / `.md` / `.tex` files in place.
+`.rst`, `.md`, `.txt`, `.text`, and `.py` files in place.
+
+For example:
+
+```bash
+python3 blacken_docs.py test-docs/README.md
+```
 
 It currently supports the following [`black`](https://github.com/psf/black)
 options:
@@ -25,20 +30,24 @@ options:
 
 Following additional parameters can be used:
 
- - `-E` / `--skip-errors`
+- `-E` / `--skip-errors`
 
 `blacken-docs` will format code in the following block types:
 
+### Markdown
+
 (markdown)
-```markdown
+
+````markdown
     ```python
     def hello():
         print("hello world")
     ```
-```
+````
 
 (markdown `pycon`)
-```markdown
+
+````markdown
     ```pycon
 
     >>> def hello():
@@ -46,9 +55,12 @@ Following additional parameters can be used:
     ...
 
     ```
-```
+````
+
+### RST
 
 (rst)
+
 ```rst
     .. code-block:: python
 
@@ -57,6 +69,7 @@ Following additional parameters can be used:
 ```
 
 (rst `pycon`)
+
 ```rst
     .. code-block:: pycon
 
@@ -65,7 +78,10 @@ Following additional parameters can be used:
         ...
 ```
 
+### Latex
+
 (latex)
+
 ```latex
 \begin{minted}{python}
 def hello():
@@ -74,6 +90,7 @@ def hello():
 ```
 
 (latex `pycon`)
+
 ```latex
 \begin{minted}{pycon}
 >>> def hello():
@@ -83,6 +100,7 @@ def hello():
 ```
 
 (latex with pythontex)
+
 ```latex
 \begin{pycode}
 def hello():
@@ -90,8 +108,11 @@ def hello():
 \end{pycode}
 ```
 
+### Python
+
 (markdown/rst in python docstrings)
-```python
+
+````python
 def f():
     """docstring here
 
@@ -103,7 +124,7 @@ def f():
     print("hello world")
     ```
     """
-```
+````
 
 ## usage with pre-commit
 
@@ -111,13 +132,12 @@ See [pre-commit](https://pre-commit.com) for instructions
 
 Sample `.pre-commit-config.yaml`:
 
-
 ```yaml
--   repo: https://github.com/asottile/blacken-docs
-    rev: v1.12.1
-    hooks:
-    -   id: blacken-docs
-        additional_dependencies: [black==...]
+- repo: https://github.com/asottile/blacken-docs
+  rev: v1.12.1
+  hooks:
+    - id: blacken-docs
+      additional_dependencies: [black==...]
 ```
 
 Since `black` is currently a moving target, it is suggested to pin `black`
