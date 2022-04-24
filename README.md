@@ -122,3 +122,17 @@ Sample `.pre-commit-config.yaml`:
 
 Since `black` is currently a moving target, it is suggested to pin `black`
 to a specific version using `additional_dependencies`.
+
+## usage in CI
+
+The `blacken-docs` command returns a non-zero exit code if it detects any Python syntax errors, or if it applies any changes to files.
+
+This means you can use the command in a CI step to check that your documentation has been correctly formatted.
+
+This example uses GitHub Actions syntax, checking the formatting of all `.rst` documentation files.
+
+```yaml
+    - name: Check if blacken-docs needs to be run
+      run: |
+        blacken-docs -l 60 docs/*.rst
+```
