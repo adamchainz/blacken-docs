@@ -134,5 +134,5 @@ This example uses GitHub Actions syntax, checking the formatting of all `.rst` d
 ```yaml
     - name: Check if blacken-docs needs to be run
       run: |
-        blacken-docs -l 60 docs/*.rst
+        blacken-docs docs/*.rst
 ```
