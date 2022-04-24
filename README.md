@@ -16,6 +16,8 @@ Run `black` on python code blocks in documentation files.
 `blacken-docs` provides a single executable (`blacken-docs`) which will modify
 `.rst` / `.md` / `.tex` files in place.
 
+If a file is modified, `blacken-docs` exits nonzero.
+
 It currently supports the following [`black`](https://github.com/psf/black)
 options:
 
