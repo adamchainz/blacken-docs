@@ -74,8 +74,9 @@ PYTHONTEX_RE = re.compile(
     re.DOTALL | re.MULTILINE,
 )
 ORGMODE_RE = re.compile(
-    rf'(?P<before>^(?P<indent> *)\#\+begin_src python[^\n]*\n
-    rf'(?P<after>^(?P=indent)\#\+end_src\s*$)',
+    rf'(?P<before>^(?P<indent> *)#\+begin_src python[^\n]*\n)'
+    rf'(?P<code>.*?)'
+    rf'(?P<after>^(?P=indent)#\+end_src\s*$)',
     re.DOTALL | re.MULTILINE,
 )
 INDENT_RE = re.compile('^ +(?=[^ ])', re.MULTILINE)
@@ -183,6 +184,15 @@ def format_str(
         code = textwrap.indent(code, match['indent'])
         return f'{match["before"]}{code}{match["after"]}'
 
+    def _orgmode_match(match: Match[str]) -> str:
+        code = textwrap.dedent(match['code'])
+        code = re.sub(r"( *<<)", r"#\1", code)
+        with _collect_error(match):
+            code = black.format_str(code, mode=black_mode)
+        code = textwrap.indent(code, match['indent'])
+        code = re.sub(r"#( *<<)", r"\1", code)
+        return f'{match["before"]}{code}{match["after"]}'
+
     def _latex_pycon_match(match: Match[str]) -> str:
         code = _pycon_match(match)
         code = textwrap.indent(code, match['indent'])
@@ -195,7 +205,7 @@ def format_str(
     src = LATEX_RE.sub(_latex_match, src)
     src = LATEX_PYCON_RE.sub(_latex_pycon_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)
-    src = ORGMODE_RE.sub(_latex_match, src)
+    src = ORGMODE_RE.sub(_orgmode_match, src)
     return src, errors
 
 
