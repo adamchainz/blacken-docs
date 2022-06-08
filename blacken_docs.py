@@ -186,11 +186,11 @@ def format_str(
 
     def _orgmode_match(match: Match[str]) -> str:
         code = textwrap.dedent(match['code'])
-        code = re.sub(r"( *<<)", r"#\1", code)
+        code = re.sub(r'( *<<)', r'#\1', code)
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
         code = textwrap.indent(code, match['indent'])
-        code = re.sub(r"#( *<<)", r"\1", code)
+        code = re.sub(r'#( *<<)', r'\1', code)
         return f'{match["before"]}{code}{match["after"]}'
 
     def _latex_pycon_match(match: Match[str]) -> str:
