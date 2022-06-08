@@ -173,6 +173,26 @@ def test_src_pythontex(tmpdir):
     )
 
 
+def test_src_orgmode(tmpdir):
+    before = (
+        'hello\n'
+        '#+begin_src python :exports both :results outut\n'
+        'f(1,2,3)\n'
+        'a=42\n'
+        '#+end_src\n'
+        'world!'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '#+begin_src python :exports both :results outut\n'
+        'f(1, 2, 3)\n'
+        'a = 42\n'
+        '#+end_src\n'
+        'world!'
+    )
+
+
 def test_format_src_rst():
     before = (
         'hello\n'

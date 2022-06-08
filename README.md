@@ -92,6 +92,14 @@ def hello():
 \end{pycode}
 ```
 
+(orgmode)
+```markdown
+#+begin_src python
+def hello():
+    print("hello world")
+#+end_src
+```
+
 (markdown/rst in python docstrings)
 ```python
 def f():
