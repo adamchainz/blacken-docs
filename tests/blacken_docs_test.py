@@ -176,7 +176,7 @@ def test_src_pythontex(tmpdir):
 def test_src_orgmode(tmpdir):
     before = (
         'hello\n'
-        '#+begin_src python  :tangle "hello_world.py" :exports both :results output\n'
+        '#+begin_src python  :tangle "hello_world.py" :exports both\n'
         'f(1,2,3)\n'
         'a=42\n'
         '\n'
@@ -188,7 +188,7 @@ def test_src_orgmode(tmpdir):
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         'hello\n'
-        '#+begin_src python  :tangle "hello_world.py" :exports both :results output\n'
+        '#+begin_src python  :tangle "hello_world.py" :exports both\n'
         'f(1, 2, 3)\n'
         'a = 42\n'
         '\n'
