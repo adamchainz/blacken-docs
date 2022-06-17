@@ -851,3 +851,127 @@ def test_format_src_markdown_pycon():
         '```\n'
         'world\n'
     )
+
+
+def test_format_src_markdown_Pycon():
+    before = (
+        'hello\n'
+        '\n'
+        '```Pycon\n'
+        '\n'
+        '    >>> f(1,2,3)\n'
+        '    output\n'
+        '```\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '```Pycon\n'
+        '\n'
+        '>>> f(1, 2, 3)\n'
+        'output\n'
+        '```\n'
+        'world\n'
+    )
+
+
+def test_format_src_markdown_py():
+    before = (
+        'hello\n'
+        '\n'
+        '```py\n'
+        'f(1,2,3)\n'
+        '```\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '```py\n'
+        'f(1, 2, 3)\n'
+        '```\n'
+        'world\n'
+    )
+
+
+def test_format_src_markdown_Py():
+    before = (
+        'hello\n'
+        '\n'
+        '```Py\n'
+        'f(1,2,3)\n'
+        '```\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '```Py\n'
+        'f(1, 2, 3)\n'
+        '```\n'
+        'world\n'
+    )
+
+
+def test_format_src_markdown_Python():
+    before = (
+        'hello\n'
+        '\n'
+        '```Python\n'
+        'f(1,2,3)\n'
+        '```\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '```Python\n'
+        'f(1, 2, 3)\n'
+        '```\n'
+        'world\n'
+    )
+
+
+def test_format_src_markdown_python3():
+    before = (
+        'hello\n'
+        '\n'
+        '```Python3\n'
+        'f(1,2,3)\n'
+        '```\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '```Python3\n'
+        'f(1, 2, 3)\n'
+        '```\n'
+        'world\n'
+    )
+
+
+def test_format_src_markdown_Python3():
+    before = (
+        'hello\n'
+        '\n'
+        '```Python3\n'
+        'f(1,2,3)\n'
+        '```\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello\n'
+        '\n'
+        '```Python3\n'
+        'f(1, 2, 3)\n'
+        '```\n'
+        'world\n'
+    )

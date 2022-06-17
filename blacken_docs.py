@@ -13,17 +13,21 @@ import black
 
 
 MD_RE = re.compile(
-    r'(?P<before>^(?P<indent> *)```\s*python\n)'
+    r'(?P<before>^(?P<indent> *)```\s*(?P<lang>.*?)\n)'
     r'(?P<code>.*?)'
     r'(?P<after>^(?P=indent)```\s*$)',
     re.DOTALL | re.MULTILINE,
 )
 MD_PYCON_RE = re.compile(
-    r'(?P<before>^(?P<indent> *)```\s*pycon\n)'
+    r'(?P<before>^(?P<indent> *)```\s*[pP]ycon\n)'
     r'(?P<code>.*?)'
     r'(?P<after>^(?P=indent)```.*$)',
     re.DOTALL | re.MULTILINE,
 )
+MD_PY_LANGS = frozenset((
+    'python', 'python3', 'py', 'py3', 'pyi',
+    'Python', 'Python3', 'Py', 'Py3', 'Pyi',
+))
 RST_PY_LANGS = frozenset(('python', 'py', 'sage', 'python3', 'py3', 'numpy'))
 BLOCK_TYPES = '(code|code-block|sourcecode|ipython)'
 DOCTEST_TYPES = '(testsetup|testcleanup|testcode)'
@@ -83,7 +87,7 @@ class CodeBlockError(NamedTuple):
 
 
 def format_str(
-        src: str, black_mode: black.FileMode,
+    src: str, black_mode: black.FileMode,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
 
@@ -95,6 +99,9 @@ def format_str(
             errors.append(CodeBlockError(match.start(), e))
 
     def _md_match(match: Match[str]) -> str:
+        lang = match['lang']
+        if lang is not None and lang not in MD_PY_LANGS:
+            return match[0]
         code = textwrap.dedent(match['code'])
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
