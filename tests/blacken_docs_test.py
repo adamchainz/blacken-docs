@@ -92,7 +92,7 @@ def test_format_src_latex_minted():
 
 
 def test_format_src_latex_minted_indented():
-    # Personaly I would have minted python code all flush left,
+    # Personally I would have minted python code all flush left,
     # with only the Python code's own four space indentation:
     before = (
         'hello\n'
