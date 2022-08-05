@@ -9,7 +9,9 @@ Run `black` on python code blocks in documentation files.
 
 ## install
 
-`pip install blacken-docs`
+```bash
+pip install blacken-docs
+```
 
 ## usage
 
