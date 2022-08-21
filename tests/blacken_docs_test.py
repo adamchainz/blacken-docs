@@ -852,6 +852,7 @@ def test_format_src_markdown_pycon():
         'world\n'
     )
 
+
 def test_format_src_orgmode():
     before = (
         '#+NAME: imports all\n'

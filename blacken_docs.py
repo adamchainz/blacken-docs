@@ -184,10 +184,9 @@ def format_str(
         code = textwrap.indent(code, match['indent'])
         return f'{match["before"]}{code}{match["after"]}'
 
-    references = re.split(r"\#\+name:(.*)\n", src, flags=re.IGNORECASE)[1::2]
+    references = re.split(r'\#\+name:(.*)\n', src, flags=re.IGNORECASE)[1::2]
     references = [ref.strip() for ref in references]
-    sub_string = r"( *)<<(" + "|".join(references) + ")>>"
-
+    sub_string = r'( *)<<(' + '|'.join(references) + ')>>'
 
     def _orgmode_match(match: Match[str]) -> str:
         code = textwrap.dedent(match['code'])
@@ -197,7 +196,6 @@ def format_str(
         code = textwrap.indent(code, match['indent'])
         code = re.sub(r'pass  # ( *<<.*>>)', r'\1', code)
         return f'{match["before"]}{code}{match["after"]}'
-
 
     def _latex_pycon_match(match: Match[str]) -> str:
         code = _pycon_match(match)
