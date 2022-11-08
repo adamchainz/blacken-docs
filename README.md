@@ -117,7 +117,7 @@ Sample `.pre-commit-config.yaml`:
 
 
 ```yaml
--   repo: https://github.com/asottile/blacken-docs
+-   repo: https://github.com/adamchainz/blacken-docs
     rev: v1.12.1
     hooks:
     -   id: blacken-docs
