@@ -42,6 +42,16 @@ RST_RE = re.compile(
     rf'(?P<code>(^((?P=indent) +.*)?\n)+)',
     re.MULTILINE,
 )
+RST_SPHINX_DEFAULT_LANG_RE = re.compile(
+    r'(?P<before>'
+    r'^(?P<indent> *)(?!\.\. )'
+    r'.*::\n'
+    r'((?P=indent) +:.*\n)*'
+    r'\n*'
+    r')'
+    r'(?P<code>(^((?P=indent) +.*)?\n)+)',
+    re.MULTILINE,
+)
 RST_PYCON_RE = re.compile(
     r'(?P<before>'
     r'(?P<indent> *)\.\. ((code|code-block):: pycon|doctest::.*)\n'
@@ -107,6 +117,17 @@ def format_str(
         lang = match['lang']
         if lang is not None and lang not in RST_PY_LANGS:
             return match[0]
+        min_indent = min(INDENT_RE.findall(match['code']))
+        trailing_ws_match = TRAILING_NL_RE.search(match['code'])
+        assert trailing_ws_match
+        trailing_ws = trailing_ws_match.group()
+        code = textwrap.dedent(match['code'])
+        with _collect_error(match):
+            code = black.format_str(code, mode=black_mode)
+        code = textwrap.indent(code, min_indent)
+        return f'{match["before"]}{code.rstrip()}{trailing_ws}'
+
+    def _rst_sphinx_default_lang_match(match: Match[str]) -> str:
         min_indent = min(INDENT_RE.findall(match['code']))
         trailing_ws_match = TRAILING_NL_RE.search(match['code'])
         assert trailing_ws_match
@@ -189,6 +210,7 @@ def format_str(
     src = MD_PYCON_RE.sub(_md_pycon_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = RST_PYCON_RE.sub(_rst_pycon_match, src)
+    src = RST_SPHINX_DEFAULT_LANG_RE.sub(_rst_sphinx_default_lang_match, src)
     src = LATEX_RE.sub(_latex_match, src)
     src = LATEX_PYCON_RE.sub(_latex_pycon_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)

@@ -197,6 +197,24 @@ def test_format_src_rst():
     )
 
 
+def test_format_src_rst_sphinx_default_language():
+    before = (
+        'hello::\n'
+        '\n'
+        '    f(1,2,3)\n'
+        '\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        'hello::\n'
+        '\n'
+        '    f(1, 2, 3)\n'
+        '\n'
+        'world\n'
+    )
+
+
 def test_format_src_rst_sphinx_doctest():
     before = (
         '.. testsetup:: group1\n'
