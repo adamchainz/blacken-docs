@@ -95,7 +95,7 @@ class CodeBlockError(NamedTuple):
 
 
 def format_str(
-        src: str, black_mode: black.FileMode,
+        src: str, black_mode: black.FileMode, use_sphinx_default: bool = False,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
 
@@ -210,7 +210,11 @@ def format_str(
     src = MD_PYCON_RE.sub(_md_pycon_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = RST_PYCON_RE.sub(_rst_pycon_match, src)
-    src = RST_SPHINX_DEFAULT_LANG_RE.sub(_rst_sphinx_default_lang_match, src)
+    if use_sphinx_default:
+        src = RST_SPHINX_DEFAULT_LANG_RE.sub(
+            _rst_sphinx_default_lang_match,
+            src,
+        )
     src = LATEX_RE.sub(_latex_match, src)
     src = LATEX_PYCON_RE.sub(_latex_pycon_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)
@@ -218,11 +222,14 @@ def format_str(
 
 
 def format_file(
-        filename: str, black_mode: black.FileMode, skip_errors: bool,
+        filename: str,
+        black_mode: black.FileMode,
+        skip_errors: bool,
+        use_sphinx_default: bool,
 ) -> int:
     with open(filename, encoding='UTF-8') as f:
         contents = f.read()
-    new_contents, errors = format_str(contents, black_mode)
+    new_contents, errors = format_str(contents, black_mode, use_sphinx_default)
     for error in errors:
         lineno = contents[:error.offset].count('\n') + 1
         print(f'{filename}:{lineno}: code block parse error {error.exc}')
@@ -255,6 +262,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         '-S', '--skip-string-normalization', action='store_true',
     )
     parser.add_argument('-E', '--skip-errors', action='store_true')
+    parser.add_argument(
+        '--use-sphinx-default', action='store_true',
+    )
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
 
@@ -266,5 +276,10 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     retv = 0
     for filename in args.filenames:
-        retv |= format_file(filename, black_mode, skip_errors=args.skip_errors)
+        retv |= format_file(
+            filename,
+            black_mode,
+            skip_errors=args.skip_errors,
+            use_sphinx_default=args.use_sphinx_default,
+        )
     return retv
