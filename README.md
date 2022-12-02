@@ -29,6 +29,7 @@ options:
 Following additional parameters can be used:
 
  - `-E` / `--skip-errors`
+ - `--use-sphinx-default`
 
 `blacken-docs` will format code in the following block types:
 
@@ -58,6 +59,16 @@ Following additional parameters can be used:
         def hello():
             print("hello world")
 ```
+
+(rst using Sphinx default for blocks marked with `::`)
+``rst
+    hello::
+
+        def hello():
+            print("hello world")
+```
+
+This style is enabled with the `--use-sphinx-default` option.
 
 (rst `pycon`)
 ```rst
