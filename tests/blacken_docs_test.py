@@ -481,6 +481,22 @@ def test_integration_ignored_syntax_error(tmpdir, capsys):
     )
 
 
+def test_integration_dry_run(tmpdir, capsys):
+    f = tmpdir.join('f.md')
+    f.write(
+        '```python\n'
+        'f(1, 2, 3)\n'
+        '```\n',
+    )
+    assert not blacken_docs.main((str(f), '--dry-run'))
+    assert not capsys.readouterr()[1]
+    assert f.read() == (
+        '```python\n'
+        'f(1, 2, 3)\n'
+        '```\n'
+    )
+
+
 def test_format_src_rst_jupyter_sphinx():
     before = (
         'hello\n'
