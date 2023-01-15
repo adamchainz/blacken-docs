@@ -42,7 +42,7 @@ RST_RE = re.compile(
     rf'(?P<code>(^((?P=indent) +.*)?\n)+)',
     re.MULTILINE,
 )
-RST_SPHINX_DEFAULT_LANG_RE = re.compile(
+RST_LITERAL_BLOCKS_RE = re.compile(
     r'(?P<before>'
     r'^(?P<indent> *)(?!\.\. )'
     r'.*::\n'
@@ -95,7 +95,10 @@ class CodeBlockError(NamedTuple):
 
 
 def format_str(
-        src: str, black_mode: black.FileMode, use_sphinx_default: bool = False,
+        src: str,
+        black_mode: black.FileMode,
+        *,
+        rst_literal_blocks: bool = False,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
 
@@ -127,7 +130,7 @@ def format_str(
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
-    def _rst_sphinx_default_lang_match(match: Match[str]) -> str:
+    def _rst_literal_blocks_match(match: Match[str]) -> str:
         min_indent = min(INDENT_RE.findall(match['code']))
         trailing_ws_match = TRAILING_NL_RE.search(match['code'])
         assert trailing_ws_match
@@ -210,9 +213,9 @@ def format_str(
     src = MD_PYCON_RE.sub(_md_pycon_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = RST_PYCON_RE.sub(_rst_pycon_match, src)
-    if use_sphinx_default:
-        src = RST_SPHINX_DEFAULT_LANG_RE.sub(
-            _rst_sphinx_default_lang_match,
+    if rst_literal_blocks:
+        src = RST_LITERAL_BLOCKS_RE.sub(
+            _rst_literal_blocks_match,
             src,
         )
     src = LATEX_RE.sub(_latex_match, src)
@@ -225,11 +228,15 @@ def format_file(
         filename: str,
         black_mode: black.FileMode,
         skip_errors: bool,
-        use_sphinx_default: bool,
+        rst_literal_blocks: bool,
 ) -> int:
     with open(filename, encoding='UTF-8') as f:
         contents = f.read()
-    new_contents, errors = format_str(contents, black_mode, use_sphinx_default)
+    new_contents, errors = format_str(
+        contents,
+        black_mode,
+        rst_literal_blocks=rst_literal_blocks,
+    )
     for error in errors:
         lineno = contents[:error.offset].count('\n') + 1
         print(f'{filename}:{lineno}: code block parse error {error.exc}')
@@ -263,7 +270,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument('-E', '--skip-errors', action='store_true')
     parser.add_argument(
-        '--use-sphinx-default', action='store_true',
+        '--rst-literal-blocks', action='store_true',
     )
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
@@ -280,6 +287,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             filename,
             black_mode,
             skip_errors=args.skip_errors,
-            use_sphinx_default=args.use_sphinx_default,
+            rst_literal_blocks=args.rst_literal_blocks,
         )
     return retv

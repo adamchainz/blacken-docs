@@ -197,7 +197,7 @@ def test_format_src_rst():
     )
 
 
-def test_format_src_rst_sphinx_default_language():
+def test_format_src_rst_literal_blocks():
     before = (
         'hello::\n'
         '\n'
@@ -205,7 +205,9 @@ def test_format_src_rst_sphinx_default_language():
         '\n'
         'world\n'
     )
-    after, _ = blacken_docs.format_str(before, BLACK_MODE, True)
+    after, _ = blacken_docs.format_str(
+        before, BLACK_MODE, rst_literal_blocks=True,
+    )
     assert after == (
         'hello::\n'
         '\n'

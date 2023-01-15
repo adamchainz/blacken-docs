@@ -29,7 +29,7 @@ options:
 Following additional parameters can be used:
 
  - `-E` / `--skip-errors`
- - `--use-sphinx-default`
+ - `--rst-literal-blocks`
 
 `blacken-docs` will format code in the following block types:
 
@@ -60,14 +60,6 @@ Following additional parameters can be used:
             print("hello world")
 ```
 
-(rst using Sphinx default for blocks marked with `::`)
-``rst
-    hello::
-
-        def hello():
-            print("hello world")
-```
-
 This style is enabled with the `--use-sphinx-default` option.
 
 (rst `pycon`)
@@ -77,6 +69,19 @@ This style is enabled with the `--use-sphinx-default` option.
         >>> def hello():
         ...     print("hello world")
         ...
+```
+
+(rst literal blocks - activated with ``--rst-literal-blocks``)
+
+reStructuredText [literal blocks](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks) are marked with `::` and can be any monospaced text by default.
+However Sphinx interprets them as Python code [by default](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#rst-literal-blocks).
+If your project uses Sphinx and such a configuration, add `--rst-literal-blocks` to also format such blocks.
+
+``rst
+    An example::
+
+        def hello():
+            print("hello world")
 ```
 
 (latex)
