@@ -26,10 +26,6 @@ click==8.1.3 \
     --hash=sha256:7682dc8afb30297001674575ea00d1814d808d6a36af415a82bd481d37ba7b8e \
     --hash=sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48
     # via black
-covdefaults==2.2.2 \
-    --hash=sha256:10c193cbf290675961a09166d7cdea8a783655e04009f5493d50685fe6ec82f3 \
-    --hash=sha256:e543862ee0347769b47b27fa586d690e6b91587a3dcaaf8552fcfb1fac03d061
-    # via -r requirements.in
 coverage==7.0.5 \
     --hash=sha256:051afcbd6d2ac39298d62d340f94dbb6a1f31de06dfaf6fcef7b759dd3860c45 \
     --hash=sha256:0a1890fca2962c4f1ad16551d660b46ea77291fba2cc21c024cd527b9d9c8809 \
@@ -82,9 +78,7 @@ coverage==7.0.5 \
     --hash=sha256:ef14d75d86f104f03dea66c13188487151760ef25dd6b2dbd541885185f05f40 \
     --hash=sha256:f26648e1b3b03b6022b48a9b910d0ae209e2d51f50441db5dce5b530fad6d9b1 \
     --hash=sha256:f67472c09a0c7486e27f3275f617c964d25e35727af952869dd496b9b5b7f6a3
-    # via
-    #   -r requirements.in
-    #   covdefaults
+    # via -r requirements.in
 iniconfig==2.0.0 \
     --hash=sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3 \
     --hash=sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374
