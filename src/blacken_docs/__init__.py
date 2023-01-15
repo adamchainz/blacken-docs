@@ -44,8 +44,7 @@ RST_RE = re.compile(
 )
 RST_LITERAL_BLOCKS_RE = re.compile(
     r'(?P<before>'
-    r'^(?P<indent> *)(?!\.\. )'
-    r'.*::\n'
+    r'^(?P<indent> *)(?!\.\. ).*::\n'
     r'((?P=indent) +:.*\n)*'
     r'\n*'
     r')'
