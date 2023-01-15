@@ -130,6 +130,8 @@ def format_str(
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
     def _rst_literal_blocks_match(match: Match[str]) -> str:
+        if not match['code'].strip():
+            return match[0]
         min_indent = min(INDENT_RE.findall(match['code']))
         trailing_ws_match = TRAILING_NL_RE.search(match['code'])
         assert trailing_ws_match

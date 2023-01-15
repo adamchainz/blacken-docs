@@ -236,6 +236,23 @@ def test_format_src_rst_literal_blocks_nested():
     assert errors == []
 
 
+def test_format_src_rst_literal_blocks_empty():
+    before = dedent(
+        '''
+        Example::
+
+        .. warning::
+
+            There was no example.
+        ''',
+    )
+    after, errors = blacken_docs.format_str(
+        before, BLACK_MODE, rst_literal_blocks=True,
+    )
+    assert after == before
+    assert errors == []
+
+
 def test_format_src_rst_sphinx_doctest():
     before = (
         '.. testsetup:: group1\n'
