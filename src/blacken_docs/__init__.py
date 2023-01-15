@@ -246,7 +246,3 @@ def main(argv: Sequence[str] | None = None) -> int:
     for filename in args.filenames:
         retv |= format_file(filename, black_mode, skip_errors=args.skip_errors)
     return retv
-
-
-if __name__ == '__main__':  # pragma: no cover
-    raise SystemExit(main())
