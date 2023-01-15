@@ -39,3 +39,5 @@ repos:
     rev: v0.982
     hooks:
     -   id: mypy
+        additional_dependencies:
+        - black==22.12.0

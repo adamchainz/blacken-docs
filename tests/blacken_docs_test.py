@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import black
+from black.const import DEFAULT_LINE_LENGTH
 
 import blacken_docs
 
 
-BLACK_MODE = black.FileMode(line_length=black.DEFAULT_LINE_LENGTH)
+BLACK_MODE = black.FileMode(line_length=DEFAULT_LINE_LENGTH)
 
 
 def test_format_src_trivial():

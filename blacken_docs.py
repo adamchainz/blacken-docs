@@ -10,6 +10,8 @@ from typing import NamedTuple
 from typing import Sequence
 
 import black
+from black.const import DEFAULT_LINE_LENGTH
+from black.mode import TargetVersion
 
 
 MD_RE = re.compile(
@@ -117,7 +119,7 @@ def format_str(
 
     def _pycon_match(match: Match[str]) -> str:
         code = ''
-        fragment = None
+        fragment: str | None = None
 
         def finish_fragment() -> None:
             nonlocal code
@@ -216,15 +218,15 @@ def format_file(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-l', '--line-length', type=int, default=black.DEFAULT_LINE_LENGTH,
+        '-l', '--line-length', type=int, default=DEFAULT_LINE_LENGTH,
     )
     parser.add_argument(
         '-t',
         '--target-version',
         action='append',
-        type=lambda v: black.TargetVersion[v.upper()],
+        type=lambda v: TargetVersion[v.upper()],
         default=[],
-        help=f'choices: {[v.name.lower() for v in black.TargetVersion]}',
+        help=f'choices: {[v.name.lower() for v in TargetVersion]}',
         dest='target_versions',
     )
     parser.add_argument(
