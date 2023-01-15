@@ -1,0 +1,4 @@
+black
+coverage
+pytest
+pytest-randomly
