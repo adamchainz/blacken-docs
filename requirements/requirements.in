@@ -1,4 +1,4 @@
-black
+black>=22.1.0
 coverage
 pytest
 pytest-randomly
