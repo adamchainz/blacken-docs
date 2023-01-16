@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from textwrap import dedent
+
 import black
 from black.const import DEFAULT_LINE_LENGTH
 
@@ -195,6 +197,60 @@ def test_format_src_rst():
         '\n'
         'world\n'
     )
+
+
+def test_format_src_rst_literal_blocks():
+    before = (
+        'hello::\n'
+        '\n'
+        '    f(1,2,3)\n'
+        '\n'
+        'world\n'
+    )
+    after, _ = blacken_docs.format_str(
+        before, BLACK_MODE, rst_literal_blocks=True,
+    )
+    assert after == (
+        'hello::\n'
+        '\n'
+        '    f(1, 2, 3)\n'
+        '\n'
+        'world\n'
+    )
+
+
+def test_format_src_rst_literal_blocks_nested():
+    before = dedent(
+        '''
+        * hello
+
+          .. warning::
+
+            don't hello too much
+        ''',
+    )
+    after, errors = blacken_docs.format_str(
+        before, BLACK_MODE, rst_literal_blocks=True,
+    )
+    assert after == before
+    assert errors == []
+
+
+def test_format_src_rst_literal_blocks_empty():
+    before = dedent(
+        '''
+        Example::
+
+        .. warning::
+
+            There was no example.
+        ''',
+    )
+    after, errors = blacken_docs.format_str(
+        before, BLACK_MODE, rst_literal_blocks=True,
+    )
+    assert after == before
+    assert errors == []
 
 
 def test_format_src_rst_sphinx_doctest():
