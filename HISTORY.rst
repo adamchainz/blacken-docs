@@ -2,6 +2,9 @@
 History
 =======
 
+1.13.0 (2023-01-16)
+-------------------
+
 * Note Adam Johnson is new maintainer.
 
 * Require Black 22.1.0+.
