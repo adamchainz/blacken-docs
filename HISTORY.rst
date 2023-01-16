@@ -2,6 +2,8 @@
 History
 =======
 
+* Note Adam Johnson is new maintainer.
+
 * Require Black 22.1.0+.
 
 * Add ``--rst-literal-blocks`` option, to also format text in reStructuredText literal blocks, starting with ``::``.
