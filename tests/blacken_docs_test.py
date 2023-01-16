@@ -157,7 +157,7 @@ def test_format_src_latex_minted_pycon_indented():
     )
 
 
-def test_src_pythontex(tmpdir):
+def test_src_pythontex():
     before = (
         'hello\n'
         '\\begin{pyblock}\n'
@@ -305,25 +305,25 @@ def test_format_src_rst_python_inside_non_python_code_block():
     assert after == before
 
 
-def test_integration_ok(tmpdir, capsys):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_ok(tmp_path, capsys):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         'f(1, 2, 3)\n'
         '```\n',
     )
     assert not blacken_docs.main((str(f),))
     assert not capsys.readouterr()[1]
-    assert f.read() == (
+    assert f.read_text() == (
         '```python\n'
         'f(1, 2, 3)\n'
         '```\n'
     )
 
 
-def test_integration_modifies(tmpdir, capsys):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_modifies(tmp_path, capsys):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         'f(1,2,3)\n'
         '```\n',
@@ -331,23 +331,23 @@ def test_integration_modifies(tmpdir, capsys):
     assert blacken_docs.main((str(f),))
     out, _ = capsys.readouterr()
     assert out == f'{f}: Rewriting...\n'
-    assert f.read() == (
+    assert f.read_text() == (
         '```python\n'
         'f(1, 2, 3)\n'
         '```\n'
     )
 
 
-def test_integration_line_length(tmpdir):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_line_length(tmp_path):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         'foo(very_very_very_very_very_very_very, long_long_long_long_long)\n'
         '```\n',
     )
     assert not blacken_docs.main((str(f), '--line-length=80'))
     assert blacken_docs.main((str(f), '--line-length=50'))
-    assert f.read() == (
+    assert f.read_text() == (
         '```python\n'
         'foo(\n'
         '    very_very_very_very_very_very_very,\n'
@@ -357,9 +357,9 @@ def test_integration_line_length(tmpdir):
     )
 
 
-def test_integration_py36(tmpdir):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_py36(tmp_path):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         'def very_very_long_function_name(\n'
         '    very_very_very_very_very_very,\n'
@@ -371,7 +371,7 @@ def test_integration_py36(tmpdir):
     )
     assert not blacken_docs.main((str(f),))
     assert blacken_docs.main((str(f), '--target-version=py36'))
-    assert f.read() == (
+    assert f.read_text() == (
         '```python\n'
         'def very_very_long_function_name(\n'
         '    very_very_very_very_very_very,\n'
@@ -383,9 +383,9 @@ def test_integration_py36(tmpdir):
     )
 
 
-def test_integration_filename_last(tmpdir):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_filename_last(tmp_path):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         'def very_very_long_function_name(\n'
         '    very_very_very_very_very_very,\n'
@@ -397,7 +397,7 @@ def test_integration_filename_last(tmpdir):
     )
     assert not blacken_docs.main((str(f),))
     assert blacken_docs.main(('--target-version', 'py36', str(f)))
-    assert f.read() == (
+    assert f.read_text() == (
         '```python\n'
         'def very_very_long_function_name(\n'
         '    very_very_very_very_very_very,\n'
@@ -409,9 +409,9 @@ def test_integration_filename_last(tmpdir):
     )
 
 
-def test_integration_multiple_target_version(tmpdir):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_multiple_target_version(tmp_path):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         'def very_very_long_function_name(\n'
         '    very_very_very_very_very_very,\n'
@@ -427,24 +427,24 @@ def test_integration_multiple_target_version(tmpdir):
     )
 
 
-def test_integration_skip_string_normalization(tmpdir):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_skip_string_normalization(tmp_path):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         "f('hi')\n"
         '```\n',
     )
     assert not blacken_docs.main((str(f), '--skip-string-normalization'))
-    assert f.read() == (
+    assert f.read_text() == (
         '```python\n'
         "f('hi')\n"
         '```\n'
     )
 
 
-def test_integration_syntax_error(tmpdir, capsys):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_syntax_error(tmp_path, capsys):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         'f(\n'
         '```\n',
@@ -452,16 +452,16 @@ def test_integration_syntax_error(tmpdir, capsys):
     assert blacken_docs.main((str(f),))
     out, _ = capsys.readouterr()
     assert out.startswith(f'{f}:1: code block parse error')
-    assert f.read() == (
+    assert f.read_text() == (
         '```python\n'
         'f(\n'
         '```\n'
     )
 
 
-def test_integration_ignored_syntax_error(tmpdir, capsys):
-    f = tmpdir.join('f.md')
-    f.write(
+def test_integration_ignored_syntax_error(tmp_path, capsys):
+    f = tmp_path / 'f.md'
+    f.write_text(
         '```python\n'
         'f( )\n'
         '```\n'
@@ -472,7 +472,7 @@ def test_integration_ignored_syntax_error(tmpdir, capsys):
     )
     assert blacken_docs.main((str(f), '--skip-errors'))
     out, _ = capsys.readouterr()
-    assert f.read() == (
+    assert f.read_text() == (
         '```python\n'
         'f()\n'
         '```\n'
