@@ -4,6 +4,9 @@ History
 
 * Require Black 22.1.0+.
 
+* Add ``--rst-literal-blocks`` option, to also format text in reStructuredText literal blocks, starting with ``::``.
+  Sphinx highlights these with the project’s default language, which defaults to Python.
+
 1.12.1 (2022-01-30)
 -------------------
 
