@@ -6,7 +6,6 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: debug-statements
-    -   id: name-tests-test
     -   id: requirements-txt-fixer
 -   repo: https://github.com/asottile/reorder_python_imports
     rev: v3.8.5
