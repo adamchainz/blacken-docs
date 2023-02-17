@@ -48,12 +48,6 @@ Add the following to the ``repos`` section of your ``.pre-commit-config.yaml`` f
             additional_dependencies:
             - black==22.12.0
 
-Then, reformat your entire project:
-
-.. code-block:: sh
-
-    pre-commit run blacken-docs --all-files
-
 Since Black is a moving target, it’s best to pin it in ``additional_dependencies``.
 Upgrade as appropriate.
 
