@@ -2,6 +2,10 @@
 Changelog
 =========
 
+* Add support for MyST - Markedly structured text.
+
+  Thanks to Zebedee Nicholls in `PR #239 <https://github.com/adamchainz/blacken-docs/pull/239>`__.
+
 1.16.0 (2023-08-16)
 -------------------
 
