@@ -29,7 +29,7 @@ Use **pip**:
 
     python -m pip install blacken-docs
 
-Python 3.7 to 3.11 supported.
+Python 3.7 to 3.12 supported.
 
 Black 22.1.0+ supported.
 
