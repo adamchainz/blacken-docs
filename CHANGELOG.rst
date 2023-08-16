@@ -2,6 +2,11 @@
 Changelog
 =========
 
+* Remove ``language_version`` from ``.pre-commit-hooks.yaml``.
+  This change allows ``default_language_version`` in ``.pre-commit-config.yaml` to take precedence.
+
+  Thanks to Aneesh Agrawal in `PR #258 <https://github.com/adamchainz/blacken-docs/pull/258>`__.
+
 1.15.0 (2023-07-09)
 -------------------
 
