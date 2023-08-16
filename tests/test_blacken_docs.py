@@ -470,9 +470,10 @@ def test_integration_line_length(tmp_path):
     )
 
     result = blacken_docs.main((str(f), "--line-length=80"))
-
     assert result == 0
-    assert blacken_docs.main((str(f), "--line-length=50"))
+
+    result2 = blacken_docs.main((str(f), "--line-length=50"))
+    assert result2 == 1
     assert f.read_text() == (
         "```python\n"
         "foo(\n"
@@ -480,6 +481,30 @@ def test_integration_line_length(tmp_path):
         "    long_long_long_long_long,\n"
         ")\n"
         "```\n"
+    )
+
+
+def test_integration_preview(tmp_path):
+    f = tmp_path / "f.md"
+    f.write_text(
+        dedent(
+            """\
+            ```python
+            x = 'a' 'b'
+            ```
+            """
+        )
+    )
+
+    result = blacken_docs.main((str(f), "--preview"))
+
+    assert result == 1
+    assert f.read_text() == dedent(
+        """\
+        ```python
+        x = "ab"
+        ```
+        """
     )
 
 
