@@ -12,6 +12,10 @@ Changelog
 
   Thanks to Julianus Pfeuffer for the report in `Issue #217 <https://github.com/adamchainz/blacken-docs/issues/217>`__.
 
+* Use exit code 2 to indicate errors from Black, whilst exit code 1 remains for “files have been formatted”.
+
+  Thanks to Julianus Pfeuffer for the report in `Issue #218 <https://github.com/adamchainz/blacken-docs/issues/218>`__.
+
 * Remove ``language_version`` from ``.pre-commit-hooks.yaml``.
   This change allows ``default_language_version`` in ``.pre-commit-config.yaml` to take precedence.
 
