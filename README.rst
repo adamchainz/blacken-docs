@@ -60,7 +60,7 @@ Upgrade as appropriate.
 Usage
 =====
 
-blacken-docs is a commandline tool that rewrites documentation files in place.
+blacken-docs is a command line tool that rewrites documentation files in place.
 It supports Markdown, reStructuredText, and LaTex files.
 Additionally, you can run it on Python files to reformat Markdown and reStructuredText within docstrings.
 
@@ -71,6 +71,26 @@ Run ``blacken-docs`` with the filenames to rewrite:
     blacken-docs README.rst
 
 If any file is modified, ``blacken-docs`` exits nonzero.
+
+``blacken-docs`` does not have any ability to recurse through directories.
+Use the pre-commit integration, globbing, or another technique for applying to many files.
+For example, |with git ls-files pipe xargs|_:
+
+.. |with git ls-files pipe xargs| replace:: with ``git ls-files | xargs``
+.. _with git ls-files pipe xargs: https://adamj.eu/tech/2022/03/09/how-to-run-a-command-on-many-files-in-your-git-repository/
+
+.. code-block:: sh
+
+    git ls-files -z -- '*.py' | xargs -0 blacken-docs
+
+…or PowerShell’s |ForEach-Object|__:
+
+.. |ForEach-Object| replace:: ``ForEach-Object``
+__ https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/foreach-object
+
+.. code-block:: powershell
+
+    git ls-files -- '*.py' | %{blacken-docs $_}
 
 blacken-docs currently passes the following options through to Black:
 
