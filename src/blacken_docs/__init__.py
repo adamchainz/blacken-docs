@@ -21,6 +21,12 @@ MD_RE = re.compile(
     r"(?P<after>^(?P=indent)```\s*$)",
     re.DOTALL | re.MULTILINE,
 )
+MD_BRACE_RE = re.compile(
+    r"(?P<before>^(?P<indent> *)```\s*\{\s*\.python( [^\}\n]*?)?\}\s*?\n)"
+    r"(?P<code>.*?)"
+    r"(?P<after>^(?P=indent)```\s*$)",
+    re.DOTALL | re.MULTILINE,
+)
 MD_PYCON_RE = re.compile(
     r"(?P<before>^(?P<indent> *)```\s*pycon( .*?)?\n)"
     r"(?P<code>.*?)"
@@ -212,6 +218,7 @@ def format_str(
         return f'{match["before"]}{code}{match["after"]}'
 
     src = MD_RE.sub(_md_match, src)
+    src = MD_BRACE_RE.sub(_md_match, src)
     src = MD_PYCON_RE.sub(_md_pycon_match, src)
     src = RST_RE.sub(_rst_match, src)
     src = RST_PYCON_RE.sub(_rst_pycon_match, src)
