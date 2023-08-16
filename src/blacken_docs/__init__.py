@@ -261,6 +261,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=int,
         default=DEFAULT_LINE_LENGTH,
     )
+    parser.add_argument("--preview", action="store_true")
+    parser.add_argument(
+        "-S",
+        "--skip-string-normalization",
+        action="store_true",
+    )
     parser.add_argument(
         "-t",
         "--target-version",
@@ -269,11 +275,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=[],
         help=f"choices: {[v.name.lower() for v in TargetVersion]}",
         dest="target_versions",
-    )
-    parser.add_argument(
-        "-S",
-        "--skip-string-normalization",
-        action="store_true",
     )
     parser.add_argument("-E", "--skip-errors", action="store_true")
     parser.add_argument(
@@ -284,9 +285,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     black_mode = black.FileMode(
-        target_versions=set(args.target_versions),
         line_length=args.line_length,
+        preview=args.preview,
         string_normalization=not args.skip_string_normalization,
+        target_versions=set(args.target_versions),
     )
 
     retv = 0

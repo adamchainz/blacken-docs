@@ -16,6 +16,8 @@ Changelog
 
   Thanks to Julianus Pfeuffer for the report in `Issue #218 <https://github.com/adamchainz/blacken-docs/issues/218>`__.
 
+* Support passing the ``--preview`` option through to Black, to select the future style.
+
 * Remove ``language_version`` from ``.pre-commit-hooks.yaml``.
   This change allows ``default_language_version`` in ``.pre-commit-config.yaml` to take precedence.
 

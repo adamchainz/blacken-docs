@@ -94,9 +94,25 @@ __ https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core
 
 blacken-docs currently passes the following options through to Black:
 
-* ``-l`` / ``--line-length``
-* ``-t`` / ``--target-version``
-* ``-S`` / ``--skip-string-normalization``
+* |-l / --line-length|__
+
+  .. |-l / --line-length| replace:: ``-l`` / ``--line-length``
+  __ https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#l-line-length
+
+* |--preview|__
+
+  .. |--preview| replace:: ``--preview``
+  __ https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#preview
+
+* |-S / --skip-string-normalization|__
+
+  .. |-S / --skip-string-normalization| replace:: ``-S`` / ``--skip-string-normalization``
+  __ https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#s-skip-string-normalization
+
+* |-t / --target-version|__
+
+  .. |-t / --target-version| replace:: ``-t`` / ``--target-version``
+  __ https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#t-target-version
 
 It also has the below extra options:
 
