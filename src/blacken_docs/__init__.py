@@ -243,7 +243,7 @@ def format_file(
         lineno = contents[: error.offset].count("\n") + 1
         print(f"{filename}:{lineno}: code block parse error {error.exc}")
     if errors and not skip_errors:
-        return 1
+        return 2
     if contents != new_contents:
         print(f"{filename}: Rewriting...")
         with open(filename, "w", encoding="UTF-8") as f:

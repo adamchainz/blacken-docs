@@ -439,7 +439,10 @@ def test_integration_ok(tmp_path, capsys):
     f.write_text(
         "```python\n" "f(1, 2, 3)\n" "```\n",
     )
-    assert not blacken_docs.main((str(f),))
+
+    result = blacken_docs.main((str(f),))
+
+    assert result == 0
     assert not capsys.readouterr()[1]
     assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
 
@@ -449,7 +452,10 @@ def test_integration_modifies(tmp_path, capsys):
     f.write_text(
         "```python\n" "f(1,2,3)\n" "```\n",
     )
-    assert blacken_docs.main((str(f),))
+
+    result = blacken_docs.main((str(f),))
+
+    assert result == 1
     out, _ = capsys.readouterr()
     assert out == f"{f}: Rewriting...\n"
     assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
@@ -462,7 +468,10 @@ def test_integration_line_length(tmp_path):
         "foo(very_very_very_very_very_very_very, long_long_long_long_long)\n"
         "```\n",
     )
-    assert not blacken_docs.main((str(f), "--line-length=80"))
+
+    result = blacken_docs.main((str(f), "--line-length=80"))
+
+    assert result == 0
     assert blacken_docs.main((str(f), "--line-length=50"))
     assert f.read_text() == (
         "```python\n"
@@ -486,8 +495,13 @@ def test_integration_py36(tmp_path):
         "    pass\n"
         "```\n",
     )
-    assert not blacken_docs.main((str(f),))
-    assert blacken_docs.main((str(f), "--target-version=py36"))
+
+    result = blacken_docs.main((str(f),))
+    assert result == 0
+
+    result2 = blacken_docs.main((str(f), "--target-version=py36"))
+
+    assert result2 == 1
     assert f.read_text() == (
         "```python\n"
         "def very_very_long_function_name(\n"
@@ -512,8 +526,13 @@ def test_integration_filename_last(tmp_path):
         "    pass\n"
         "```\n",
     )
-    assert not blacken_docs.main((str(f),))
-    assert blacken_docs.main(("--target-version", "py36", str(f)))
+
+    result = blacken_docs.main((str(f),))
+    assert result == 0
+
+    result2 = blacken_docs.main(("--target-version", "py36", str(f)))
+
+    assert result2 == 1
     assert f.read_text() == (
         "```python\n"
         "def very_very_long_function_name(\n"
@@ -538,10 +557,14 @@ def test_integration_multiple_target_version(tmp_path):
         "    pass\n"
         "```\n",
     )
-    assert not blacken_docs.main((str(f),))
-    assert not blacken_docs.main(
+
+    result = blacken_docs.main((str(f),))
+    assert result == 0
+
+    result2 = blacken_docs.main(
         ("--target-version", "py35", "--target-version", "py36", str(f)),
     )
+    assert result2 == 0
 
 
 def test_integration_skip_string_normalization(tmp_path):
@@ -549,7 +572,10 @@ def test_integration_skip_string_normalization(tmp_path):
     f.write_text(
         "```python\n" "f('hi')\n" "```\n",
     )
-    assert not blacken_docs.main((str(f), "--skip-string-normalization"))
+
+    result = blacken_docs.main((str(f), "--skip-string-normalization"))
+
+    assert result == 0
     assert f.read_text() == ("```python\n" "f('hi')\n" "```\n")
 
 
@@ -558,7 +584,10 @@ def test_integration_syntax_error(tmp_path, capsys):
     f.write_text(
         "```python\n" "f(\n" "```\n",
     )
-    assert blacken_docs.main((str(f),))
+
+    result = blacken_docs.main((str(f),))
+
+    assert result == 2
     out, _ = capsys.readouterr()
     assert out.startswith(f"{f}:1: code block parse error")
     assert f.read_text() == ("```python\n" "f(\n" "```\n")
@@ -569,7 +598,10 @@ def test_integration_ignored_syntax_error(tmp_path, capsys):
     f.write_text(
         "```python\n" "f( )\n" "```\n" "\n" "```python\n" "f(\n" "```\n",
     )
-    assert blacken_docs.main((str(f), "--skip-errors"))
+
+    result = blacken_docs.main((str(f), "--skip-errors"))
+
+    assert result == 1
     out, _ = capsys.readouterr()
     assert f.read_text() == (
         "```python\n" "f()\n" "```\n" "\n" "```python\n" "f(\n" "```\n"
