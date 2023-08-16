@@ -18,40 +18,112 @@ def test_format_src_trivial():
 
 
 def test_format_src_markdown_simple():
-    before = "```python\n" "f(1,2,3)\n" "```\n"
+    before = dedent(
+        """\
+        ```python
+        f(1,2,3)
+        ```
+        """
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == ("```python\n" "f(1, 2, 3)\n" "```\n")
+    assert after == dedent(
+        """\
+        ```python
+        f(1, 2, 3)
+        ```
+        """
+    )
 
 
 def test_format_src_markdown_leading_whitespace():
-    before = "```   python\n" "f(1,2,3)\n" "```\n"
+    before = dedent(
+        """\
+        ```   python
+        f(1,2,3)
+        ```
+        """
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == ("```   python\n" "f(1, 2, 3)\n" "```\n")
+    assert after == dedent(
+        """\
+        ```   python
+        f(1, 2, 3)
+        ```
+        """
+    )
 
 
 def test_format_src_markdown_short_name():
-    before = "```   py\n" "f(1,2,3)\n" "```\n"
+    before = dedent(
+        """\
+        ```   py
+        f(1,2,3)
+        ```
+        """
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == ("```   py\n" "f(1, 2, 3)\n" "```\n")
+    assert after == dedent(
+        """\
+        ```   py
+        f(1, 2, 3)
+        ```
+        """
+    )
 
 
 def test_format_src_markdown_options():
-    before = "```python title='example.py'\n" + "f(1,2,3)\n" + "```\n"
+    before = dedent(
+        """\
+        ```python title='example.py'
+        f(1,2,3)
+        ```
+        """
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == ("```python title='example.py'\n" + "f(1, 2, 3)\n" + "```\n")
+    assert after == dedent(
+        """\
+        ```python title='example.py'
+        f(1, 2, 3)
+        ```
+        """
+    )
 
 
 def test_format_src_markdown_trailing_whitespace():
-    before = "```python\n" "f(1,2,3)\n" "```    \n"
+    before = dedent(
+        """\
+        ```python
+        f(1,2,3)
+        ```    \n"""
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == ("```python\n" "f(1, 2, 3)\n" "```    \n")
+    assert after == dedent(
+        """\
+        ```python
+        f(1, 2, 3)
+        ```    \n"""
+    )
 
 
 def test_format_src_indented_markdown():
-    before = "- do this pls:\n" "  ```python\n" "  f(1,2,3)\n" "  ```\n" "- also this\n"
+    before = dedent(
+        """\
+        - do this pls:
+          ```python
+          f(1,2,3)
+          ```
+        - also this
+        """
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == (
-        "- do this pls:\n" "  ```python\n" "  f(1, 2, 3)\n" "  ```\n" "- also this\n"
+    assert after == dedent(
+        """\
+        - do this pls:
+          ```python
+          f(1, 2, 3)
+          ```
+        - also this
+        """
     )
 
 
