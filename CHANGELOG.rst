@@ -2,6 +2,9 @@
 Changelog
 =========
 
+1.16.0 (2023-08-16)
+-------------------
+
 * Allow Markdown fence options.
 
   Thanks to initial work from Matthew Anderson in `PR #246 <https://github.com/adamchainz/blacken-docs/pull/246>`__.
