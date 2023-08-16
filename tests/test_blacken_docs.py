@@ -29,6 +29,12 @@ def test_format_src_markdown_leading_whitespace():
     assert after == ("```   python\n" "f(1, 2, 3)\n" "```\n")
 
 
+def test_format_src_markdown_short_name():
+    before = "```   py\n" "f(1,2,3)\n" "```\n"
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == ("```   py\n" "f(1, 2, 3)\n" "```\n")
+
+
 def test_format_src_markdown_options():
     before = "```python title='example.py'\n" + "f(1,2,3)\n" + "```\n"
     after, _ = blacken_docs.format_str(before, BLACK_MODE)

@@ -6,6 +6,8 @@ Changelog
 
   Thanks to initial work from Matthew Anderson in `PR #246 <https://github.com/adamchainz/blacken-docs/pull/246>`__.
 
+* Expand Markdown detection to all Python language names from Pygments: ``py``, ``sage``, ``python3``, ``py3``, and ``numpy``.
+
 * Remove ``language_version`` from ``.pre-commit-hooks.yaml``.
   This change allows ``default_language_version`` in ``.pre-commit-config.yaml` to take precedence.
 

@@ -13,8 +13,10 @@ from black.const import DEFAULT_LINE_LENGTH
 from black.mode import TargetVersion
 
 
+PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
+PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"
 MD_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```\s*python( .*?)?\n)"
+    r"(?P<before>^(?P<indent> *)```\s*" + PYGMENTS_PY_LANGS_RE_FRAGMENT + r"( .*?)?\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)```\s*$)",
     re.DOTALL | re.MULTILINE,
@@ -25,7 +27,6 @@ MD_PYCON_RE = re.compile(
     r"(?P<after>^(?P=indent)```.*$)",
     re.DOTALL | re.MULTILINE,
 )
-RST_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
 BLOCK_TYPES = "(code|code-block|sourcecode|ipython)"
 DOCTEST_TYPES = "(testsetup|testcleanup|testcode)"
 RST_RE = re.compile(
@@ -117,7 +118,7 @@ def format_str(
 
     def _rst_match(match: Match[str]) -> str:
         lang = match["lang"]
-        if lang is not None and lang not in RST_PY_LANGS:
+        if lang is not None and lang not in PYGMENTS_PY_LANGS:
             return match[0]
         min_indent = min(INDENT_RE.findall(match["code"]))
         trailing_ws_match = TRAILING_NL_RE.search(match["code"])
