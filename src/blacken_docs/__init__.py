@@ -29,7 +29,7 @@ PYGMENTS_PY_LANG_CLASSES_RE_FRAGMENT = (
 MD_BRACE_RE = re.compile(
     r"(?P<before>^(?P<indent> *)```\s*\{\s*\."
     + PYGMENTS_PY_LANG_CLASSES_RE_FRAGMENT
-    + "( [^\}\n]*?)?\}\s*?\n)"
+    + "( [^\\}\n]*?)?\\}\\s*?\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)```\s*$)",
     re.DOTALL | re.MULTILINE,
