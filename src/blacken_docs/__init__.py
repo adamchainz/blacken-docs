@@ -24,10 +24,10 @@ MD_RE = re.compile(
     re.DOTALL | re.MULTILINE,
 )
 PYGMENTS_PY_LANG_CLASSES_RE_FRAGMENT = (
-    f"({'|'.join([f'.{lang}' for lang in PYGMENTS_PY_LANGS])})"
+    "(" + "|".join([r"\." + lang for lang in PYGMENTS_PY_LANGS]) + ")"
 )
 MD_BRACE_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```\s*\{\s*\."
+    r"(?P<before>^(?P<indent> *)```\s*\{\s*"
     + PYGMENTS_PY_LANG_CLASSES_RE_FRAGMENT
     + r"( [^\}\n]*?)?\}\s*?\n)"
     r"(?P<code>.*?)"
