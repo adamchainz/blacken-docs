@@ -381,6 +381,24 @@ def test_format_src_rst_indented():
     )
 
 
+def test_format_src_rst_code_block_indent():
+    before = "\n".join(
+        [
+            ".. code-block:: python",
+            "   ",
+            "   f(1,2,3)\n",
+        ]
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == "\n".join(
+        [
+            ".. code-block:: python",
+            "   ",
+            "   f(1, 2, 3)\n",
+        ]
+    )
+
+
 def test_format_src_rst_with_highlight_directives():
     before = (
         ".. code-block:: python\n"

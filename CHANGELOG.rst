@@ -8,6 +8,10 @@ Changelog
 
 * Expand Markdown detection to all Python language names from Pygments: ``py``, ``sage``, ``python3``, ``py3``, and ``numpy``.
 
+* Preserve leading blank lines with whitespace in reStructuredText code blocks.
+
+  Thanks to Julianus Pfeuffer for the report in `Issue #217 <https://github.com/adamchainz/blacken-docs/issues/217>`__.
+
 * Remove ``language_version`` from ``.pre-commit-hooks.yaml``.
   This change allows ``default_language_version`` in ``.pre-commit-config.yaml` to take precedence.
 
