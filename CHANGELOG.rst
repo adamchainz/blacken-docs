@@ -2,6 +2,10 @@
 Changelog
 =========
 
+* Allow Markdown fence options.
+
+  Thanks to initial work from Matthew Anderson in `PR #246 <https://github.com/adamchainz/blacken-docs/pull/246>`__.
+
 * Remove ``language_version`` from ``.pre-commit-hooks.yaml``.
   This change allows ``default_language_version`` in ``.pre-commit-config.yaml` to take precedence.
 
