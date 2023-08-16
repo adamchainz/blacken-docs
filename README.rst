@@ -81,7 +81,7 @@ For example, |with git ls-files pipe xargs|_:
 
 .. code-block:: sh
 
-    git ls-files -z -- '*.py' | xargs -0 blacken-docs
+    git ls-files -z -- '*.md' | xargs -0 blacken-docs
 
 …or PowerShell’s |ForEach-Object|__:
 
@@ -90,7 +90,7 @@ __ https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core
 
 .. code-block:: powershell
 
-    git ls-files -- '*.py' | %{blacken-docs $_}
+    git ls-files -- '*.md' | %{blacken-docs $_}
 
 blacken-docs currently passes the following options through to Black:
 
