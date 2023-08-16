@@ -6,7 +6,6 @@ import re
 import textwrap
 from typing import Generator
 from typing import Match
-from typing import NamedTuple
 from typing import Sequence
 
 import black
@@ -88,9 +87,10 @@ INDENT_RE = re.compile("^ +(?=[^ ])", re.MULTILINE)
 TRAILING_NL_RE = re.compile(r"\n+\Z", re.MULTILINE)
 
 
-class CodeBlockError(NamedTuple):
-    offset: int
-    exc: Exception
+class CodeBlockError:
+    def __init__(self, offset: int, exc: Exception) -> None:
+        self.offset = offset
+        self.exc = exc
 
 
 def format_str(
