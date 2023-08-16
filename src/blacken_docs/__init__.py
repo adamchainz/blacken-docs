@@ -15,13 +15,13 @@ from black.mode import TargetVersion
 
 
 MD_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```\s*python( .*)?\n)"
+    r"(?P<before>^(?P<indent> *)```\s*python( .*?)?\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)```\s*$)",
     re.DOTALL | re.MULTILINE,
 )
 MD_PYCON_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```\s*pycon\n)"
+    r"(?P<before>^(?P<indent> *)```\s*pycon( .*?)?\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)```.*$)",
     re.DOTALL | re.MULTILINE,

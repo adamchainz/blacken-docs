@@ -29,6 +29,12 @@ def test_format_src_markdown_leading_whitespace():
     assert after == ("```   python\n" "f(1, 2, 3)\n" "```\n")
 
 
+def test_format_src_markdown_options():
+    before = "```python title='example.py'\n" + "f(1,2,3)\n" + "```\n"
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == ("```python title='example.py'\n" + "f(1, 2, 3)\n" + "```\n")
+
+
 def test_format_src_markdown_trailing_whitespace():
     before = "```python\n" "f(1,2,3)\n" "```    \n"
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
@@ -40,6 +46,47 @@ def test_format_src_indented_markdown():
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         "- do this pls:\n" "  ```python\n" "  f(1, 2, 3)\n" "  ```\n" "- also this\n"
+    )
+
+
+def test_format_src_markdown_pycon():
+    before = (
+        "hello\n"
+        "\n"
+        "```pycon\n"
+        "\n"
+        "    >>> f(1,2,3)\n"
+        "    output\n"
+        "```\n"
+        "world\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "hello\n" "\n" "```pycon\n" "\n" ">>> f(1, 2, 3)\n" "output\n" "```\n" "world\n"
+    )
+
+
+def test_format_src_markdown_pycon_options():
+    before = (
+        "hello\n"
+        "\n"
+        "```pycon title='Session 1'\n"
+        "\n"
+        "    >>> f(1,2,3)\n"
+        "    output\n"
+        "```\n"
+        "world\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "hello\n"
+        "\n"
+        "```pycon title='Session 1'\n"
+        "\n"
+        ">>> f(1, 2, 3)\n"
+        "output\n"
+        "```\n"
+        "world\n"
     )
 
 
@@ -743,21 +790,4 @@ def test_format_src_rst_pycon_comment_before_promopt():
         "\n"
         "    # Comment about next line\n"
         "    >>> pass\n"
-    )
-
-
-def test_format_src_markdown_pycon():
-    before = (
-        "hello\n"
-        "\n"
-        "```pycon\n"
-        "\n"
-        "    >>> f(1,2,3)\n"
-        "    output\n"
-        "```\n"
-        "world\n"
-    )
-    after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == (
-        "hello\n" "\n" "```pycon\n" "\n" ">>> f(1, 2, 3)\n" "output\n" "```\n" "world\n"
     )
