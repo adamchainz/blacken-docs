@@ -37,7 +37,7 @@ RST_RE = re.compile(
     rf"{DOCTEST_TYPES}::.*"
     rf")\n"
     rf"((?P=indent) +:.*\n)*"
-    rf"\n*"
+    rf"( *\n)*"
     rf")"
     rf"(?P<code>(^((?P=indent) +.*)?\n)+)",
     re.MULTILINE,
