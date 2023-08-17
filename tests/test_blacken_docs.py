@@ -13,6 +13,31 @@ from blacken_docs import __main__  # noqa: F401
 BLACK_MODE = black.FileMode(line_length=DEFAULT_LINE_LENGTH)
 
 
+
+try:
+    import tokenize_rt
+    HAS_TOKENIZE_RT = True
+except ImportError:
+    HAS_TOKENIZE_RT = False
+
+
+requires_tokenize_rt = pytest.mark.skipif(
+    not HAS_TOKENIZE_RT,
+    reason="requires tokenize-rt to be installed"
+)
+try:
+    import IPython
+    HAS_IPYTHON = True
+except ImportError:
+    HAS_IPYTHON = False
+
+
+requires_ipython = pytest.mark.skipif(
+    not HAS_IPYTHON,
+    reason="requires IPython to be installed"
+)
+
+
 def test_format_src_trivial():
     after, _ = blacken_docs.format_str("", BLACK_MODE)
     assert after == ""
@@ -435,6 +460,7 @@ def test_format_src_rst_python_inside_non_python_code_block():
     assert after == before
 
 
+@requires_tokenize_rt
 def test_integration_ok(tmp_path, capsys):
     f = tmp_path / "f.md"
     f.write_text(
@@ -448,6 +474,7 @@ def test_integration_ok(tmp_path, capsys):
     assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
 
 
+@requires_tokenize_rt
 def test_integration_modifies(tmp_path, capsys):
     f = tmp_path / "f.md"
     f.write_text(
@@ -462,6 +489,7 @@ def test_integration_modifies(tmp_path, capsys):
     assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
 
 
+@requires_tokenize_rt
 def test_integration_line_length(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(
@@ -485,6 +513,7 @@ def test_integration_line_length(tmp_path):
     )
 
 
+@requires_tokenize_rt
 def test_integration_preview(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(
@@ -509,6 +538,7 @@ def test_integration_preview(tmp_path):
     )
 
 
+@requires_tokenize_rt
 def test_integration_py36(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(
@@ -540,6 +570,7 @@ def test_integration_py36(tmp_path):
     )
 
 
+@requires_tokenize_rt
 def test_integration_filename_last(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(
@@ -571,6 +602,7 @@ def test_integration_filename_last(tmp_path):
     )
 
 
+@requires_tokenize_rt
 def test_integration_multiple_target_version(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(
@@ -593,6 +625,7 @@ def test_integration_multiple_target_version(tmp_path):
     assert result2 == 0
 
 
+@requires_tokenize_rt
 def test_integration_skip_string_normalization(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(
@@ -947,6 +980,7 @@ def test_format_src_rst_pycon_comment_before_promopt():
     )
 
 
+@requires_tokenize_rt
 def test_format_src_myst_simple():
     before = dedent(
         """\
@@ -965,6 +999,7 @@ def test_format_src_myst_simple():
     )
 
 
+@requires_tokenize_rt
 def test_format_src_myst_no_code_cell():
     before = dedent(
         """\
@@ -993,6 +1028,7 @@ def test_format_src_myst_no_code_cell():
     )
 
 
+@requires_tokenize_rt
 def test_format_src_myst_tags():
     before = dedent(
         """\
@@ -1017,6 +1053,7 @@ def test_format_src_myst_tags():
     )
 
 
+@requires_tokenize_rt
 @pytest.mark.parametrize(
     "language, supported",
     (
@@ -1062,6 +1099,7 @@ def test_format_src_myst_tags_language(language, supported):
         assert after == before
 
 
+@requires_tokenize_rt
 def test_format_src_myst_function_def():
     before = dedent(
         """\
@@ -1094,6 +1132,8 @@ def test_format_src_myst_function_def():
     )
 
 
+@requires_tokenize_rt
+@requires_ipython
 def test_format_src_myst_magic_comand():
     before = dedent(
         """\
