@@ -27,21 +27,8 @@ MD_PYCON_RE = re.compile(
     r"(?P<after>^(?P=indent)```.*$)",
     re.DOTALL | re.MULTILINE,
 )
-BLOCK_TYPES = "(code|code-block|sourcecode|ipython)"
+DEFAULT_BLOCK_TYPES = ["code", "code-block", "sourcecode", "ipython"]
 DOCTEST_TYPES = "(testsetup|testcleanup|testcode)"
-RST_RE = re.compile(
-    rf"(?P<before>"
-    rf"^(?P<indent> *)\.\. ("
-    rf"jupyter-execute::|"
-    rf"{BLOCK_TYPES}:: (?P<lang>\w+)|"
-    rf"{DOCTEST_TYPES}::.*"
-    rf")\n"
-    rf"((?P=indent) +:.*\n)*"
-    rf"( *\n)*"
-    rf")"
-    rf"(?P<code>(^((?P=indent) +.*)?\n)+)",
-    re.MULTILINE,
-)
 RST_LITERAL_BLOCKS_RE = re.compile(
     r"(?P<before>"
     r"^(?! *\.\. )(?P<indent> *).*::\n"
@@ -94,13 +81,32 @@ class CodeBlockError:
         self.exc = exc
 
 
+def compile_rst_re(block_types: list[str]) -> re.Pattern[str]:
+    pattern = f"({'|'.join(block_types)})"
+    return re.compile(
+        rf"(?P<before>"
+        rf"^(?P<indent> *)\.\. ("
+        rf"jupyter-execute::|"
+        rf"{pattern}:: (?P<lang>\w+)|"
+        rf"{DOCTEST_TYPES}::.*"
+        rf")\n"
+        rf"((?P=indent) +:.*\n)*"
+        rf"( *\n)*"
+        rf")"
+        rf"(?P<code>(^((?P=indent) +.*)?\n)+)",
+        re.MULTILINE,
+    )
+
+
 def format_str(
     src: str,
     black_mode: black.FileMode,
     *,
     rst_literal_blocks: bool = False,
+    rst_re: re.Pattern[str] | None = None,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
+    rst_re = rst_re or compile_rst_re(DEFAULT_BLOCK_TYPES)
 
     @contextlib.contextmanager
     def _collect_error(match: Match[str]) -> Generator[None, None, None]:
@@ -120,6 +126,7 @@ def format_str(
         lang = match["lang"]
         if lang is not None and lang not in PYGMENTS_PY_LANGS:
             return match[0]
+        print(match)
         min_indent = min(INDENT_RE.findall(match["code"]))
         trailing_ws_match = TRAILING_NL_RE.search(match["code"])
         assert trailing_ws_match
@@ -213,7 +220,7 @@ def format_str(
 
     src = MD_RE.sub(_md_match, src)
     src = MD_PYCON_RE.sub(_md_pycon_match, src)
-    src = RST_RE.sub(_rst_match, src)
+    src = rst_re.sub(_rst_match, src)
     src = RST_PYCON_RE.sub(_rst_pycon_match, src)
     if rst_literal_blocks:
         src = RST_LITERAL_BLOCKS_RE.sub(
@@ -231,12 +238,14 @@ def format_file(
     black_mode: black.FileMode,
     skip_errors: bool,
     rst_literal_blocks: bool,
+    rst_re: re.Pattern[str],
 ) -> int:
     with open(filename, encoding="UTF-8") as f:
         contents = f.read()
     new_contents, errors = format_str(
         contents,
         black_mode,
+        rst_re=rst_re,
         rst_literal_blocks=rst_literal_blocks,
     )
     for error in errors:
@@ -281,6 +290,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--rst-literal-blocks",
         action="store_true",
     )
+    parser.add_argument(
+        "--extend-block-types",
+        type=lambda s: s.split(","),
+        help="Comma-separated list for extra code block types to format",
+    )
     parser.add_argument("filenames", nargs="*")
     args = parser.parse_args(argv)
 
@@ -292,11 +306,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     retv = 0
+    rst_re = compile_rst_re(DEFAULT_BLOCK_TYPES + (args.extend_block_types or []))
     for filename in args.filenames:
         retv |= format_file(
             filename,
             black_mode,
             skip_errors=args.skip_errors,
+            rst_re=rst_re,
             rst_literal_blocks=args.rst_literal_blocks,
         )
     return retv

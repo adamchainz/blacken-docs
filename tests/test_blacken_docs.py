@@ -944,3 +944,39 @@ def test_format_src_rst_pycon_comment_before_promopt():
         "    # Comment about next line\n"
         "    >>> pass\n"
     )
+
+
+def test_integration_extend_block_types(tmp_path, capsys):
+    f = tmp_path / "f.rst"
+    f.write_text(
+        """
+.. code-block:: python
+
+    f(1,2,3)
+
+.. custom-block:: python
+
+    f(1,2,3)
+"""
+    )
+
+    result = blacken_docs.main(
+        (
+            "--extend-block-types",
+            "custom-block",
+            str(f),
+        )
+    )
+    assert result == 1
+    assert not capsys.readouterr()[1]
+    assert f.read_text() == (
+        """
+.. code-block:: python
+
+    f(1, 2, 3)
+
+.. custom-block:: python
+
+    f(1, 2, 3)
+"""
+    )
