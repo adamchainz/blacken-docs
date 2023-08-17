@@ -1017,17 +1017,20 @@ def test_format_src_myst_tags():
     )
 
 
-@pytest.mark.parametrize("language, supported", (
-    ("python", True),
-    ("pythona", False),
-    ("ipython", True),
-    ("py", True),
-    ("sage", False),
-    ("python3", True),
-    ("ipython3", True),
-    ("py3", True),
-    ("numpy", False),
-))
+@pytest.mark.parametrize(
+    "language, supported",
+    (
+        ("python", True),
+        ("pythona", False),
+        ("ipython", True),
+        ("py", True),
+        ("sage", False),
+        ("python3", True),
+        ("ipython3", True),
+        ("py3", True),
+        ("numpy", False),
+    ),
+)
 def test_format_src_myst_tags_language(language, supported):
     before = dedent(
         """\
@@ -1042,8 +1045,10 @@ def test_format_src_myst_tags_language(language, supported):
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
 
     if supported:
-        assert after == dedent(
-            """\
+        assert (
+            after
+            == dedent(
+                """\
             ```{code-cell}language
             ---
             tags: [some-tags]
@@ -1051,7 +1056,8 @@ def test_format_src_myst_tags_language(language, supported):
             print("hello world")
             ```
             """
-        ).replace("language", language)
+            ).replace("language", language)
+        )
     else:
         assert after == before
 
