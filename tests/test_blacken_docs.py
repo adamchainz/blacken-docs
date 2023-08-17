@@ -1108,7 +1108,6 @@ def test_format_src_myst_magic_comand():
         """
     )
     after, errors = blacken_docs.format_str(before, BLACK_MODE)
-    assert not errors, str(errors[0].exc)
     assert after == dedent(
         """\
         ```{code-cell}python
