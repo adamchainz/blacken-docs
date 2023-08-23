@@ -2,6 +2,11 @@
 Changelog
 =========
 
+* Add a `--check` option.
+  When used, blacken-docs will not modify files but indicate when changes are necessary with a message and non-zero exit code.
+
+  Thanks to Joaquim Esteves in `PR #278 <https://github.com/adamchainz/blacken-docs/pull/278>`__.
+
 1.16.0 (2023-08-16)
 -------------------
 
