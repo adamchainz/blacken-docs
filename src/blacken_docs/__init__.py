@@ -13,10 +13,14 @@ from black.const import DEFAULT_LINE_LENGTH
 from black.mode import TargetVersion
 
 
-PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
+PYGMENTS_PY_LANGS = frozenset(
+    ("python", "py", "sage", "python3", "py3", "numpy", ".py", ".python")
+)
 PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"
 MD_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```\s*" + PYGMENTS_PY_LANGS_RE_FRAGMENT + r"( .*?)?\n)"
+    r"(?P<before>^(?P<indent> *)```\s*(\{?\s*)?"
+    + PYGMENTS_PY_LANGS_RE_FRAGMENT
+    + r"( .*?)?\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)```\s*$)",
     re.DOTALL | re.MULTILINE,

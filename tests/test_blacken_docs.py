@@ -944,3 +944,57 @@ def test_format_src_rst_pycon_comment_before_promopt():
         "    # Comment about next line\n"
         "    >>> pass\n"
     )
+
+
+def test_format_src_markdown_pymdown_1():
+    before = dedent(
+        """\
+        ```{.python title='example.py'}
+        f(1,2,3)
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```{.python title='example.py'}
+        f(1, 2, 3)
+        ```
+        """
+    )
+
+
+def test_format_src_markdown_pymdown_2():
+    before = dedent(
+        """\
+        ```    {.py title='example.py'}
+        f(1,2,3)
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```    {.py title='example.py'}
+        f(1, 2, 3)
+        ```
+        """
+    )
+
+
+def test_format_src_markdown_pymdown_3():
+    before = dedent(
+        """\
+        ```{    .py .python .extra-class #id linenums="1" title="example.py"}
+        f(1,2,3)
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```{    .py .python .extra-class #id linenums="1" title="example.py"}
+        f(1, 2, 3)
+        ```
+        """
+    )
