@@ -16,13 +16,15 @@ from black.mode import TargetVersion
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
 PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"
 MD_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```\s*" + PYGMENTS_PY_LANGS_RE_FRAGMENT + r"( .*?)?\n)"
+    r"(?P<before>^(?P<indent> *)```[^\S\r\n]*"
+    + PYGMENTS_PY_LANGS_RE_FRAGMENT
+    + r"( .*?)?\n)"
     r"(?P<code>.*?)"
-    r"(?P<after>^(?P=indent)```\s*$)",
+    r"(?P<after>^(?P=indent)```[^\S\r\n]*$)",
     re.DOTALL | re.MULTILINE,
 )
 MD_PYCON_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```\s*pycon( .*?)?\n)"
+    r"(?P<before>^(?P<indent> *)```[^\S\r\n]*pycon( .*?)?\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)```.*$)",
     re.DOTALL | re.MULTILINE,
