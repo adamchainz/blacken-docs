@@ -16,7 +16,7 @@ from black.mode import TargetVersion
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
 PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"
 MD_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```\s*(\{?\s*)?(\.\s*)?"
+    r"(?P<before>^(?P<indent> *)```\s*(\{?\s*)?(\.?\s*)?"
     + PYGMENTS_PY_LANGS_RE_FRAGMENT
     + r"( .*?)?\n)"
     r"(?P<code>.*?)"
