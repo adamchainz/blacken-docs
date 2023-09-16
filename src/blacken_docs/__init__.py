@@ -114,7 +114,7 @@ def format_str(
     if off_start is not None:
         off_ranges.append((off_start, len(src)))
 
-    def _off_range(start, end):
+    def _off_range(start: int, end: int) -> bool:
         return any(start >= rng[0] and end <= rng[1] for rng in off_ranges)
 
     @contextlib.contextmanager
