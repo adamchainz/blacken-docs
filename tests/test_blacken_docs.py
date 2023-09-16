@@ -944,3 +944,19 @@ def test_format_src_rst_pycon_comment_before_promopt():
         "    # Comment about next line\n"
         "    >>> pass\n"
     )
+
+
+def test_ignore_code_block():
+    before = (
+        "<!-- blacken-docs:on -->\n"  # ignored
+        "<!-- blacken-docs:off -->\n"
+        "<!-- blacken-docs:on -->\n"
+        "<!-- blacken-docs:on -->\n"  # ignored
+        "<!-- blacken-docs:off -->\n"
+        "<!-- blacken-docs:off -->\n"  # ignored
+        "```python\n"
+        "f(1,2,3)\n"
+        "```\n"  # no on comment, off until the end
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before

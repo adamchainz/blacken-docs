@@ -86,6 +86,7 @@ PYTHONTEX_RE = re.compile(
 )
 INDENT_RE = re.compile("^ +(?=[^ ])", re.MULTILINE)
 TRAILING_NL_RE = re.compile(r"\n+\Z", re.MULTILINE)
+ON_OFF_COMMENT_RE = re.compile("<!--\s+blacken-docs:\s*(on|off)\s+-->")
 
 
 class CodeBlockError:
@@ -102,6 +103,20 @@ def format_str(
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
 
+    off_ranges = []
+    off_start = None
+    for comment in re.finditer(ON_OFF_COMMENT_RE, src):
+        if comment.group(1) == "off" and off_start is None:
+            off_start = comment.start()
+        elif comment.group(1) == "on" and off_start is not None:
+            off_ranges.append((off_start, comment.end()))
+            off_start = None
+    if off_start is not None:
+        off_ranges.append((off_start, len(src)))
+
+    def _off_range(start, end):
+        return any(start >= rng[0] and end <= rng[1] for rng in off_ranges)
+
     @contextlib.contextmanager
     def _collect_error(match: Match[str]) -> Generator[None, None, None]:
         try:
@@ -110,6 +125,8 @@ def format_str(
             errors.append(CodeBlockError(match.start(), e))
 
     def _md_match(match: Match[str]) -> str:
+        if _off_range(match.start(), match.end()):
+            return match.group(0)
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
@@ -144,6 +161,8 @@ def format_str(
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
     def _pycon_match(match: Match[str]) -> str:
+        if _off_range(match.start(), match.end()):
+            return match.group(0)
         code = ""
         fragment: str | None = None
 
@@ -189,6 +208,8 @@ def format_str(
         return code
 
     def _md_pycon_match(match: Match[str]) -> str:
+        if _off_range(match.start(), match.end()):
+            return match.group(0)
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
