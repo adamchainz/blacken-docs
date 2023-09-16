@@ -960,3 +960,17 @@ def test_ignore_code_block():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
+
+
+def test_on_off_comments_in_code_blocks():
+    before = (
+        "````md\n"
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "f(1,2,3)\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+        "````\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
