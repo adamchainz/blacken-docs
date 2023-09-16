@@ -86,7 +86,7 @@ PYTHONTEX_RE = re.compile(
 )
 INDENT_RE = re.compile("^ +(?=[^ ])", re.MULTILINE)
 TRAILING_NL_RE = re.compile(r"\n+\Z", re.MULTILINE)
-ON_OFF_COMMENT_RE = re.compile("<!--\s+blacken-docs:\s*(on|off)\s+-->")
+ON_OFF_COMMENT_RE = re.compile(r"<!--\s+blacken-docs:\s*(on|off)\s+-->")
 
 
 class CodeBlockError:
