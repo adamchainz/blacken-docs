@@ -161,8 +161,6 @@ def format_str(
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
     def _pycon_match(match: Match[str]) -> str:
-        if _off_range(match.start(), match.end()):
-            return match.group(0)
         code = ""
         fragment: str | None = None
 
