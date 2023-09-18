@@ -946,7 +946,6 @@ def test_format_src_rst_pycon_comment_before_promopt():
     )
 
 
-
 def test_on_off_comments_markdown_python():
     before = (
         "<!-- blacken-docs:off -->\n"
