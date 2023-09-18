@@ -86,7 +86,13 @@ PYTHONTEX_RE = re.compile(
 )
 INDENT_RE = re.compile("^ +(?=[^ ])", re.MULTILINE)
 TRAILING_NL_RE = re.compile(r"\n+\Z", re.MULTILINE)
-ON_OFF_COMMENT_RE = re.compile(r"<!--\s+blacken-docs:\s*(on|off)\s+-->")
+ON_OFF = r"blacken-docs:\s*(on|off)"
+ON_OFF_COMMENT_RE = re.compile(
+    rf"(?:^\s*<!--\s+{ON_OFF}\s+-->\s*$)|"
+    rf"(?:^(?P<indent>\s*)\.\.\n(?P=indent) +{ON_OFF}\s*$)|"
+    rf"(?:^\s*%\s*{ON_OFF}\s*$)",
+    re.MULTILINE
+)
 
 
 class CodeBlockError:
@@ -106,9 +112,15 @@ def format_str(
     off_ranges = []
     off_start = None
     for comment in re.finditer(ON_OFF_COMMENT_RE, src):
-        if comment.group(1) == "off" and off_start is None:
+        # In the `ON_OFF_COMMENT_RE` regex, we cannot use the same group name
+        # multiple times, and group numbers are not reset from one alternative
+        # to another (`r"(alt1|alt2|...)`), so we rely on the fact that the
+        # `(on|off)` group always appear last in each alternative, the other
+        # groups being null.
+        on_off = next(g for g in reversed(comment.groups()) if g is not None)
+        if on_off == "off" and off_start is None:
             off_start = comment.start()
-        elif comment.group(1) == "on" and off_start is not None:
+        elif on_off == "on" and off_start is not None:
             off_ranges.append((off_start, comment.end()))
             off_start = None
     if off_start is not None:
@@ -134,6 +146,8 @@ def format_str(
         return f'{match["before"]}{code}{match["after"]}'
 
     def _rst_match(match: Match[str]) -> str:
+        if _off_range(match.start(), match.end()):
+            return match.group(0)
         lang = match["lang"]
         if lang is not None and lang not in PYGMENTS_PY_LANGS:
             return match[0]
@@ -148,6 +162,8 @@ def format_str(
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
     def _rst_literal_blocks_match(match: Match[str]) -> str:
+        if _off_range(match.start(), match.end()):
+            return match.group(0)
         if not match["code"].strip():
             return match[0]
         min_indent = min(INDENT_RE.findall(match["code"]))
@@ -213,12 +229,16 @@ def format_str(
         return f'{match["before"]}{code}{match["after"]}'
 
     def _rst_pycon_match(match: Match[str]) -> str:
+        if _off_range(match.start(), match.end()):
+            return match.group(0)
         code = _pycon_match(match)
         min_indent = min(INDENT_RE.findall(match["code"]))
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code}'
 
     def _latex_match(match: Match[str]) -> str:
+        if _off_range(match.start(), match.end()):
+            return match.group(0)
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
@@ -226,6 +246,8 @@ def format_str(
         return f'{match["before"]}{code}{match["after"]}'
 
     def _latex_pycon_match(match: Match[str]) -> str:
+        if _off_range(match.start(), match.end()):
+            return match.group(0)
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'

@@ -946,7 +946,48 @@ def test_format_src_rst_pycon_comment_before_promopt():
     )
 
 
-def test_ignore_code_block():
+
+def test_on_off_comments_markdown():
+    before = (
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "f(1,2,3)\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_on_off_comments_rst():
+    before = (
+        "..\n"
+        "   blacken-docs:off\n"
+        ".. code-block:: python\n"
+        "\n"
+        "    f(1,2,3)\n"
+        "\n"
+        "..\n"
+        "   blacken-docs:on\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+
+def test_on_off_comments_latex():
+    before = (
+        "% blacken-docs:off\n"
+        "\\begin{minted}{python}\n"
+        "f(1,2,3)\n"
+        "\\end{minted}\n"
+        "% blacken-docs:on\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_on_off_comments_flow():
     before = (
         "<!-- blacken-docs:on -->\n"  # ignored
         "<!-- blacken-docs:off -->\n"
@@ -960,6 +1001,30 @@ def test_ignore_code_block():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
+
+
+def test_on_off_comments_ranges():
+    before = (
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "f(1,2,3)\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+        "```python\n"
+        "f(1,2,3)\n"
+        "```\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "f(1,2,3)\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+        "```python\n"
+        "f(1, 2, 3)\n"
+        "```\n"
+    )
 
 
 def test_on_off_comments_in_code_blocks():
