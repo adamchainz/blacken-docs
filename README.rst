@@ -126,7 +126,7 @@ use comments to disable/re-enable formatting:
 
     <!-- blacken-docs:off -->
     ```python
-    f(1,2,3)
+    f(1, 2, 3)
     ```
     <!-- blacken-docs:on -->
 
@@ -134,11 +134,11 @@ use comments to disable/re-enable formatting:
 
     ..
         blacken-docs:off
-    
+
     .. code-block:: python
-    
+
         f(1,2,3)
-    
+
     ..
         blacken-docs:on
 
@@ -146,7 +146,7 @@ use comments to disable/re-enable formatting:
 
     % blacken-docs:off
     \begin{minted}{python}
-    f(1,2,3)
+    f(1, 2, 3)
     \end{minted}
     % blacken-docs:on
 
