@@ -91,7 +91,7 @@ ON_OFF_COMMENT_RE = re.compile(
     rf"(?:^\s*<!--\s+{ON_OFF}\s+-->\s*$)|"
     rf"(?:^(?P<indent>\s*)\.\.\n(?P=indent) +{ON_OFF}\s*$)|"
     rf"(?:^\s*%\s*{ON_OFF}\s*$)",
-    re.MULTILINE
+    re.MULTILINE,
 )
 
 

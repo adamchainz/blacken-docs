@@ -946,7 +946,6 @@ def test_format_src_rst_pycon_comment_before_promopt():
     )
 
 
-
 def test_on_off_comments_markdown():
     before = (
         "<!-- blacken-docs:off -->\n"
@@ -972,7 +971,6 @@ def test_on_off_comments_rst():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
-
 
 
 def test_on_off_comments_latex():
