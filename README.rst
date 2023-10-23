@@ -48,6 +48,15 @@ Add the following to the ``repos`` section of your ``.pre-commit-config.yaml`` f
             additional_dependencies:
             - black==22.12.0
 
+Or with Jupyter notebook support (using latest `black`):
+
+.. code-block:: yaml
+
+    -   repo: https://github.com/adamchainz/blacken-docs
+        rev: ""  # replace with latest tag on GitHub
+        hooks:
+        -   id: blacken-docs-jupyter
+
 Then, reformat your entire project:
 
 .. code-block:: sh
