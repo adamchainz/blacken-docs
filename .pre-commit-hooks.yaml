@@ -3,4 +3,4 @@
     description: Run `black` on python code blocks in documentation files
     entry: blacken-docs
     language: python
-    files: '\.(rst|md|markdown|py|tex)$'
+    types_or: [rst, markdown, tex, python, pyi, jupyter]
