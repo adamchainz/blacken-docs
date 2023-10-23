@@ -27,6 +27,27 @@ MD_PYCON_RE = re.compile(
     r"(?P<after>^(?P=indent)```.*$)",
     re.DOTALL | re.MULTILINE,
 )
+
+MYST_RE = re.compile(
+    r"(?P<before>"
+    r"^(?P<indent>\s*)```(\s*{code-cell})?\s*(?P<lang>\w+)?"
+    r"(?P<yaml>\n---\n.*?\n---)?"
+    r"\n)"
+    r"(?P<code>.*?)"
+    r"(?P<after>^(?P=indent)```\s*$)",
+    re.DOTALL | re.MULTILINE,
+)
+RST_PY_LANGS = frozenset(
+    (
+        "python",
+        "ipython",
+        "py",
+        "python3",
+        "ipython3",
+        "py3",
+    )
+)
+
 BLOCK_TYPES = "(code|code-block|sourcecode|ipython)"
 DOCTEST_TYPES = "(testsetup|testcleanup|testcode)"
 RST_RE = re.compile(
@@ -115,6 +136,19 @@ def format_str(
             code = black.format_str(code, mode=black_mode)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
+
+    def _myst_match(match: Match[str]) -> str:
+        lang = match["lang"]
+        if lang is not None and lang not in RST_PY_LANGS:
+            return match[0]
+        trailing_ws_match = TRAILING_NL_RE.search(match["code"])
+        assert trailing_ws_match
+        trailing_ws = trailing_ws_match.group()
+        code = textwrap.dedent(match["code"])
+        with _collect_error(match):
+            code = black.format_cell(code, fast=False, mode=black_mode)
+        code = textwrap.indent(code, match["indent"])
+        return f'{match["before"]}{code.rstrip()}{trailing_ws}{match["after"]}'
 
     def _rst_match(match: Match[str]) -> str:
         lang = match["lang"]
@@ -220,6 +254,7 @@ def format_str(
             _rst_literal_blocks_match,
             src,
         )
+    src = MYST_RE.sub(_myst_match, src)
     src = LATEX_RE.sub(_latex_match, src)
     src = LATEX_PYCON_RE.sub(_latex_pycon_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)
@@ -249,8 +284,8 @@ def format_file(
         with open(filename, "w", encoding="UTF-8") as f:
             f.write(new_contents)
         return 1
-    else:
-        return 0
+
+    return 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:

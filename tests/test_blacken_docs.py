@@ -3,6 +3,7 @@ from __future__ import annotations
 from textwrap import dedent
 
 import black
+import pytest
 from black.const import DEFAULT_LINE_LENGTH
 
 import blacken_docs
@@ -943,4 +944,179 @@ def test_format_src_rst_pycon_comment_before_promopt():
         "\n"
         "    # Comment about next line\n"
         "    >>> pass\n"
+    )
+
+
+def test_format_src_myst_simple():
+    before = dedent(
+        """\
+        ```{code-cell}
+        print('hello world')
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```{code-cell}
+        print("hello world")
+        ```
+        """
+    )
+
+
+def test_format_src_myst_no_code_cell():
+    before = dedent(
+        """\
+        ```
+        ---
+        tags: [some-tags]
+        slideshow:
+          slide_type: ''
+        ---
+        print('hello world')
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```
+        ---
+        tags: [some-tags]
+        slideshow:
+          slide_type: ''
+        ---
+        print("hello world")
+        ```
+        """
+    )
+
+
+def test_format_src_myst_tags():
+    before = dedent(
+        """\
+        ```{code-cell}
+        ---
+        tags: [some-tags]
+        ---
+        print('hello world')
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```{code-cell}
+        ---
+        tags: [some-tags]
+        ---
+        print("hello world")
+        ```
+        """
+    )
+
+
+@pytest.mark.parametrize(
+    "language, supported",
+    (
+        ("python", True),
+        ("pythona", False),
+        ("ipython", True),
+        ("py", True),
+        ("sage", False),
+        ("python3", True),
+        ("ipython3", True),
+        ("py3", True),
+        ("numpy", False),
+    ),
+)
+def test_format_src_myst_tags_language(language, supported):
+    before = dedent(
+        """\
+        ```{code-cell}language
+        ---
+        tags: [some-tags]
+        ---
+        print('hello world')
+        ```
+        """
+    ).replace("language", language)
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+
+    if supported:
+        assert (
+            after
+            == dedent(
+                """\
+            ```{code-cell}language
+            ---
+            tags: [some-tags]
+            ---
+            print("hello world")
+            ```
+            """
+            ).replace("language", language)
+        )
+    else:
+        assert after == before
+
+
+def test_format_src_myst_function_def():
+    before = dedent(
+        """\
+        ```{code-cell}python
+        ---
+        tags: [some-tags]
+        ---
+        import copy
+
+        def deepcopy(inp:  Dict)  ->  Dict:
+            return copy.deepcopy(
+                                 inp)
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```{code-cell}python
+        ---
+        tags: [some-tags]
+        ---
+        import copy
+
+
+        def deepcopy(inp: Dict) -> Dict:
+            return copy.deepcopy(inp)
+        ```
+        """
+    )
+
+
+def test_format_src_myst_magic_comand():
+    before = dedent(
+        """\
+        ```{code-cell}python
+        ---
+        tags: [some-tags]
+        ---
+        %matplotlib inline
+
+        plt.plot([0, 1,2], [2,4,6])
+        ```
+        """
+    )
+    after, errors = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```{code-cell}python
+        ---
+        tags: [some-tags]
+        ---
+        %matplotlib inline
+
+        plt.plot([0, 1, 2], [2, 4, 6])
+        ```
+        """
     )

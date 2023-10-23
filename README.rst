@@ -243,3 +243,28 @@ In PythonTeX blocks:
     def hello():
         print("hello world")
     \end{pycode}
+
+MyST - Markedly Structured Text
+-------------------------------
+
+In “python” blocks:
+
+.. code-block:: markdown
+
+    ```python
+    def hello():
+        print("hello world")
+    ```
+
+In notebook blocks, including cell metadata and cell magic:
+
+.. code-block:: markdown
+
+    ```{code-cell}python
+    ---
+    tags: [some-tags]
+    ---
+    %matplotlib inline
+
+    plt.plot([0, 1, 2], [2, 4, 6])
+    ```
