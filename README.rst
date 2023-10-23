@@ -49,7 +49,7 @@ Add the following to the ``repos`` section of your ``.pre-commit-config.yaml`` f
             - black==22.12.0
 
 Or with Jupyter notebook support
-(note the latest `black[jupyter]` is built-into this hook):
+(note the latest ``black[jupyter]`` is built-into this hook):
 
 .. code-block:: yaml
 
