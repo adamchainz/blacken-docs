@@ -1,4 +1,4 @@
 black>=22.1.0
-coverage
+coverage[toml]
 pytest
 pytest-randomly
