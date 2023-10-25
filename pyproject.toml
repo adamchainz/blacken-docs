@@ -4,6 +4,38 @@ requires = [
   "setuptools",
 ]
 
+[project]
+name = "blacken-docs"
+version = "1.16.0"
+description = "Run Black on Python code blocks in documentation files."
+readme = {file = "README.rst", content-type = "text/x-rst"}
+license = {text = "MIT"}
+maintainers = [{name = "Adam Johnson", email = "me@adamj.eu"}]
+authors = [{name = "Anthony Sottile", email = "asottile@umich.edu"}]
+requires-python = ">=3.8"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed",
+]
+dependencies = [
+  "black>=22.1",
+]
+[project.urls]
+Changelog = "https://github.com/adamchainz/blacken-docs/blob/main/CHANGELOG.rst"
+Repository = "https://github.com/asottile/blacken-docs"
+[project.scripts]
+blacken-docs = "blacken_docs:main"
+
 [tool.black]
 target-version = ['py38']
 
@@ -12,6 +44,23 @@ addopts = """\
     --strict-config
     --strict-markers
     """
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = [
+    "blacken_docs",
+    "tests",
+]
+
+[tool.coverage.paths]
+source = [
+    "src",
+    ".tox/**/site-packages",
+]
+
+[tool.coverage.report]
+show_missing = true
 
 [tool.mypy]
 mypy_path = "src/"
