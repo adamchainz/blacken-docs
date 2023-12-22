@@ -7,6 +7,10 @@ Changelog
 
   Thanks to Joaquim Esteves in `PR #278 <https://github.com/adamchainz/blacken-docs/pull/278>`__.
 
+* Allow options in LaTeX minted blocks.
+
+  Thanks to Peter Cock in `PR #313 <https://github.com/adamchainz/blacken-docs/pull/313>`__.
+
 1.16.0 (2023-08-16)
 -------------------
 

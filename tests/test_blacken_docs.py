@@ -178,6 +178,30 @@ def test_format_src_latex_minted():
     )
 
 
+def test_format_src_latex_minted_opt():
+    before = (
+        "maths!\n"
+        "\\begin{minted}[mathescape]{python}\n"
+        "# Returns $\\sum_{i=1}^{n}i$\n"
+        "def sum_from_one_to(n):\n"
+        "  r = range(1, n+1)\n"
+        "  return sum(r)\n"
+        "\\end{minted}\n"
+        "done"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "maths!\n"
+        "\\begin{minted}[mathescape]{python}\n"
+        "# Returns $\\sum_{i=1}^{n}i$\n"
+        "def sum_from_one_to(n):\n"
+        "    r = range(1, n + 1)\n"
+        "    return sum(r)\n"
+        "\\end{minted}\n"
+        "done"
+    )
+
+
 def test_format_src_latex_minted_indented():
     # Personaly I would have minted python code all flush left,
     # with only the Python code's own four space indentation:
@@ -203,7 +227,7 @@ def test_format_src_latex_minted_indented():
 def test_format_src_latex_minted_pycon():
     before = (
         "Preceeding text\n"
-        "\\begin{minted}{pycon}\n"
+        "\\begin{minted}[gobble=2,showspaces]{pycon}\n"
         ">>> print( 'Hello World' )\n"
         "Hello World\n"
         "\\end{minted}\n"
@@ -212,7 +236,7 @@ def test_format_src_latex_minted_pycon():
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
         "Preceeding text\n"
-        "\\begin{minted}{pycon}\n"
+        "\\begin{minted}[gobble=2,showspaces]{pycon}\n"
         '>>> print("Hello World")\n'
         "Hello World\n"
         "\\end{minted}\n"

@@ -66,13 +66,13 @@ PYCON_CONTINUATION_RE = re.compile(
     rf"^{re.escape(PYCON_CONTINUATION_PREFIX)}( |$)",
 )
 LATEX_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)\\begin{minted}{python}\n)"
+    r"(?P<before>^(?P<indent> *)\\begin{minted}(\[.*?\])?{python}\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)\\end{minted}\s*$)",
     re.DOTALL | re.MULTILINE,
 )
 LATEX_PYCON_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)\\begin{minted}{pycon}\n)"
+    r"(?P<before>^(?P<indent> *)\\begin{minted}(\[.*?\])?{pycon}\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)\\end{minted}\s*$)",
     re.DOTALL | re.MULTILINE,
