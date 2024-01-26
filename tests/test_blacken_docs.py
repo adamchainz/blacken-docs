@@ -484,6 +484,23 @@ def test_integration_line_length(tmp_path):
     )
 
 
+def test_integration_check(tmp_path):
+    f = tmp_path / "f.md"
+    text = dedent(
+        """\
+        ```python
+        x = 'a' 'b'
+        ```
+        """
+    )
+    f.write_text(text)
+
+    result = blacken_docs.main((str(f), "--check"))
+
+    assert result == 1
+    assert f.read_text() == text
+
+
 def test_integration_preview(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(

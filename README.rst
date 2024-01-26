@@ -116,6 +116,7 @@ blacken-docs currently passes the following options through to Black:
 
 It also has the below extra options:
 
+* ``--check`` - Don’t modify files but indicate when changes are necessary with a message and non-zero return code.
 * ``-E`` / ``--skip-errors`` - Don’t exit non-zero for errors from Black (normally syntax errors).
 * ``--rst-literal-blocks`` - Also format literal blocks in reStructuredText files (more below).
 

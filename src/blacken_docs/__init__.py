@@ -231,6 +231,7 @@ def format_file(
     black_mode: black.FileMode,
     skip_errors: bool,
     rst_literal_blocks: bool,
+    check_only: bool,
 ) -> int:
     with open(filename, encoding="UTF-8") as f:
         contents = f.read()
@@ -244,13 +245,15 @@ def format_file(
         print(f"{filename}:{lineno}: code block parse error {error.exc}")
     if errors and not skip_errors:
         return 2
-    if contents != new_contents:
-        print(f"{filename}: Rewriting...")
-        with open(filename, "w", encoding="UTF-8") as f:
-            f.write(new_contents)
-        return 1
-    else:
+    if contents == new_contents:
         return 0
+    if check_only:
+        print(f"{filename}: Requires a rewrite.")
+        return 1
+    print(f"{filename}: Rewriting...")
+    with open(filename, "w", encoding="UTF-8") as f:
+        f.write(new_contents)
+    return 1
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -276,6 +279,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         help=f"choices: {[v.name.lower() for v in TargetVersion]}",
         dest="target_versions",
     )
+    parser.add_argument("--check", action="store_true")
     parser.add_argument("-E", "--skip-errors", action="store_true")
     parser.add_argument(
         "--rst-literal-blocks",
@@ -298,5 +302,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             black_mode,
             skip_errors=args.skip_errors,
             rst_literal_blocks=args.rst_literal_blocks,
+            check_only=args.check,
         )
     return retv
