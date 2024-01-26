@@ -502,7 +502,7 @@ def test_integration_preview(tmp_path):
     assert f.read_text() == dedent(
         """\
         ```python
-        x = "ab"
+        x = "a" "b"
         ```
         """
     )
