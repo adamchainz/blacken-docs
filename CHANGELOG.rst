@@ -11,6 +11,10 @@ Changelog
 
   Thanks to Peter Cock in `PR #313 <https://github.com/adamchainz/blacken-docs/pull/313>`__.
 
+* Ignore language specifiers after newlines in Markdown code blocks.
+
+  Thanks to Harutaka Kawamura in `PR #283 <https://github.com/adamchainz/blacken-docs/pull/283>`__.
+
 1.16.0 (2023-08-16)
 -------------------
 

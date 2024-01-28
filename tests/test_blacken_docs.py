@@ -53,6 +53,20 @@ def test_format_src_markdown_leading_whitespace():
     )
 
 
+def test_format_src_markdown_python_after_newline():
+    before = dedent(
+        """\
+        ```
+        python --version
+        echo "python"
+        ```
+        """
+    )
+    after, errors = blacken_docs.format_str(before, BLACK_MODE)
+    assert errors == []
+    assert after == before
+
+
 def test_format_src_markdown_short_name():
     before = dedent(
         """\
@@ -142,6 +156,20 @@ def test_format_src_markdown_pycon():
     assert after == (
         "hello\n" "\n" "```pycon\n" "\n" ">>> f(1, 2, 3)\n" "output\n" "```\n" "world\n"
     )
+
+
+def test_format_src_markdown_pycon_after_newline():
+    before = dedent(
+        """\
+        ```
+        pycon is great
+        >>> yes it is
+        ```
+        """
+    )
+    after, errors = blacken_docs.format_str(before, BLACK_MODE)
+    assert errors == []
+    assert after == before
 
 
 def test_format_src_markdown_pycon_options():
