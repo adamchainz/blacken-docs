@@ -8,7 +8,6 @@ from black.const import DEFAULT_LINE_LENGTH
 import blacken_docs
 from blacken_docs import __main__  # noqa: F401
 
-
 BLACK_MODE = black.FileMode(line_length=DEFAULT_LINE_LENGTH)
 
 
