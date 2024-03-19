@@ -36,9 +36,6 @@ Repository = "https://github.com/asottile/blacken-docs"
 [project.scripts]
 blacken-docs = "blacken_docs:main"
 
-[tool.black]
-target-version = ['py38']
-
 [tool.isort]
 add_imports = [
     "from __future__ import annotations"
