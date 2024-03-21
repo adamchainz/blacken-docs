@@ -120,6 +120,37 @@ It also has the below extra options:
 * ``-E`` / ``--skip-errors`` - Don’t exit non-zero for errors from Black (normally syntax errors).
 * ``--rst-literal-blocks`` - Also format literal blocks in reStructuredText files (more below).
 
+To prevent formatting in specific regions of a document,
+use comments to disable/re-enable formatting:
+
+.. code-block:: markdown
+
+    <!-- blacken-docs:off -->
+    ```python
+    f(1, 2, 3)
+    ```
+    <!-- blacken-docs:on -->
+
+.. code-block:: rst
+
+    ..
+        blacken-docs:off
+
+    .. code-block:: python
+
+        f(1,2,3)
+
+    ..
+        blacken-docs:on
+
+.. code-block:: latex
+
+    % blacken-docs:off
+    \begin{minted}{python}
+    f(1, 2, 3)
+    \end{minted}
+    % blacken-docs:on
+
 History
 =======
 
