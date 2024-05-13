@@ -8,10 +8,14 @@ requires = [
 name = "blacken-docs"
 version = "1.16.0"
 description = "Run Black on Python code blocks in documentation files."
-readme = {file = "README.rst", content-type = "text/x-rst"}
-license = {text = "MIT"}
-maintainers = [{name = "Adam Johnson", email = "me@adamj.eu"}]
-authors = [{name = "Anthony Sottile", email = "asottile@umich.edu"}]
+readme = { file = "README.rst", content-type = "text/x-rst" }
+license = { text = "MIT" }
+maintainers = [
+  { name = "Adam Johnson", email = "me@adamj.eu" },
+]
+authors = [
+  { name = "Anthony Sottile", email = "asottile@umich.edu" },
+]
 requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -30,15 +34,12 @@ classifiers = [
 dependencies = [
   "black>=22.1",
 ]
-[project.urls]
-Changelog = "https://github.com/adamchainz/blacken-docs/blob/main/CHANGELOG.rst"
-Repository = "https://github.com/asottile/blacken-docs"
-[project.scripts]
-blacken-docs = "blacken_docs:main"
-
+urls.Changelog = "https://github.com/adamchainz/blacken-docs/blob/main/CHANGELOG.rst"
+urls.Repository = "https://github.com/asottile/blacken-docs"
+scripts.blacken-docs = "blacken_docs:main"
 [tool.isort]
 add_imports = [
-    "from __future__ import annotations"
+  "from __future__ import annotations",
 ]
 force_single_line = true
 profile = "black"
@@ -53,14 +54,14 @@ addopts = """\
 branch = true
 parallel = true
 source = [
-    "blacken_docs",
-    "tests",
+  "blacken_docs",
+  "tests",
 ]
 
 [tool.coverage.paths]
 source = [
-    "src",
-    ".tox/**/site-packages",
+  "src",
+  ".tox/**/site-packages",
 ]
 
 [tool.coverage.report]
