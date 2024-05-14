@@ -37,6 +37,7 @@ dependencies = [
 urls.Changelog = "https://github.com/adamchainz/blacken-docs/blob/main/CHANGELOG.rst"
 urls.Repository = "https://github.com/asottile/blacken-docs"
 scripts.blacken-docs = "blacken_docs:main"
+
 [tool.isort]
 add_imports = [
   "from __future__ import annotations",
