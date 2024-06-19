@@ -172,7 +172,7 @@ def format_str(
                     code += f"{PYCON_CONTINUATION_PREFIX}\n"
                 fragment = None
 
-        indentation = None
+        indentation: int | None = None
         for line in match["code"].splitlines():
             orig_line, line = line, line.lstrip()
             if indentation is None and line:
