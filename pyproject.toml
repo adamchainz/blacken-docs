@@ -8,8 +8,7 @@ requires = [
 name = "blacken-docs"
 version = "1.16.0"
 description = "Run Black on Python code blocks in documentation files."
-readme = { file = "README.rst", content-type = "text/x-rst" }
-license = { text = "MIT" }
+readme = "README.rst"
 maintainers = [
   { name = "Adam Johnson", email = "me@adamj.eu" },
 ]
