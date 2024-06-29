@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "blacken-docs"
-version = "1.16.0"
+version = "1.17.0"
 description = "Run Black on Python code blocks in documentation files."
 readme = "README.rst"
 maintainers = [

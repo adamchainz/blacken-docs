@@ -2,6 +2,9 @@
 Changelog
 =========
 
+1.17.0 (2024-06-29)
+-------------------
+
 * Add a ``--check`` option.
   When used, blacken-docs will not modify files but indicate when changes are necessary with a message and non-zero exit code.
 
