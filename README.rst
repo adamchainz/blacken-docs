@@ -54,16 +54,8 @@ Then, reformat your entire project:
 
     pre-commit run blacken-docs --all-files
 
-Since Black is a moving target, it’s best to pin it in ``additional_dependencies``.
-Upgrade as appropriate. You can automate upgrading by using the
-``sync-pre-commit-hooks`` hook as follows:
-
-.. code-block:: yaml
-
-    -   repo: https://github.com/pre-commit/sync-pre-commit-hooks
-        rev: ""  # replace with latest tag on GitHub
-        hooks:
-        -   id: sync-pre-commit-hooks
+Since Black is a moving target, it’s best to pin it in ``additional_dependencies``, and upgrade as appropriate.
+If you have Black installed as another hook, you can automate upgrading this pinned hook using `sync-pre-commit-deps <https://github.com/pre-commit/sync-pre-commit-deps>`__.
 
 Usage
 =====
