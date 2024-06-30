@@ -131,13 +131,14 @@ def format_str(
     if off_start is not None:
         off_ranges.append((off_start, len(src)))
 
-    def _off_range(start: int, end: int) -> bool:
-        index = bisect(off_ranges, (start, end))
+    def _within_off_range(code_range: tuple[int, int]) -> bool:
+        index = bisect(off_ranges, code_range)
         try:
-            rstart, rend = off_ranges[index - 1]
+            off_start, off_end = off_ranges[index - 1]
         except IndexError:
             return False
-        return start >= rstart and end <= rend
+        code_start, code_end = code_range
+        return code_start >= off_start and code_end <= off_end
 
     @contextlib.contextmanager
     def _collect_error(match: Match[str]) -> Generator[None, None, None]:
@@ -147,7 +148,7 @@ def format_str(
             errors.append(CodeBlockError(match.start(), e))
 
     def _md_match(match: Match[str]) -> str:
-        if _off_range(match.start(), match.end()):
+        if _within_off_range(match.span()):
             return match.group(0)
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
@@ -156,7 +157,7 @@ def format_str(
         return f'{match["before"]}{code}{match["after"]}'
 
     def _rst_match(match: Match[str]) -> str:
-        if _off_range(match.start(), match.end()):
+        if _within_off_range(match.span()):
             return match.group(0)
         lang = match["lang"]
         if lang is not None and lang not in PYGMENTS_PY_LANGS:
@@ -172,7 +173,7 @@ def format_str(
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
     def _rst_literal_blocks_match(match: Match[str]) -> str:
-        if _off_range(match.start(), match.end()):
+        if _within_off_range(match.span()):
             return match.group(0)
         if not match["code"].strip():
             return match[0]
@@ -232,14 +233,14 @@ def format_str(
         return code
 
     def _md_pycon_match(match: Match[str]) -> str:
-        if _off_range(match.start(), match.end()):
+        if _within_off_range(match.span()):
             return match.group(0)
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
     def _rst_pycon_match(match: Match[str]) -> str:
-        if _off_range(match.start(), match.end()):
+        if _within_off_range(match.span()):
             return match.group(0)
         code = _pycon_match(match)
         min_indent = min(INDENT_RE.findall(match["code"]))
@@ -247,7 +248,7 @@ def format_str(
         return f'{match["before"]}{code}'
 
     def _latex_match(match: Match[str]) -> str:
-        if _off_range(match.start(), match.end()):
+        if _within_off_range(match.span()):
             return match.group(0)
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
@@ -256,7 +257,7 @@ def format_str(
         return f'{match["before"]}{code}{match["after"]}'
 
     def _latex_pycon_match(match: Match[str]) -> str:
-        if _off_range(match.start(), match.end()):
+        if _within_off_range(match.span()):
             return match.group(0)
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
