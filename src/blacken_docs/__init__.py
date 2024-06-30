@@ -93,7 +93,7 @@ ON_OFF_COMMENT_RE = re.compile(
     # Markdown
     rf"(?:^\s*<!--\s+{ON_OFF}\s+-->\s*$)|"
     # rST
-    rf"(?:^(?P<indent>\s*)\.\.\n(?P=indent) +{ON_OFF}\s*$)|"
+    rf"(?:^\s*\.\. +{ON_OFF}\s*$)|"
     # LaTeX
     rf"(?:^\s*%\s*{ON_OFF}\s*$)",
     re.MULTILINE,

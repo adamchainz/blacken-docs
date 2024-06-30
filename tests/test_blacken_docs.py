@@ -556,14 +556,12 @@ def test_format_src_rst_literal_blocks_empty():
 
 def test_format_src_rst_literal_blocks_comments():
     before = (
-        "..\n"
-        "   blacken-docs:off\n"
+        ".. blacken-docs:off\n"
         "Example::\n"
         "\n"
         "    'single quotes rock'\n"
         "\n"
-        "..\n"
-        "   blacken-docs:on\n"
+        ".. blacken-docs:on\n"
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE, rst_literal_blocks=True)
     assert after == before
@@ -697,14 +695,12 @@ def test_format_src_rst_python_inside_non_python_code_block():
 
 def test_format_src_rst_python_comments():
     before = (
-        "..\n"
-        "   blacken-docs:off\n"
+        ".. blacken-docs:off\n"
         ".. code-block:: python\n"
         "\n"
         "    'single quotes rock'\n"
         "\n"
-        "..\n"
-        "   blacken-docs:on\n"
+        ".. blacken-docs:on\n"
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
@@ -1241,14 +1237,12 @@ def test_format_src_rst_pycon_comment_before_promopt():
 
 def test_format_src_rst_pycon_comments():
     before = (
-        "..\n"
-        "   blacken-docs:off\n"
+        ".. blacken-docs:off\n"
         ".. code-block:: pycon\n"
         "\n"
         "    >>> 'single quotes rock'\n"
         "\n"
-        "..\n"
-        "   blacken-docs:on\n"
+        ".. blacken-docs:on\n"
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before

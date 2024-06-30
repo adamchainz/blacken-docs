@@ -133,15 +133,13 @@ use comments to disable/re-enable formatting:
 
 .. code-block:: rst
 
-    ..
-        blacken-docs:off
+    .. blacken-docs:off
 
     .. code-block:: python
 
         f(1,2,3)
 
-    ..
-        blacken-docs:on
+    .. blacken-docs:on
 
 .. code-block:: latex
 
