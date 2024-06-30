@@ -155,6 +155,16 @@ And “pycon” blocks:
 
     ```
 
+Prevent formatting within a block using ``blacken-docs:off`` and ``blacken-docs:on`` comments:
+
+.. code-block:: markdown
+
+    <!-- blacken-docs:off -->
+    ```python
+    # whatever you want
+    ```
+    <!-- blacken-docs:on -->
+
 Within Python files, docstrings that contain Markdown code blocks may be reformatted:
 
 .. code-block:: python
@@ -188,6 +198,18 @@ In “pycon” blocks:
         >>> def hello():
         ...     print("hello world")
         ...
+
+Prevent formatting within a block using ``blacken-docs:off`` and ``blacken-docs:on`` comments:
+
+.. code-block:: rst
+
+    .. blacken-docs:off
+
+    .. code-block:: python
+
+        # whatever you want
+
+    .. blacken-docs:on
 
 Use ``--rst-literal-blocks`` to also format `literal blocks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks>`__:
 
@@ -244,3 +266,13 @@ In PythonTeX blocks:
     def hello():
         print("hello world")
     \end{pycode}
+
+Prevent formatting within a block using ``blacken-docs:off`` and ``blacken-docs:on`` comments:
+
+.. code-block:: latex
+
+    % blacken-docs:off
+    \begin{minted}{python}
+    # whatever you want
+    \end{minted}
+    % blacken-docs:on

@@ -221,6 +221,151 @@ def test_format_src_markdown_pycon_twice():
     )
 
 
+def test_format_src_markdown_comments_disable():
+    before = (
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "'single quotes rock'\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_src_markdown_comments_disabled_enabled():
+    before = (
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "'single quotes rock'\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+        "```python\n"
+        "'double quotes rock'\n"
+        "```\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "'single quotes rock'\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+        "```python\n"
+        '"double quotes rock"\n'
+        "```\n"
+    )
+
+
+def test_format_src_markdown_comments_before():
+    before = (
+        "<!-- blacken-docs:off -->\n"
+        "<!-- blacken-docs:on -->\n"
+        "```python\n"
+        "'double quotes rock'\n"
+        "```\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "<!-- blacken-docs:off -->\n"
+        "<!-- blacken-docs:on -->\n"
+        "```python\n"
+        '"double quotes rock"\n'
+        "```\n"
+    )
+
+
+def test_format_src_markdown_comments_after():
+    before = (
+        "```python\n"
+        "'double quotes rock'\n"
+        "```\n"
+        "<!-- blacken-docs:off -->\n"
+        "<!-- blacken-docs:on -->\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "```python\n"
+        '"double quotes rock"\n'
+        "```\n"
+        "<!-- blacken-docs:off -->\n"
+        "<!-- blacken-docs:on -->\n"
+    )
+
+
+def test_format_src_markdown_comments_only_on():
+    # fmt: off
+    before = (
+        "<!-- blacken-docs:on -->\n"
+        "```python\n"
+        "'double quotes rock'\n"
+        "```\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "<!-- blacken-docs:on -->\n"
+        "```python\n"
+        '"double quotes rock"\n'
+        "```\n"
+    )
+    # fmt: on
+
+
+def test_format_src_markdown_comments_only_off():
+    # fmt: off
+    before = (
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "'single quotes rock'\n"
+        "```\n"
+    )
+    # fmt: on
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_src_markdown_comments_multiple():
+    before = (
+        "<!-- blacken-docs:on -->\n"  # ignored
+        "<!-- blacken-docs:off -->\n"
+        "<!-- blacken-docs:on -->\n"
+        "<!-- blacken-docs:on -->\n"  # ignored
+        "<!-- blacken-docs:off -->\n"
+        "<!-- blacken-docs:off -->\n"  # ignored
+        "```python\n"
+        "'single quotes rock'\n"
+        "```\n"  # no on comment, off until the end
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_on_off_comments_in_code_blocks():
+    before = (
+        "````md\n"
+        "<!-- blacken-docs:off -->\n"
+        "```python\n"
+        "f(1,2,3)\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+        "````\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_src_markdown_comments_disable_pycon():
+    before = (
+        "<!-- blacken-docs:off -->\n"
+        "```pycon\n"
+        ">>> 'single quotes rock'\n"
+        "```\n"
+        "<!-- blacken-docs:on -->\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
 def test_format_src_latex_minted():
     before = (
         "hello\n" "\\begin{minted}{python}\n" "f(1,2,3)\n" "\\end{minted}\n" "world!"
@@ -319,12 +464,60 @@ def test_format_src_latex_minted_pycon_indented():
     )
 
 
-def test_src_pythontex():
-    before = "hello\n" "\\begin{pyblock}\n" "f(1,2,3)\n" "\\end{pyblock}\n" "world!"
+def test_format_src_latex_minted_comments_off():
+    before = (
+        "% blacken-docs:off\n"
+        "\\begin{minted}{python}\n"
+        "'single quotes rock'\n"
+        "\\end{minted}\n"
+        "% blacken-docs:on\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_src_latex_minted_comments_off_pycon():
+    before = (
+        "% blacken-docs:off\n"
+        "\\begin{minted}{pycon}\n"
+        ">>> 'single quotes rock'\n"
+        "\\end{minted}\n"
+        "% blacken-docs:on\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_src_pythontex():
+    # fmt: off
+    before = (
+        "hello\n"
+        "\\begin{pyblock}\n"
+        "f(1,2,3)\n"
+        "\\end{pyblock}\n"
+        "world!"
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
-        "hello\n" "\\begin{pyblock}\n" "f(1, 2, 3)\n" "\\end{pyblock}\n" "world!"
+        "hello\n"
+        "\\begin{pyblock}\n"
+        "f(1, 2, 3)\n"
+        "\\end{pyblock}\n"
+        "world!"
     )
+    # fmt: on
+
+
+def test_format_src_pythontex_comments_off():
+    before = (
+        "% blacken-docs:off\n"
+        "\\begin{pyblock}\n"
+        "f(1,2,3)\n"
+        "\\end{pyblock}\n"
+        "% blacken-docs:on\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
 
 
 def test_format_src_rst():
@@ -383,6 +576,19 @@ def test_format_src_rst_literal_blocks_empty():
     )
     assert after == before
     assert errors == []
+
+
+def test_format_src_rst_literal_blocks_comments():
+    before = (
+        ".. blacken-docs:off\n"
+        "Example::\n"
+        "\n"
+        "    'single quotes rock'\n"
+        "\n"
+        ".. blacken-docs:on\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE, rst_literal_blocks=True)
+    assert after == before
 
 
 def test_format_src_rst_sphinx_doctest():
@@ -506,6 +712,19 @@ def test_format_src_rst_python_inside_non_python_code_block():
         "\n"
         "    -    'Hello World'\n"
         '    +    "Hello World"\n'
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_src_rst_python_comments():
+    before = (
+        ".. blacken-docs:off\n"
+        ".. code-block:: python\n"
+        "\n"
+        "    'single quotes rock'\n"
+        "\n"
+        ".. blacken-docs:on\n"
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
@@ -1038,3 +1257,16 @@ def test_format_src_rst_pycon_comment_before_promopt():
         "    # Comment about next line\n"
         "    >>> pass\n"
     )
+
+
+def test_format_src_rst_pycon_comments():
+    before = (
+        ".. blacken-docs:off\n"
+        ".. code-block:: pycon\n"
+        "\n"
+        "    >>> 'single quotes rock'\n"
+        "\n"
+        ".. blacken-docs:on\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before

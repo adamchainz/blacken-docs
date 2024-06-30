@@ -2,6 +2,10 @@
 Changelog
 =========
 
+* Add support for on/off comments.
+
+  Thanks to Timothée Mazzucotelli in `PR #287 <https://github.com/adamchainz/blacken-docs/pull/287>`__.
+
 * Fix Markdown ``pycon`` formatting to allow formatting the rest of the file.
 
 1.17.0 (2024-06-29)
