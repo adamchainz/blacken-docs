@@ -117,17 +117,14 @@ def format_str(
     off_ranges = []
     off_start = None
     for comment in re.finditer(ON_OFF_COMMENT_RE, src):
-        # In the `ON_OFF_COMMENT_RE` regex, we cannot use the same group name
-        # multiple times, and group numbers are not reset from one alternative
-        # to another (`r"(alt1|alt2|...)`), so we rely on the fact that the
-        # `(on|off)` group always appear last in each alternative, the other
-        # groups being null.
-        on_off = next(g for g in reversed(comment.groups()) if g is not None)
-        if on_off == "off" and off_start is None:
-            off_start = comment.start()
-        elif on_off == "on" and off_start is not None:
-            off_ranges.append((off_start, comment.end()))
-            off_start = None
+        # Check for the "off" value across the multiple (on|off) groups.
+        if "off" in comment.groups():
+            if off_start is None:
+                off_start = comment.start()
+        else:
+            if off_start is not None:
+                off_ranges.append((off_start, comment.end()))
+                off_start = None
     if off_start is not None:
         off_ranges.append((off_start, len(src)))
 
