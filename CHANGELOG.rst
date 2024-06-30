@@ -2,6 +2,9 @@
 Changelog
 =========
 
+1.18.0 (2024-06-30)
+-------------------
+
 * Add support for on/off comments.
 
   Thanks to Timothée Mazzucotelli in `PR #287 <https://github.com/adamchainz/blacken-docs/pull/287>`__.
