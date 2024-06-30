@@ -4,6 +4,7 @@ import argparse
 import contextlib
 import re
 import textwrap
+from bisect import bisect
 from typing import Generator
 from typing import Match
 from typing import Sequence
@@ -131,7 +132,12 @@ def format_str(
         off_ranges.append((off_start, len(src)))
 
     def _off_range(start: int, end: int) -> bool:
-        return any(start >= rng[0] and end <= rng[1] for rng in off_ranges)
+        index = bisect(off_ranges, (start, end))
+        try:
+            rstart, rend = off_ranges[index - 1]
+        except IndexError:
+            return False
+        return start >= rstart and end <= rend
 
     @contextlib.contextmanager
     def _collect_error(match: Match[str]) -> Generator[None, None, None]:
