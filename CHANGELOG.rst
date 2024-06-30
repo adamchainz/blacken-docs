@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* Fix Markdown ``pycon`` formatting to allow formatting the rest of the file.
+
 1.17.0 (2024-06-29)
 -------------------
 

@@ -25,7 +25,7 @@ MD_RE = re.compile(
 MD_PYCON_RE = re.compile(
     r"(?P<before>^(?P<indent> *)```[^\S\r\n]*pycon( .*?)?\n)"
     r"(?P<code>.*?)"
-    r"(?P<after>^(?P=indent)```.*$)",
+    r"(?P<after>^(?P=indent)```[^\S\r\n]*$)",
     re.DOTALL | re.MULTILINE,
 )
 BLOCK_TYPES = "(code|code-block|sourcecode|ipython)"
