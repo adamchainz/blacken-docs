@@ -89,8 +89,11 @@ INDENT_RE = re.compile("^ +(?=[^ ])", re.MULTILINE)
 TRAILING_NL_RE = re.compile(r"\n+\Z", re.MULTILINE)
 ON_OFF = r"blacken-docs:\s*(on|off)"
 ON_OFF_COMMENT_RE = re.compile(
+    # Markdown
     rf"(?:^\s*<!--\s+{ON_OFF}\s+-->\s*$)|"
+    # rST
     rf"(?:^(?P<indent>\s*)\.\.\n(?P=indent) +{ON_OFF}\s*$)|"
+    # LaTeX
     rf"(?:^\s*%\s*{ON_OFF}\s*$)",
     re.MULTILINE,
 )
