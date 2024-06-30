@@ -88,14 +88,14 @@ PYTHONTEX_RE = re.compile(
 )
 INDENT_RE = re.compile("^ +(?=[^ ])", re.MULTILINE)
 TRAILING_NL_RE = re.compile(r"\n+\Z", re.MULTILINE)
-ON_OFF = r"blacken-docs:\s*(on|off)"
+ON_OFF = r"blacken-docs:(on|off)"
 ON_OFF_COMMENT_RE = re.compile(
     # Markdown
-    rf"(?:^\s*<!--\s+{ON_OFF}\s+-->\s*$)|"
+    rf"(?:^\s*<!-- {ON_OFF} -->$)|"
     # rST
-    rf"(?:^\s*\.\. +{ON_OFF}\s*$)|"
+    rf"(?:^\s*\.\. +{ON_OFF}$)|"
     # LaTeX
-    rf"(?:^\s*%\s*{ON_OFF}\s*$)",
+    rf"(?:^\s*% {ON_OFF}$)",
     re.MULTILINE,
 )
 
