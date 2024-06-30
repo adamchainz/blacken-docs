@@ -16,7 +16,7 @@ from black.mode import TargetVersion
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
 PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"
 MD_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```[^\S\r\n]*"
+    r"(?P<before>^(?P<indent>[ \t]*)```[^\S\r\n]*"
     + PYGMENTS_PY_LANGS_RE_FRAGMENT
     + r"( .*?)?\n)"
     r"(?P<code>.*?)"
@@ -24,7 +24,7 @@ MD_RE = re.compile(
     re.DOTALL | re.MULTILINE,
 )
 MD_PYCON_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```[^\S\r\n]*pycon( .*?)?\n)"
+    r"(?P<before>^(?P<indent>[ \t]*)```[^\S\r\n]*pycon( .*?)?\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)```[^\S\r\n]*$)",
     re.DOTALL | re.MULTILINE,
@@ -33,20 +33,20 @@ BLOCK_TYPES = "(code|code-block|sourcecode|ipython)"
 DOCTEST_TYPES = "(testsetup|testcleanup|testcode)"
 RST_RE = re.compile(
     rf"(?P<before>"
-    rf"^(?P<indent> *)\.\. ("
+    rf"^(?P<indent>[ \t]*)\.\. ("
     rf"jupyter-execute::|"
     rf"{BLOCK_TYPES}:: (?P<lang>\w+)|"
     rf"{DOCTEST_TYPES}::.*"
     rf")\n"
     rf"((?P=indent) +:.*\n)*"
-    rf"( *\n)*"
+    rf"([ \t]*\n)*"
     rf")"
     rf"(?P<code>(^((?P=indent) +.*)?\n)+)",
     re.MULTILINE,
 )
 RST_LITERAL_BLOCKS_RE = re.compile(
     r"(?P<before>"
-    r"^(?! *\.\. )(?P<indent> *).*::\n"
+    r"^(?! *\.\. )(?P<indent>[ \t]*).*::\n"
     r"((?P=indent) +:.*\n)*"
     r"\n*"
     r")"
@@ -55,7 +55,7 @@ RST_LITERAL_BLOCKS_RE = re.compile(
 )
 RST_PYCON_RE = re.compile(
     r"(?P<before>"
-    r"(?P<indent> *)\.\. ((code|code-block):: pycon|doctest::.*)\n"
+    r"(?P<indent>[ \t]*)\.\. ((code|code-block):: pycon|doctest::.*)\n"
     r"((?P=indent) +:.*\n)*"
     r"\n*"
     r")"
@@ -68,20 +68,20 @@ PYCON_CONTINUATION_RE = re.compile(
     rf"^{re.escape(PYCON_CONTINUATION_PREFIX)}( |$)",
 )
 LATEX_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)\\begin{minted}(\[.*?\])?{python}\n)"
+    r"(?P<before>^(?P<indent>[ \t]*)\\begin{minted}(\[.*?\])?{python}\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)\\end{minted}\s*$)",
     re.DOTALL | re.MULTILINE,
 )
 LATEX_PYCON_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)\\begin{minted}(\[.*?\])?{pycon}\n)"
+    r"(?P<before>^(?P<indent>[ \t]*)\\begin{minted}(\[.*?\])?{pycon}\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)\\end{minted}\s*$)",
     re.DOTALL | re.MULTILINE,
 )
 PYTHONTEX_LANG = r"(?P<lang>pyblock|pycode|pyconsole|pyverbatim)"
 PYTHONTEX_RE = re.compile(
-    rf"(?P<before>^(?P<indent> *)\\begin{{{PYTHONTEX_LANG}}}\n)"
+    rf"(?P<before>^(?P<indent>[ \t]*)\\begin{{{PYTHONTEX_LANG}}}\n)"
     rf"(?P<code>.*?)"
     rf"(?P<after>^(?P=indent)\\end{{(?P=lang)}}\s*$)",
     re.DOTALL | re.MULTILINE,
