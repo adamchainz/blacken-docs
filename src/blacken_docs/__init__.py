@@ -149,7 +149,7 @@ def format_str(
 
     def _md_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
-            return match.group(0)
+            return match[0]
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
@@ -158,7 +158,7 @@ def format_str(
 
     def _rst_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
-            return match.group(0)
+            return match[0]
         lang = match["lang"]
         if lang is not None and lang not in PYGMENTS_PY_LANGS:
             return match[0]
@@ -174,7 +174,7 @@ def format_str(
 
     def _rst_literal_blocks_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
-            return match.group(0)
+            return match[0]
         if not match["code"].strip():
             return match[0]
         min_indent = min(INDENT_RE.findall(match["code"]))
@@ -234,14 +234,14 @@ def format_str(
 
     def _md_pycon_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
-            return match.group(0)
+            return match[0]
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
     def _rst_pycon_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
-            return match.group(0)
+            return match[0]
         code = _pycon_match(match)
         min_indent = min(INDENT_RE.findall(match["code"]))
         code = textwrap.indent(code, min_indent)
@@ -249,7 +249,7 @@ def format_str(
 
     def _latex_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
-            return match.group(0)
+            return match[0]
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
@@ -258,7 +258,7 @@ def format_str(
 
     def _latex_pycon_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
-            return match.group(0)
+            return match[0]
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
