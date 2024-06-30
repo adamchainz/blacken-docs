@@ -403,22 +403,26 @@ def test_format_src_latex_minted_opt():
 def test_format_src_latex_minted_indented():
     # Personaly I would have minted python code all flush left,
     # with only the Python code's own four space indentation:
-    before = (
-        "hello\n"
-        "  \\begin{minted}{python}\n"
-        "    if True:\n"
-        "      f(1,2,3)\n"
-        "  \\end{minted}\n"
-        "world!"
+    before = dedent(
+        """\
+        hello
+          \\begin{minted}{python}
+            if True:
+              f(1,2,3)
+          \\end{minted}
+        world!
+        """
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == (
-        "hello\n"
-        "  \\begin{minted}{python}\n"
-        "  if True:\n"
-        "      f(1, 2, 3)\n"
-        "  \\end{minted}\n"
-        "world!"
+    assert after == dedent(
+        """\
+        hello
+          \\begin{minted}{python}
+          if True:
+              f(1, 2, 3)
+          \\end{minted}
+        world!
+        """
     )
 
 
@@ -531,13 +535,29 @@ def test_format_src_rst():
 
 
 def test_format_src_rst_literal_blocks():
-    before = "hello::\n" "\n" "    f(1,2,3)\n" "\n" "world\n"
+    before = dedent(
+        """\
+        hello::
+
+            f(1,2,3)
+
+        world
+        """
+    )
     after, _ = blacken_docs.format_str(
         before,
         BLACK_MODE,
         rst_literal_blocks=True,
     )
-    assert after == ("hello::\n" "\n" "    f(1, 2, 3)\n" "\n" "world\n")
+    assert after == dedent(
+        """\
+        hello::
+
+            f(1, 2, 3)
+
+        world
+        """
+    )
 
 
 def test_format_src_rst_literal_blocks_nested():
@@ -637,30 +657,34 @@ def test_format_src_rst_sphinx_doctest():
 
 
 def test_format_src_rst_indented():
-    before = (
-        ".. versionadded:: 3.1\n"
-        "\n"
-        "    hello\n"
-        "\n"
-        "    .. code-block:: python\n"
-        "\n"
-        "        def hi():\n"
-        "            f(1,2,3)\n"
-        "\n"
-        "    world\n"
+    before = dedent(
+        """\
+        .. versionadded:: 3.1
+
+            hello
+
+            .. code-block:: python
+
+                def hi():
+                    f(1,2,3)
+
+            world
+        """
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == (
-        ".. versionadded:: 3.1\n"
-        "\n"
-        "    hello\n"
-        "\n"
-        "    .. code-block:: python\n"
-        "\n"
-        "        def hi():\n"
-        "            f(1, 2, 3)\n"
-        "\n"
-        "    world\n"
+    assert after == dedent(
+        """\
+        .. versionadded:: 3.1
+
+            hello
+
+            .. code-block:: python
+
+                def hi():
+                    f(1, 2, 3)
+
+            world
+        """
     )
 
 
