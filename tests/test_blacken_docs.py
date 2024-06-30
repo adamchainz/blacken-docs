@@ -980,35 +980,64 @@ def test_format_src_rst_jupyter_sphinx_with_directive():
     )
 
 
-def test_works_on_python_docstrings():
-    before = '''\
-def f():
-    """hello world
+def test_format_src_python_docstring_markdown():
+    before = dedent(
+        '''\
+        def f():
+            """
+            hello world
 
-    .. code-block:: python
-
-        f(1,2,3)
-
-    ```python
-    f(1,2,3)
-    ```
-    """
-'''
-    expected = '''\
-def f():
-    """hello world
-
-    .. code-block:: python
-
-        f(1, 2, 3)
-
-    ```python
-    f(1, 2, 3)
-    ```
-    """
-'''
+            ```python
+            f(1,2,3)
+            ```
+            """
+            pass
+        '''
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == expected
+    assert after == dedent(
+        '''\
+        def f():
+            """
+            hello world
+
+            ```python
+            f(1, 2, 3)
+            ```
+            """
+            pass
+        '''
+    )
+
+
+def test_format_src_python_docstring_rst():
+    before = dedent(
+        '''\
+        def f():
+            """
+            hello world
+
+            .. code-block:: python
+
+                f(1,2,3)
+            """
+            pass
+        '''
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        '''\
+        def f():
+            """
+            hello world
+
+            .. code-block:: python
+
+                f(1, 2, 3)
+            """
+            pass
+        '''
+    )
 
 
 def test_format_src_rst_pycon():
