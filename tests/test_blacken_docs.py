@@ -488,12 +488,36 @@ def test_format_src_latex_minted_comments_off_pycon():
     assert after == before
 
 
-def test_src_pythontex():
-    before = "hello\n" "\\begin{pyblock}\n" "f(1,2,3)\n" "\\end{pyblock}\n" "world!"
+def test_format_src_pythontex():
+    # fmt: off
+    before = (
+        "hello\n"
+        "\\begin{pyblock}\n"
+        "f(1,2,3)\n"
+        "\\end{pyblock}\n"
+        "world!"
+    )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
-        "hello\n" "\\begin{pyblock}\n" "f(1, 2, 3)\n" "\\end{pyblock}\n" "world!"
+        "hello\n"
+        "\\begin{pyblock}\n"
+        "f(1, 2, 3)\n"
+        "\\end{pyblock}\n"
+        "world!"
     )
+    # fmt: on
+
+
+def test_format_src_pythontex_comments_off():
+    before = (
+        "% blacken-docs:off\n"
+        "\\begin{pyblock}\n"
+        "f(1,2,3)\n"
+        "\\end{pyblock}\n"
+        "% blacken-docs:on\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
 
 
 def test_format_src_rst():
