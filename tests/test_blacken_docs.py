@@ -195,6 +195,32 @@ def test_format_src_markdown_pycon_options():
     )
 
 
+def test_format_src_markdown_pycon_twice():
+    before = (
+        "```pycon\n"
+        ">>> f(1,2,3)\n"
+        "output\n"
+        "```\n"
+        "example 2\n"
+        "```pycon\n"
+        ">>> f(1,2,3)\n"
+        "output\n"
+        "```\n"
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == (
+        "```pycon\n"
+        ">>> f(1, 2, 3)\n"
+        "output\n"
+        "```\n"
+        "example 2\n"
+        "```pycon\n"
+        ">>> f(1, 2, 3)\n"
+        "output\n"
+        "```\n"
+    )
+
+
 def test_format_src_latex_minted():
     before = (
         "hello\n" "\\begin{minted}{python}\n" "f(1,2,3)\n" "\\end{minted}\n" "world!"
