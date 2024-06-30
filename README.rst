@@ -120,35 +120,6 @@ It also has the below extra options:
 * ``-E`` / ``--skip-errors`` - Don’t exit non-zero for errors from Black (normally syntax errors).
 * ``--rst-literal-blocks`` - Also format literal blocks in reStructuredText files (more below).
 
-To prevent formatting in specific regions of a document,
-use comments to disable/re-enable formatting:
-
-.. code-block:: markdown
-
-    <!-- blacken-docs:off -->
-    ```python
-    f(1, 2, 3)
-    ```
-    <!-- blacken-docs:on -->
-
-.. code-block:: rst
-
-    .. blacken-docs:off
-
-    .. code-block:: python
-
-        f(1,2,3)
-
-    .. blacken-docs:on
-
-.. code-block:: latex
-
-    % blacken-docs:off
-    \begin{minted}{python}
-    f(1, 2, 3)
-    \end{minted}
-    % blacken-docs:on
-
 History
 =======
 
@@ -184,6 +155,16 @@ And “pycon” blocks:
 
     ```
 
+Prevent formatting within a block using ``blacken-docs:off`` and ``blacken-docs:on`` comments:
+
+.. code-block:: markdown
+
+    <!-- blacken-docs:off -->
+    ```python
+    # whatever you want
+    ```
+    <!-- blacken-docs:on -->
+
 Within Python files, docstrings that contain Markdown code blocks may be reformatted:
 
 .. code-block:: python
@@ -217,6 +198,18 @@ In “pycon” blocks:
         >>> def hello():
         ...     print("hello world")
         ...
+
+Prevent formatting within a block using ``blacken-docs:off`` and ``blacken-docs:on`` comments:
+
+.. code-block:: rst
+
+    .. blacken-docs:off
+
+    .. code-block:: python
+
+        # whatever you want
+
+    .. blacken-docs:on
 
 Use ``--rst-literal-blocks`` to also format `literal blocks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks>`__:
 
@@ -273,3 +266,13 @@ In PythonTeX blocks:
     def hello():
         print("hello world")
     \end{pycode}
+
+Prevent formatting within a block using ``blacken-docs:off`` and ``blacken-docs:on`` comments:
+
+.. code-block:: latex
+
+    % blacken-docs:off
+    \begin{minted}{python}
+    # whatever you want
+    \end{minted}
+    % blacken-docs:on
