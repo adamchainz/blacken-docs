@@ -138,7 +138,7 @@ def format_str(
         return code_start >= off_start and code_end <= off_end
 
     @contextlib.contextmanager
-    def _collect_error(match: Match[str]) -> Generator[None, None, None]:
+    def _collect_error(match: Match[str]) -> Generator[None]:
         try:
             yield
         except Exception as e:
