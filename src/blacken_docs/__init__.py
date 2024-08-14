@@ -33,7 +33,7 @@ MYST_RE = re.compile(
     r"^(?P<indent>\s*)```(\s*{code-cell})?\s*(?P<lang>\w+)?"
     r"(?P<yaml>\n---\n.*?\n---)?"
     r"\n)"
-    r"(?P<code>.*?)"
+    r"(?P<code>[^`]*?)"
     r"(?P<after>^(?P=indent)```\s*$)",
     re.DOTALL | re.MULTILINE,
 )

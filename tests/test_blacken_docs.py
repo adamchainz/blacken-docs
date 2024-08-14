@@ -13,28 +13,27 @@ from blacken_docs import __main__  # noqa: F401
 BLACK_MODE = black.FileMode(line_length=DEFAULT_LINE_LENGTH)
 
 
-
 try:
     import tokenize_rt
+
     HAS_TOKENIZE_RT = True
 except ImportError:
     HAS_TOKENIZE_RT = False
 
 
 requires_tokenize_rt = pytest.mark.skipif(
-    not HAS_TOKENIZE_RT,
-    reason="requires tokenize-rt to be installed"
+    not HAS_TOKENIZE_RT, reason="requires tokenize-rt to be installed"
 )
 try:
     import IPython
+
     HAS_IPYTHON = True
 except ImportError:
     HAS_IPYTHON = False
 
 
 requires_ipython = pytest.mark.skipif(
-    not HAS_IPYTHON,
-    reason="requires IPython to be installed"
+    not HAS_IPYTHON, reason="requires IPython to be installed"
 )
 
 
@@ -532,7 +531,7 @@ def test_integration_preview(tmp_path):
     assert f.read_text() == dedent(
         """\
         ```python
-        x = "ab"
+        x = "a" "b"
         ```
         """
     )
@@ -1082,10 +1081,8 @@ def test_format_src_myst_tags_language(language, supported):
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
 
     if supported:
-        assert (
-            after
-            == dedent(
-                """\
+        assert after == dedent(
+            """\
             ```{code-cell}language
             ---
             tags: [some-tags]
@@ -1093,8 +1090,7 @@ def test_format_src_myst_tags_language(language, supported):
             print("hello world")
             ```
             """
-            ).replace("language", language)
-        )
+        ).replace("language", language)
     else:
         assert after == before
 
@@ -1160,3 +1156,112 @@ def test_format_src_myst_magic_comand():
         ```
         """
     )
+
+
+@requires_tokenize_rt
+@requires_ipython
+def test_format_src_myst_single_math_block(tmp_path, capsys):
+    f = tmp_path / "f.md"
+
+    to_write = r"""---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.15.2
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+
+# Title
+
+A basic overview of the problem we're trying to solve.
+
++++ {"editable": true, "slideshow": {"slide_type": ""}}
+
+Some text.
+
+```{math}
+:label: eq_1
+a \geq b
+```
+
+where $a$ is the a and $b$ is the b.
+
++++
+
+Some text
+
+1. a first line
+2. a second, longer line that we use
+   for other things
+
+where $c$ is something else."""
+    f.write_text(to_write)
+
+    result = blacken_docs.main((str(f),))
+
+    assert result == 0
+    assert not capsys.readouterr()[1]
+    assert f.read_text() == to_write
+
+
+@requires_tokenize_rt
+@requires_ipython
+def test_format_src_myst_multiple_math_blocks(tmp_path, capsys):
+    f = tmp_path / "f.md"
+
+    to_write = r"""---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.15.2
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+
+# Title
+
+A basic overview of the problem we're trying to solve.
+
++++ {"editable": true, "slideshow": {"slide_type": ""}}
+
+Some text.
+
+```{math}
+:label: eq_1
+a \geq b
+```
+
+where $a$ is the a and $b$ is the b.
+
++++
+
+Some text
+
+1. a first line
+2. a second, longer line that we use
+   for other things
+
+Some more text
+
+```{math}
+:label: eq_2
+a \geq b \times (1 + c)
+```
+
+where $c$ is something else."""
+    f.write_text(to_write)
+
+    result = blacken_docs.main((str(f),))
+
+    assert result == 0
+    assert not capsys.readouterr()[1]
+    assert f.read_text() == to_write
