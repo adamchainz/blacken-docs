@@ -1323,3 +1323,15 @@ def test_format_src_rst_pycon_comments():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
+
+
+def test_format_empty_python_code_block():
+    before = "some text\n\n.. code-block:: python\n\n\nsome other text\n"
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_empty_pycon_code_block():
+    before = "some text\n\n.. code-block:: pycon\n\n\nsome other text\n"
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
