@@ -159,6 +159,8 @@ def format_str(
         lang = match["lang"]
         if lang is not None and lang not in PYGMENTS_PY_LANGS:
             return match[0]
+        if not match["code"].strip():
+            return match[0]
         min_indent = min(INDENT_RE.findall(match["code"]))
         trailing_ws_match = TRAILING_NL_RE.search(match["code"])
         assert trailing_ws_match
@@ -240,6 +242,8 @@ def format_str(
         if _within_off_range(match.span()):
             return match[0]
         code = _pycon_match(match)
+        if not code.strip():
+            return match[0]
         min_indent = min(INDENT_RE.findall(match["code"]))
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code}'

@@ -534,6 +534,12 @@ def test_format_src_rst():
     )
 
 
+def test_format_src_rst_empty():
+    before = "some text\n\n.. code-block:: python\n\n\nsome other text\n"
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
 def test_format_src_rst_literal_blocks():
     before = dedent(
         """\
@@ -558,6 +564,21 @@ def test_format_src_rst_literal_blocks():
         world
         """
     )
+
+
+def test_format_src_rst_literal_block_empty():
+    before = dedent(
+        """\
+        hello::
+        world
+        """
+    )
+    after, _ = blacken_docs.format_str(
+        before,
+        BLACK_MODE,
+        rst_literal_blocks=True,
+    )
+    assert after == before
 
 
 def test_format_src_rst_literal_blocks_nested():
@@ -1321,5 +1342,11 @@ def test_format_src_rst_pycon_comments():
         "\n"
         ".. blacken-docs:on\n"
     )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
+def test_format_src_rst_pycon_empty():
+    before = "some text\n\n.. code-block:: pycon\n\n\nsome other text\n"
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
