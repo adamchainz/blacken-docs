@@ -3,4 +3,11 @@
     description: Run `black` on python code blocks in documentation files
     entry: blacken-docs
     language: python
-    files: '\.(rst|md|markdown|py|tex)$'
+    types_or: [rst, markdown, tex, python, pyi]
+-   id: blacken-docs-jupyter
+    name: blacken-docs-jupyter
+    description: Run `black` on python code blocks in documentation files (with Jupyter Notebook support)
+    entry: blacken-docs
+    language: python
+    types_or: [rst, markdown, tex, python, pyi, jupyter]
+    additional_dependencies: ["black[jupyter]"]
