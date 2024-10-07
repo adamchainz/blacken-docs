@@ -2,6 +2,9 @@
 Changelog
 =========
 
+1.19.0 (2024-10-07)
+-------------------
+
 * reStructuredText: Gracefully ignore empty code blocks.
 
   Thanks to Stephen Rosen in `PR #368 <https://github.com/adamchainz/blacken-docs/issues/368>`__.
