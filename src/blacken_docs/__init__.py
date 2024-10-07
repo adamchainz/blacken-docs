@@ -5,9 +5,9 @@ import contextlib
 import re
 import textwrap
 from bisect import bisect
-from typing import Generator
-from typing import Match
-from typing import Sequence
+from collections.abc import Generator
+from collections.abc import Sequence
+from re import Match
 
 import black
 from black.const import DEFAULT_LINE_LENGTH
