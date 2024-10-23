@@ -104,6 +104,11 @@ blacken-docs currently passes the following options through to Black:
   .. |--preview| replace:: ``--preview``
   __ https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#preview
 
+* |--pyi|__
+
+  .. |--pyi| replace:: ``--pyi``
+  __ https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#pyi
+
 * |-S / --skip-string-normalization|__
 
   .. |-S / --skip-string-normalization| replace:: ``-S`` / ``--skip-string-normalization``

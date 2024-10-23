@@ -338,14 +338,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--rst-literal-blocks",
         action="store_true",
     )
+    parser.add_argument("--pyi", action="store_true")
     parser.add_argument("filenames", nargs="*")
     args = parser.parse_args(argv)
 
-    black_mode = black.FileMode(
-        line_length=args.line_length,
-        preview=args.preview,
-        string_normalization=not args.skip_string_normalization,
+    black_mode = black.Mode(
         target_versions=set(args.target_versions),
+        line_length=args.line_length,
+        string_normalization=not args.skip_string_normalization,
+        is_pyi=args.pyi,
+        preview=args.preview,
     )
 
     retv = 0
