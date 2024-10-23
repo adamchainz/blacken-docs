@@ -2,8 +2,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.19.1 (2024-10-23)
+-------------------
 
 * Add support for Black's ``--pyi`` flag.
 
