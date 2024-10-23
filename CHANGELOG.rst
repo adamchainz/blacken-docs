@@ -2,6 +2,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Add support for Black's ``--pyi`` flag.
+
+  Thanks to Alex Waygood in `PR #375 <https://github.com/adamchainz/blacken-docs/pull/375>`__.
+
 1.19.0 (2024-10-07)
 -------------------
 

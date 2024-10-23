@@ -866,6 +866,34 @@ def test_integration_preview(tmp_path):
     )
 
 
+def test_integration_pyi(tmp_path):
+    f = tmp_path / "f.md"
+    f.write_text(
+        dedent(
+            """\
+            ```python
+            class Foo: ...
+
+
+            class Bar: ...
+            ```
+            """
+        )
+    )
+
+    result = blacken_docs.main((str(f), "--pyi"))
+
+    assert result == 1
+    assert f.read_text() == dedent(
+        """\
+        ```python
+        class Foo: ...
+        class Bar: ...
+        ```
+        """
+    )
+
+
 def test_integration_py36(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(
