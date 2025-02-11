@@ -37,6 +37,14 @@ urls.Changelog = "https://github.com/adamchainz/blacken-docs/blob/main/CHANGELOG
 urls.Repository = "https://github.com/asottile/blacken-docs"
 scripts.blacken-docs = "blacken_docs:main"
 
+[dependency-groups]
+test = [
+  "black>=22.1",
+  "coverage[toml]",
+  "pytest",
+  "pytest-randomly",
+]
+
 [tool.isort]
 add_imports = [
   "from __future__ import annotations",
