@@ -401,7 +401,7 @@ def test_format_src_latex_minted_opt():
 
 
 def test_format_src_latex_minted_indented():
-    # Personaly I would have minted python code all flush left,
+    # Personally I would have minted python code all flush left,
     # with only the Python code's own four space indentation:
     before = dedent(
         """\
@@ -428,7 +428,7 @@ def test_format_src_latex_minted_indented():
 
 def test_format_src_latex_minted_pycon():
     before = (
-        "Preceeding text\n"
+        "Preceding text\n"
         "\\begin{minted}[gobble=2,showspaces]{pycon}\n"
         ">>> print( 'Hello World' )\n"
         "Hello World\n"
@@ -437,7 +437,7 @@ def test_format_src_latex_minted_pycon():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
-        "Preceeding text\n"
+        "Preceding text\n"
         "\\begin{minted}[gobble=2,showspaces]{pycon}\n"
         '>>> print("Hello World")\n'
         "Hello World\n"
@@ -450,7 +450,7 @@ def test_format_src_latex_minted_pycon_indented():
     # Nicer style to put the \begin and \end on new lines,
     # but not actually required for the begin line
     before = (
-        "Preceeding text\n"
+        "Preceding text\n"
         "  \\begin{minted}{pycon}\n"
         "    >>> print( 'Hello World' )\n"
         "    Hello World\n"
@@ -459,7 +459,7 @@ def test_format_src_latex_minted_pycon_indented():
     )
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
-        "Preceeding text\n"
+        "Preceding text\n"
         "  \\begin{minted}{pycon}\n"
         '  >>> print("Hello World")\n'
         "  Hello World\n"
@@ -1137,7 +1137,7 @@ def test_format_src_rst_pycon():
     )
 
 
-def test_format_src_rst_pycon_with_contiuation():
+def test_format_src_rst_pycon_with_continuation():
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1160,7 +1160,7 @@ def test_format_src_rst_pycon_with_contiuation():
     )
 
 
-def test_format_src_rst_pycon_adds_contiuation():
+def test_format_src_rst_pycon_adds_continuation():
     before = ".. code-block:: pycon\n" "\n" '    >>> d = {"a": 1,"b": 2,"c": 3,}\n' "\n"
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == (
