@@ -887,20 +887,20 @@ def test_format_src_rst_python_comments():
 def test_integration_ok(tmp_path, capsys):
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f(1, 2, 3)\n" "```\n",
+        "```python\nf(1, 2, 3)\n```\n",
     )
 
     result = blacken_docs.main((str(f),))
 
     assert result == 0
     assert not capsys.readouterr()[1]
-    assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
+    assert f.read_text() == ("```python\nf(1, 2, 3)\n```\n")
 
 
 def test_integration_modifies(tmp_path, capsys):
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f(1,2,3)\n" "```\n",
+        "```python\nf(1,2,3)\n```\n",
     )
 
     result = blacken_docs.main((str(f),))
@@ -908,7 +908,7 @@ def test_integration_modifies(tmp_path, capsys):
     assert result == 1
     out, _ = capsys.readouterr()
     assert out == f"{f}: Rewriting...\n"
-    assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
+    assert f.read_text() == ("```python\nf(1, 2, 3)\n```\n")
 
 
 def test_integration_line_length(tmp_path):
@@ -1090,19 +1090,19 @@ def test_integration_multiple_target_version(tmp_path):
 def test_integration_skip_string_normalization(tmp_path):
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f('hi')\n" "```\n",
+        "```python\nf('hi')\n```\n",
     )
 
     result = blacken_docs.main((str(f), "--skip-string-normalization"))
 
     assert result == 0
-    assert f.read_text() == ("```python\n" "f('hi')\n" "```\n")
+    assert f.read_text() == ("```python\nf('hi')\n```\n")
 
 
 def test_integration_syntax_error(tmp_path, capsys):
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f(\n" "```\n",
+        "```python\nf(\n```\n",
     )
 
     result = blacken_docs.main((str(f),))
@@ -1110,22 +1110,20 @@ def test_integration_syntax_error(tmp_path, capsys):
     assert result == 2
     out, _ = capsys.readouterr()
     assert out.startswith(f"{f}:1: code block parse error")
-    assert f.read_text() == ("```python\n" "f(\n" "```\n")
+    assert f.read_text() == ("```python\nf(\n```\n")
 
 
 def test_integration_ignored_syntax_error(tmp_path, capsys):
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f( )\n" "```\n" "\n" "```python\n" "f(\n" "```\n",
+        "```python\nf( )\n```\n\n```python\nf(\n```\n",
     )
 
     result = blacken_docs.main((str(f), "--skip-errors"))
 
     assert result == 1
     out, _ = capsys.readouterr()
-    assert f.read_text() == (
-        "```python\n" "f()\n" "```\n" "\n" "```python\n" "f(\n" "```\n"
-    )
+    assert f.read_text() == ("```python\nf()\n```\n\n```python\nf(\n```\n")
 
 
 def test_format_src_rst_jupyter_sphinx():
@@ -1298,7 +1296,7 @@ def test_format_src_rst_pycon_with_continuation():
 
 
 def test_format_src_rst_pycon_adds_continuation():
-    before = ".. code-block:: pycon\n" "\n" '    >>> d = {"a": 1,"b": 2,"c": 3,}\n' "\n"
+    before = '.. code-block:: pycon\n\n    >>> d = {"a": 1,"b": 2,"c": 3,}\n\n'
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == dedent(
         """\
@@ -1389,7 +1387,7 @@ def test_format_src_rst_pycon_code_block_is_final_line1():
 
 
 def test_format_src_rst_pycon_code_block_is_final_line2():
-    before = ".. code-block:: pycon\n" "\n" "    >>> if True:\n" "    ...   pass\n"
+    before = ".. code-block:: pycon\n\n    >>> if True:\n    ...   pass\n"
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == dedent(
         """\
@@ -1501,15 +1499,15 @@ def test_format_src_rst_pycon_elided_traceback():
 
 
 def test_format_src_rst_pycon_no_prompt():
-    before = ".. code-block:: pycon\n" "\n" "    pass\n"
+    before = ".. code-block:: pycon\n\n    pass\n"
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_no_trailing_newline():
-    before = ".. code-block:: pycon\n" "\n" "    >>> pass"
+    before = ".. code-block:: pycon\n\n    >>> pass"
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
-    assert after == (".. code-block:: pycon\n" "\n" "    >>> pass\n")
+    assert after == (".. code-block:: pycon\n\n    >>> pass\n")
 
 
 def test_format_src_rst_pycon_comment_before_promopt():

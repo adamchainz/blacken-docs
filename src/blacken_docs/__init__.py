@@ -5,8 +5,7 @@ import contextlib
 import re
 import textwrap
 from bisect import bisect
-from collections.abc import Generator
-from collections.abc import Sequence
+from collections.abc import Generator, Sequence
 from re import Match
 
 import black
@@ -151,7 +150,7 @@ def format_str(
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
         code = textwrap.indent(code, match["indent"])
-        return f'{match["before"]}{code}{match["after"]}'
+        return f"{match['before']}{code}{match['after']}"
 
     def _rst_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
@@ -169,7 +168,7 @@ def format_str(
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
         code = textwrap.indent(code, min_indent)
-        return f'{match["before"]}{code.rstrip()}{trailing_ws}'
+        return f"{match['before']}{code.rstrip()}{trailing_ws}"
 
     def _rst_literal_blocks_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
@@ -184,7 +183,7 @@ def format_str(
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
         code = textwrap.indent(code, min_indent)
-        return f'{match["before"]}{code.rstrip()}{trailing_ws}'
+        return f"{match['before']}{code.rstrip()}{trailing_ws}"
 
     def _pycon_match(match: Match[str]) -> str:
         code = ""
@@ -236,7 +235,7 @@ def format_str(
             return match[0]
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
-        return f'{match["before"]}{code}{match["after"]}'
+        return f"{match['before']}{code}{match['after']}"
 
     def _rst_pycon_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
@@ -246,7 +245,7 @@ def format_str(
             return match[0]
         min_indent = min(INDENT_RE.findall(match["code"]))
         code = textwrap.indent(code, min_indent)
-        return f'{match["before"]}{code}'
+        return f"{match['before']}{code}"
 
     def _latex_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
@@ -255,14 +254,14 @@ def format_str(
         with _collect_error(match):
             code = black.format_str(code, mode=black_mode)
         code = textwrap.indent(code, match["indent"])
-        return f'{match["before"]}{code}{match["after"]}'
+        return f"{match['before']}{code}{match['after']}"
 
     def _latex_pycon_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
             return match[0]
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
-        return f'{match["before"]}{code}{match["after"]}'
+        return f"{match['before']}{code}{match['after']}"
 
     src = MD_RE.sub(_md_match, src)
     src = MD_PYCON_RE.sub(_md_pycon_match, src)
