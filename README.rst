@@ -46,7 +46,7 @@ Add the following to the ``repos`` section of your ``.pre-commit-config.yaml`` f
         hooks:
         -   id: blacken-docs
             additional_dependencies:
-            - black==22.12.0
+            - black==26.3.1
 
 Then, reformat your entire project:
 
