@@ -69,7 +69,7 @@ requires-dist = [{ name = "black", specifier = ">=22.1" }]
 test = [
     { name = "black", specifier = ">=22.1" },
     { name = "coverage", extras = ["toml"] },
-    { name = "pytest" },
+    { name = "pytest", specifier = ">=9" },
     { name = "pytest-randomly" },
 ]
 
