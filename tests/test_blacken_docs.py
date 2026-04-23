@@ -140,6 +140,26 @@ def test_format_src_indented_markdown():
     )
 
 
+def test_format_src_markdown_indented_tabs():
+    before = dedent(
+        """\
+        Example:
+        \t```python
+        \tf(1,2,3)
+        \t```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        Example:
+        \t```python
+        \tf(1, 2, 3)
+        \t```
+        """
+    )
+
+
 def test_format_src_markdown_pycon():
     before = dedent(
         """\
@@ -487,6 +507,30 @@ def test_format_src_latex_minted_indented():
     )
 
 
+def test_format_src_latex_minted_indented_tabs():
+    before = dedent(
+        """\
+        hello
+        \t\\begin{minted}{python}
+        \t    if True:
+        \t        f(1,2,3)
+        \t\\end{minted}
+        world!
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        hello
+        \t\\begin{minted}{python}
+        \t    if True:
+        \t        f(1, 2, 3)
+        \t\\end{minted}
+        world!
+        """
+    )
+
+
 def test_format_src_latex_minted_pycon():
     before = dedent(
         """\
@@ -695,6 +739,28 @@ def test_format_src_rst_literal_blocks_nested():
     assert errors == []
 
 
+def test_format_src_rst_literal_blocks_indented_tabs():
+    before = dedent(
+        """\
+        \thello::
+
+        \t    f(1,2,3)
+        """,
+    )
+    after, _ = blacken_docs.format_str(
+        before,
+        BLACK_MODE,
+        rst_literal_blocks=True,
+    )
+    assert after == dedent(
+        """\
+        hello::
+
+        \t    f(1, 2, 3)
+        """,
+    )
+
+
 def test_format_src_rst_literal_blocks_empty():
     before = dedent(
         """
@@ -806,6 +872,38 @@ def test_format_src_rst_indented():
                     f(1, 2, 3)
 
             world
+        """
+    )
+
+
+def test_format_src_rst_indented_tabs():
+    before = dedent(
+        """\
+        .. versionadded:: 3.1
+
+        \thello
+
+        \t.. code-block:: python
+
+        \t\tdef hi():
+        \t\tf(1,2,3)
+
+        \tworld
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        .. versionadded:: 3.1
+
+        \thello
+
+        \t.. code-block:: python
+
+        \t    def hi():
+        \t        f(1, 2, 3)
+
+        \tworld
         """
     )
 
