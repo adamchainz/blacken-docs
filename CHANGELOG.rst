@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Support Python 3.15.
+
 * Drop Python 3.9 support.
 
 1.20.0 (2025-09-08)
