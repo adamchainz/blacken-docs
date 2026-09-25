@@ -5,6 +5,9 @@ Changelog
 Unreleased
 ----------
 
+* Infer target versions from ``pyproject.toml`` when ``--target-version`` is omitted, using Black's configuration discovery.
+  This reads ``[tool.black].target-version`` or, with Black 23.1.0+, ``[project].requires-python``.
+
 * Support Python 3.15.
 
 * Drop Python 3.9 support.

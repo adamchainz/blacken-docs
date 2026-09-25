@@ -119,6 +119,11 @@ blacken-docs currently passes the following options through to Black:
   .. |-t / --target-version| replace:: ``-t`` / ``--target-version``
   __ https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#t-target-version
 
+When ``--target-version`` is omitted, blacken-docs uses Black's configuration discovery to find a ``pyproject.toml`` for the input files.
+It reads ``target-version`` from ``[tool.black]`` or, with Black 23.1.0+, infers it from ``requires-python`` in ``[project]``.
+If neither provides a target version, Black detects it from each code block as before.
+Other settings from the configuration file are not applied.
+
 It also has the below extra options:
 
 * ``--check`` - Don’t modify files but indicate when changes are necessary with a message and non-zero return code.
