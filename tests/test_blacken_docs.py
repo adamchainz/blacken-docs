@@ -1,14 +1,24 @@
 from __future__ import annotations
 
+from importlib.metadata import version
 from textwrap import dedent
 
 import black
+import pytest
 from black.const import DEFAULT_LINE_LENGTH
 
 import blacken_docs
 from blacken_docs import __main__  # noqa: F401
 
 BLACK_MODE = black.Mode(line_length=DEFAULT_LINE_LENGTH)
+
+
+@pytest.fixture(autouse=True)
+def isolate_user_black_config(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        "black.files.find_user_pyproject_toml",
+        lambda: tmp_path / "absent-black-config",
+    )
 
 
 def test_format_src_trivial():
@@ -1085,6 +1095,203 @@ def test_integration_multiple_target_version(tmp_path):
         ("--target-version", "py35", "--target-version", "py36", str(f)),
     )
     assert result2 == 0
+
+
+TARGET_VERSION_EXAMPLE = (
+    "```python\n"
+    "def very_very_long_function_name(\n"
+    "    very_very_very_very_very_very,\n"
+    "    another_very_very_very_long_name,\n"
+    "    *long_long_long_long_long_long\n"
+    "):\n"
+    "    pass\n"
+    "```\n"
+)
+TARGET_VERSION_EXAMPLE_PY36 = TARGET_VERSION_EXAMPLE.replace(
+    "*long_long_long_long_long_long\n",
+    "*long_long_long_long_long_long,\n",
+)
+
+
+@pytest.fixture
+def target_version_document(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    # Keep Black's project search inside this fixture, even without tool.black.
+    (tmp_path / ".git").mkdir()
+    document = tmp_path / "example.md"
+    document.write_text(TARGET_VERSION_EXAMPLE, encoding="utf-8")
+    return document
+
+
+@pytest.mark.parametrize(
+    "config,arguments,expected",
+    [
+        pytest.param(
+            '[tool.black]\ntarget-version = ["py36"]\n',
+            (),
+            TARGET_VERSION_EXAMPLE_PY36,
+            id="black-target",
+        ),
+        pytest.param(
+            '[tool.black]\ntarget-version = ["py36"]\n',
+            ("--target-version=py35",),
+            TARGET_VERSION_EXAMPLE,
+            id="cli-older-than-config",
+        ),
+        pytest.param(
+            '[tool.black]\ntarget-version = ["py35"]\n',
+            ("--target-version=py36",),
+            TARGET_VERSION_EXAMPLE_PY36,
+            id="cli-newer-than-config",
+        ),
+        pytest.param(
+            '[tool.black]\ntarget-version = ["py36"]\n',
+            ("--target-version=py35", "--target-version=py36"),
+            TARGET_VERSION_EXAMPLE,
+            id="multiple-cli-targets",
+        ),
+        pytest.param(
+            '[project]\nrequires-python = ">=3.6"\n'
+            '[tool.black]\ntarget-version = ["py35", "py36"]\n',
+            (),
+            TARGET_VERSION_EXAMPLE,
+            id="black-targets-override-project",
+        ),
+        pytest.param(
+            '[project]\nrequires-python = ">=3.6"\n[tool.black]\ntarget-version = []\n',
+            (),
+            TARGET_VERSION_EXAMPLE,
+            id="empty-black-targets-override-project",
+        ),
+    ],
+)
+def test_integration_target_version_config(
+    target_version_document, config, arguments, expected
+):
+    document = target_version_document
+    (document.parent / "pyproject.toml").write_text(config, encoding="utf-8")
+
+    result = blacken_docs.main((str(document), *arguments))
+
+    assert result == int(expected != TARGET_VERSION_EXAMPLE)
+    assert document.read_text(encoding="utf-8") == expected
+
+
+@pytest.mark.skipif(
+    tuple(int(part) for part in version("black").split(".")[:2]) < (23, 1),
+    reason="Black added requires-python inference in 23.1",
+)
+def test_integration_target_version_from_requires_python(target_version_document):
+    document = target_version_document
+    (document.parent / "pyproject.toml").write_text(
+        '[project]\nrequires-python = ">=3.6"\n',
+        encoding="utf-8",
+    )
+
+    assert blacken_docs.main((str(document),)) == 1
+    assert document.read_text(encoding="utf-8") == TARGET_VERSION_EXAMPLE_PY36
+
+
+def test_integration_target_version_without_config(target_version_document):
+    document = target_version_document
+
+    assert blacken_docs.main((str(document),)) == 0
+    assert document.read_text(encoding="utf-8") == TARGET_VERSION_EXAMPLE
+
+
+def test_integration_target_version_ignores_other_black_options(
+    target_version_document,
+):
+    document = target_version_document
+    (document.parent / "pyproject.toml").write_text(
+        "[tool.black]\nline-length = 10\nskip-string-normalization = true\n",
+        encoding="utf-8",
+    )
+    document.write_text(
+        TARGET_VERSION_EXAMPLE + "\n```python\nsay('hello', 'world')\n```\n",
+        encoding="utf-8",
+    )
+
+    assert blacken_docs.main((str(document),)) == 1
+    assert document.read_text(encoding="utf-8") == (
+        TARGET_VERSION_EXAMPLE + '\n```python\nsay("hello", "world")\n```\n'
+    )
+
+
+def test_integration_target_version_common_project_root(
+    target_version_document, monkeypatch
+):
+    project = target_version_document.parent
+    (project / "pyproject.toml").write_text(
+        '[tool.black]\ntarget-version = ["py36"]\n',
+        encoding="utf-8",
+    )
+    documents = []
+    for directory in ("docs", "examples"):
+        (project / directory).mkdir()
+        document = project / directory / "example.md"
+        document.write_text(TARGET_VERSION_EXAMPLE, encoding="utf-8")
+        documents.append(document)
+    # Discover configuration from the documents, not the invocation directory.
+    launcher = project / "launcher"
+    launcher.mkdir()
+    (launcher / "pyproject.toml").write_text(
+        '[tool.black]\ntarget-version = ["py35"]\n',
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(launcher)
+
+    assert blacken_docs.main(tuple(str(document) for document in documents)) == 1
+    for document in documents:
+        assert document.read_text(encoding="utf-8") == TARGET_VERSION_EXAMPLE_PY36
+
+
+@pytest.mark.parametrize(
+    "config",
+    [
+        "[tool.black]\ntarget-version = [",
+        '[tool.black]\ntarget-version = "py36"\n',
+        '[tool.black]\ntarget-version = ["py999"]\n',
+        "[tool.black]\ntarget-version = [36]\n",
+    ],
+    ids=["invalid-toml", "target-not-list", "unknown-target", "non-string-target"],
+)
+def test_integration_target_version_invalid_config(
+    target_version_document, config, capsys
+):
+    document = target_version_document
+    (document.parent / "pyproject.toml").write_text(config, encoding="utf-8")
+
+    with pytest.raises(SystemExit) as exc_info:
+        blacken_docs.main((str(document),))
+
+    assert exc_info.value.code == 2
+    assert "error:" in capsys.readouterr().err
+    assert document.read_text(encoding="utf-8") == TARGET_VERSION_EXAMPLE
+
+
+def test_integration_target_version_cli_skips_invalid_config(target_version_document):
+    document = target_version_document
+    (document.parent / "pyproject.toml").write_text(
+        "[tool.black]\ntarget-version = [",
+        encoding="utf-8",
+    )
+
+    assert blacken_docs.main((str(document), "--target-version=py36")) == 1
+    assert document.read_text(encoding="utf-8") == TARGET_VERSION_EXAMPLE_PY36
+
+
+def test_integration_target_version_no_files_skips_invalid_config(
+    target_version_document,
+):
+    document = target_version_document
+    (document.parent / "pyproject.toml").write_text(
+        "[tool.black]\ntarget-version = [",
+        encoding="utf-8",
+    )
+
+    assert blacken_docs.main(()) == 0
+    assert document.read_text(encoding="utf-8") == TARGET_VERSION_EXAMPLE
 
 
 def test_integration_skip_string_normalization(tmp_path):

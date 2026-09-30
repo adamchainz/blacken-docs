@@ -10,6 +10,7 @@ from re import Match
 
 import black
 from black.const import DEFAULT_LINE_LENGTH
+from black.files import find_pyproject_toml, parse_pyproject_toml
 from black.mode import TargetVersion
 
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
@@ -340,6 +341,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--pyi", action="store_true")
     parser.add_argument("filenames", nargs="*")
     args = parser.parse_args(argv)
+
+    if not args.target_versions and args.filenames:
+        try:
+            config_path = find_pyproject_toml(tuple(args.filenames))
+            if config_path:
+                config = parse_pyproject_toml(config_path)
+                target_versions = config.get("target_version", [])
+                if not isinstance(target_versions, list):
+                    parser.error(f"{config_path}: target-version must be a list")
+                try:
+                    args.target_versions = [
+                        TargetVersion[v.upper()] for v in target_versions
+                    ]
+                except (KeyError, AttributeError):
+                    parser.error(f"{config_path}: invalid target-version")
+        except (OSError, ValueError) as exc:
+            parser.error(f"Cannot read Black configuration: {exc}")
 
     black_mode = black.Mode(
         target_versions=set(args.target_versions),
