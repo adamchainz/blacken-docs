@@ -5,6 +5,8 @@ Changelog
 Unreleased
 ----------
 
+* Drop Python 3.10 support.
+
 * Support Python 3.15.
 
 * Drop Python 3.9 support.
