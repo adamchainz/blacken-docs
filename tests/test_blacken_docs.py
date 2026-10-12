@@ -695,6 +695,45 @@ def test_format_src_rst_literal_blocks_nested():
     assert errors == []
 
 
+def test_format_src_rst_literal_blocks_within_directive():
+    before = dedent(
+        """\
+        How to do literal blocks:
+
+        .. code-block:: rst
+
+            A literal block::
+
+                This is not Python.
+
+        Outside::
+
+            f(1,2,3)
+        """
+    )
+    after, errors = blacken_docs.format_str(
+        before,
+        BLACK_MODE,
+        rst_literal_blocks=True,
+    )
+    assert after == dedent(
+        """\
+        How to do literal blocks:
+
+        .. code-block:: rst
+
+            A literal block::
+
+                This is not Python.
+
+        Outside::
+
+            f(1, 2, 3)
+        """
+    )
+    assert errors == []
+
+
 def test_format_src_rst_literal_blocks_empty():
     before = dedent(
         """
