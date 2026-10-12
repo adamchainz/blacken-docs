@@ -15,6 +15,11 @@ Unreleased
   This makes builds with uv about nine times faster, since uv runs the backend natively, without creating a build environment or spawning a Python process.
   Additionally, source distributions no longer include test files, which setuptools previously included incompletely, missing the files needed to actually run them.
 
+* Skip literal blocks within directives when using ``--rst-literal-blocks``, such as the reStructuredText source within a ``.. code-block:: rst`` body.
+  Previously these were passed to Black, which reported a parse error.
+
+  `PR #447 <https://github.com/adamchainz/blacken-docs/pull/447>`__.
+
 1.20.0 (2025-09-08)
 -------------------
 
