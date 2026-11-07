@@ -3,6 +3,7 @@ from __future__ import annotations
 from textwrap import dedent
 
 import black
+import pytest
 from black.const import DEFAULT_LINE_LENGTH
 
 import blacken_docs
@@ -535,6 +536,43 @@ def test_format_src_latex_minted_pycon_indented():
         Following text.
         """
     )
+
+
+@pytest.mark.parametrize(
+    ("begin", "end", "prompt"),
+    [
+        (r"\begin{minted}{python}", r"\end{minted}", ""),
+        (r"\begin{minted}{pycon}", r"\end{minted}", ">>> "),
+        (r"\begin{pycode}", r"\end{pycode}", ""),
+    ],
+)
+def test_format_src_latex_mismatched_indentation(begin, end, prompt):
+    before = dedent(
+        f"""\
+        Before
+          {begin}
+            {prompt}f(1,2,3)
+            {end}
+        \\item Between blocks
+          {begin}
+          {prompt}f(4,5,6)
+          {end}
+        """
+    )
+    after, errors = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        f"""\
+        Before
+          {begin}
+          {prompt}f(1, 2, 3)
+            {end}
+        \\item Between blocks
+          {begin}
+          {prompt}f(4, 5, 6)
+          {end}
+        """
+    )
+    assert errors == []
 
 
 def test_format_src_latex_minted_comments_off():
