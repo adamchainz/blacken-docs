@@ -69,20 +69,20 @@ PYCON_CONTINUATION_RE = re.compile(
 LATEX_RE = re.compile(
     r"(?P<before>^(?P<indent> *)\\begin{minted}(\[.*?\])?{python}\n)"
     r"(?P<code>.*?)"
-    r"(?P<after>^(?P=indent)\\end{minted}\s*$)",
+    r"(?P<after>^ *\\end{minted}\s*$)",
     re.DOTALL | re.MULTILINE,
 )
 LATEX_PYCON_RE = re.compile(
     r"(?P<before>^(?P<indent> *)\\begin{minted}(\[.*?\])?{pycon}\n)"
     r"(?P<code>.*?)"
-    r"(?P<after>^(?P=indent)\\end{minted}\s*$)",
+    r"(?P<after>^ *\\end{minted}\s*$)",
     re.DOTALL | re.MULTILINE,
 )
 PYTHONTEX_LANG = r"(?P<lang>pyblock|pycode|pyconsole|pyverbatim)"
 PYTHONTEX_RE = re.compile(
     rf"(?P<before>^(?P<indent> *)\\begin{{{PYTHONTEX_LANG}}}\n)"
     rf"(?P<code>.*?)"
-    rf"(?P<after>^(?P=indent)\\end{{(?P=lang)}}\s*$)",
+    rf"(?P<after>^ *\\end{{(?P=lang)}}\s*$)",
     re.DOTALL | re.MULTILINE,
 )
 INDENT_RE = re.compile("^ +(?=[^ ])", re.MULTILINE)
