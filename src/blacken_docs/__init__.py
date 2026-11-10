@@ -285,8 +285,12 @@ def format_file(
     rst_literal_blocks: bool,
     check_only: bool,
 ) -> int:
-    with open(filename, encoding="UTF-8") as f:
-        contents = f.read()
+    try:
+        with open(filename, encoding="UTF-8") as f:
+            contents = f.read()
+    except OSError as e:
+        print(f"{filename}: {e.strerror or e}")
+        return 1
     new_contents, errors = format_str(
         contents,
         black_mode,

@@ -1549,3 +1549,18 @@ def test_format_src_rst_pycon_empty():
     before = "some text\n\n.. code-block:: pycon\n\n\nsome other text\n"
     after, _ = blacken_docs.format_str(before, BLACK_MODE)
     assert after == before
+
+
+def test_integration_missing_file(tmp_path, capsys):
+    missing = tmp_path / "does-not-exist.md"
+    ok = tmp_path / "ok.md"
+    ok.write_text("```python\nf(1,2,3)\n```\n")
+
+    result = blacken_docs.main((str(missing), str(ok)))
+
+    assert result == 1
+    out, _ = capsys.readouterr()
+    assert str(missing) in out
+    assert "Traceback" not in out
+    # the remaining file is still processed
+    assert ok.read_text() == "```python\nf(1, 2, 3)\n```\n"
