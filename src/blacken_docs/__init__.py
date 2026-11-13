@@ -112,6 +112,7 @@ def format_str(
     rst_literal_blocks: bool = False,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
+    directive_ranges: list[tuple[int, int]] = []
 
     off_ranges = []
     off_start = None
@@ -127,14 +128,19 @@ def format_str(
     if off_start is not None:
         off_ranges.append((off_start, len(src)))
 
-    def _within_off_range(code_range: tuple[int, int]) -> bool:
-        index = bisect(off_ranges, code_range)
+    def _within_ranges(
+        ranges: list[tuple[int, int]], code_range: tuple[int, int]
+    ) -> bool:
+        index = bisect(ranges, code_range)
         try:
-            off_start, off_end = off_ranges[index - 1]
+            start, end = ranges[index - 1]
         except IndexError:
             return False
         code_start, code_end = code_range
-        return code_start >= off_start and code_end <= off_end
+        return code_start >= start and code_end <= end
+
+    def _within_off_range(code_range: tuple[int, int]) -> bool:
+        return _within_ranges(off_ranges, code_range)
 
     @contextlib.contextmanager
     def _collect_error(match: Match[str]) -> Generator[None]:
@@ -171,7 +177,9 @@ def format_str(
         return f"{match['before']}{code.rstrip()}{trailing_ws}"
 
     def _rst_literal_blocks_match(match: Match[str]) -> str:
-        if _within_off_range(match.span()):
+        if _within_off_range(match.span()) or _within_ranges(
+            directive_ranges, match.span()
+        ):
             return match[0]
         if not match["code"].strip():
             return match[0]
@@ -268,6 +276,10 @@ def format_str(
     src = RST_RE.sub(_rst_match, src)
     src = RST_PYCON_RE.sub(_rst_pycon_match, src)
     if rst_literal_blocks:
+        # Skip literal blocks within directives, since these are the content
+        # of the directive rather than prose, such as the reStructuredText
+        # source within a ``.. code-block:: rst`` body.
+        directive_ranges.extend(match.span() for match in RST_RE.finditer(src))
         src = RST_LITERAL_BLOCKS_RE.sub(
             _rst_literal_blocks_match,
             src,

@@ -228,6 +228,7 @@ Use ``--rst-literal-blocks`` to also format `literal blocks <https://docutils.so
 Literal blocks are marked with ``::`` and can be any monospaced text by default.
 However Sphinx interprets them as Python code `by default <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#rst-literal-blocks>`__.
 If your project uses Sphinx and such a configuration, add ``--rst-literal-blocks`` to also format such blocks.
+Literal blocks within directives are not formatted, since they are part of the directive’s content, such as the reStructuredText source within a ``.. code-block:: rst`` body.
 
 Within Python files, docstrings that contain reStructuredText code blocks may be reformatted:
 
