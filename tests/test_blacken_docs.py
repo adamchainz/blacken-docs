@@ -1240,6 +1240,25 @@ def test_format_src_python_docstring_rst():
     )
 
 
+def test_format_src_python_docstring_markdown_continuation():
+    # Changing the quote marks breaks the docstring.
+    before = dedent(
+        '''\
+        def f():
+            """
+            hello world
+
+            ```python
+            print(\'\'\'hi\'\'\')
+            ```
+            """
+            pass
+        '''
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == before
+
+
 def test_format_src_rst_pycon():
     before = dedent(
         """\
