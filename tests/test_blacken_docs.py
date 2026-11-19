@@ -102,6 +102,24 @@ def test_format_src_markdown_options():
     )
 
 
+def test_format_src_markdown_braces():
+    before = dedent(
+        """\
+        ```{.python title='example.py'}
+        f(1,2,3)
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```{.python title='example.py'}
+        f(1, 2, 3)
+        ```
+        """
+    )
+
+
 def test_format_src_markdown_trailing_whitespace():
     before = dedent(
         """\
