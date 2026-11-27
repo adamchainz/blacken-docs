@@ -34,6 +34,24 @@ def test_format_src_markdown_simple():
     )
 
 
+def test_format_src_markdown_python_class():
+    before = dedent(
+        """\
+        ```{.python}
+        f(1,2,3)
+        ```
+        """
+    )
+    after, _ = blacken_docs.format_str(before, BLACK_MODE)
+    assert after == dedent(
+        """\
+        ```{.python}
+        f(1, 2, 3)
+        ```
+        """
+    )
+
+
 def test_format_src_markdown_leading_whitespace():
     before = dedent(
         """\
